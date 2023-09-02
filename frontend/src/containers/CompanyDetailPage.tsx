@@ -28,9 +28,11 @@ import {
   getConnectedCompanies,
   Company,
   User,
+  getCompany,
 } from "../api";
 import image from "../assets/image 2.png";
 import imageTwo from "../assets/petronas.png";
+import { useParams } from "react-router-dom";
 // import borderImg from '../assets/Rectangle 17.jpg';
 // import appleLogo from '../assets/Ellipse 14.jpg';
 const CompanyDetailPage = () => {
@@ -43,6 +45,11 @@ const CompanyDetailPage = () => {
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
+  const [company, setCompany] = useState({});
+
+  const params = useParams();
+  const id = params.id;
+  console.log(id);
 
   useEffect(() => {
     getUser()
@@ -79,7 +86,12 @@ const CompanyDetailPage = () => {
       console.log(response);
       setConnectedCompanies(response);
     });
-  }, []);
+
+    getCompany(id).then((response) => {
+      console.log("Single Company : ", response);
+      setCompany(response);
+    });
+  }, [id]);
 
   return (
     <>
@@ -87,7 +99,7 @@ const CompanyDetailPage = () => {
         Company Profile
       </Heading>
       <Heading pl={10} pt={10} color={mainPurple}>
-        Invest In Tesla!
+        {`Invest In ${company.name}!`}
       </Heading>
       <HStack my={5}>
         <Text fontSize={"lg"} pl={10} color={mainPurple}>

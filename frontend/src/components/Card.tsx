@@ -1,18 +1,21 @@
 import { Box, Image, Flex, Text, Avatar, Button } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 const Card = ({
   banner,
   logo,
   name,
   bio,
-  minimumInvestment
+  minimumInvestment,
+  companyId,
 }: {
   banner: any;
   logo: any;
   userName: any;
   name: any;
   bio: any;
-  minimumInvestment : any;
+  minimumInvestment: any;
+  companyId: any;
 }) => {
   return (
     <Box
@@ -44,9 +47,11 @@ const Card = ({
         <Text>{bio}</Text>
       </Box>
       <Box p="4">
-        <Button bg={"brand.100"} color={"white"}>
-          {`Starting From $${minimumInvestment}`}
-        </Button>
+        <Link to={`/company/${companyId}`}>
+          <Button bg={"brand.100"} color={"white"}>
+            {`Starting From $${minimumInvestment}`}
+          </Button>
+        </Link>
       </Box>
     </Box>
   );

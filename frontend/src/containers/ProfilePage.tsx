@@ -188,7 +188,7 @@ const ProfilePage = () => {
               {connectedUsers.length} Connections
             </Text>
             <HStack spacing={0}>
-              {connectedUsers.map((user, index) => (
+              {connectedUsers.slice(0 , 10).map((user, index) => (
                 <Avatar
                   key={user._id}
                   size="md"

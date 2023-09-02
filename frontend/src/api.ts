@@ -270,7 +270,7 @@ export const addConnection = async (userId: string) => {
 }
 
 //DONE
-export const getCompany = async (companyId: string) => {
+export const getCompany = async (companyId: any) => {
   const response = await apiRequest<Company>('GET', `company/${companyId}`)
   return response
 }
