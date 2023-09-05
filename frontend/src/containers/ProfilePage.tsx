@@ -1,4 +1,4 @@
-import { useState, useEffect, ReactElement } from "react";
+import { useState, useEffect } from "react";
 import {
   getUser,
   Company,
@@ -9,7 +9,6 @@ import {
 
 import { Link, useParams } from "react-router-dom";
 import { FcAssistant, FcDonate, FcInTransit } from "react-icons/fc";
-
 import {
   Box,
   Heading,
@@ -28,16 +27,8 @@ import {
   Stack,
   Grid,
 } from "@chakra-ui/react";
-import {
-  Icon,
-  ChevronDownIcon,
-  EditIcon,
-  PhoneIcon,
-  EmailIcon,
-  BellIcon,
-  ChatIcon,
-  ArrowForwardIcon,
-} from "@chakra-ui/icons";
+import { Icon, PhoneIcon, EmailIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+
 import {
   FaMapMarkerAlt,
   FaVenusMars,
@@ -46,10 +37,6 @@ import {
   FaEdit,
 } from "react-icons/fa";
 
-// import { useNavigate } from 'react-router-dom';
-import bannerImg from "../../src/assets/bannerImg.png";
-import image from "../assets/image 2.png";
-import Apple from "../assets/apple.jpg";
 import {
   getConnectedUsers,
   getAllCompanies,
@@ -57,6 +44,7 @@ import {
   getSuggestedUsers,
 } from "../api";
 
+import bannerImg from "../../src/assets/bannerImg.png";
 import { useAuth0, Auth0Context } from "@auth0/auth0-react";
 import styles from "./styles/ProfileStyles";
 import { MdBorderColor } from "react-icons/md";
@@ -64,88 +52,76 @@ import NetworkCard from "../components/NetworkCard";
 import FeatureCard from "../components/FeatureCard";
 
 const ProfilePage = () => {
-  //   const [user, setUser] = useState({} as User);
-  //   const [suggestedUser, setSuggestedUser] = useState<User[]>([]);
-  //   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
-  //   // const [allCompanies, setAllCompanies] = useState([] as Company[]);
-  //   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
-  //   const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
+  const [user, setUser] = useState({} as User);
+  const [suggestedUser, setSuggestedUser] = useState<User[]>([]);
+  const [connectedUsers, setConnectedUsers] = useState([] as User[]);
+  // const [allCompanies, setAllCompanies] = useState([] as Company[]);
+  const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
+  const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
 
-  //   const params = useParams();
-  //   // console.log(params);
-  //   const id = params.id;
-  //   console.log(id);
+  const params = useParams();
+  // console.log(params);
+  const id = params.id;
+  console.log(id);
 
-  //   useEffect(() => {
-  //     //wait for auth0 to be done loading and make sure we have our user data
-  //     if (!isLoading && auth0User) {
-  //       //get the auth0 sub and the JWT from auth0. this will be verified by our backend
-  //       getUserToken(auth0User, getAccessTokenSilently).then((result) => {
-  //         //is we get a success (we are authenticated), execute this logic
-  //         if (result.isAuthenticated) {
-  //           console.log("authenticated!");
+  useEffect(() => {
+    //wait for auth0 to be done loading and make sure we have our user data
+    if (!isLoading && auth0User) {
+      //get the auth0 sub and the JWT from auth0. this will be verified by our backend
+      getUserToken(auth0User, getAccessTokenSilently).then((result) => {
+        //is we get a success (we are authenticated), execute this logic
+        if (result.isAuthenticated) {
+          console.log("authenticated!");
 
-  //           getUser().then((response) => {
-  //             console.log("User:");
-  //             console.log(response);
-  //             if (response) setUser(response);
-  //           });
+          getUser().then((response) => {
+            console.log("User:");
+            console.log(response);
+            if (response) setUser(response);
+          });
 
-  //           getConnectedCompanies().then((response) => {
-  //             console.log("Connected Companies:");
-  //             console.log(response);
-  //             setConnectedCompanies(response);
-  //           });
+          getConnectedCompanies().then((response) => {
+            console.log("Connected Companies:");
+            console.log(response);
+            setConnectedCompanies(response);
+          });
 
-  //           getConnectedUsers().then((response) => {
-  //             console.log("Connected Users : ");
-  //             console.log(response);
-  //             setConnectedUsers(response);
-  //           });
-  //         } else {
-  //           console.log("Homepage: not authenticated..");
-  //         }
-  //       });
-  //     }
-  //   }, [isLoading]);
+          getConnectedUsers().then((response) => {
+            console.log("Connected Users : ");
+            console.log(response);
+            setConnectedUsers(response);
+          });
+        } else {
+          console.log("Homepage: not authenticated..");
+        }
+      });
+    }
+  }, [isLoading]);
 
-  //   useEffect(() => {
-  //     getSuggestedUsers().then((response: User[]) => {
-  //       console.log("Suggested Users:", response);
-  //       response.filter((user) => {
-  //         if (user._id === id) {
-  //           setUser(user);
-  //           console.log(user);
-  //           // setConnectedUsers(user);
-  //         }
-  //       });
-  //     });
-  //   }, [id]);
-
-  // Mock user and company data
-  const user = {
-    name: "John Doe",
-    profilePicture: "https://via.placeholder.com/100",
-    connections: [
-      { profilePicture: "https://via.placeholder.com/24" },
-      { profilePicture: "https://via.placeholder.com/24" },
-      { profilePicture: "https://via.placeholder.com/24" },
-    ],
-    location: "New York",
-    gender: "Male",
-    worksAt: "Company Inc.",
-    studiedAt: "University",
-  };
-
-  const company = {
-    bio: "This is a bio about the company where John Doe works. It's a great place to work.",
-  };
+  useEffect(() => {
+    getSuggestedUsers().then((response: User[]) => {
+      console.log("Suggested Users:", response);
+      response.filter((user) => {
+        if (user._id === id) {
+          setUser(user);
+          console.log(user);
+          // setConnectedUsers(user);
+        }
+      });
+    });
+  }, [id]);
 
   return (
     <>
       <Box maxW={"7xl"} mx={"auto"}>
         {/* Banner */}
         <Box sx={styles.banner}>
+          <Image
+            src={user.banner}
+            w={"100%"}
+            h={"100%"}
+            borderRadius={8}
+            opacity={0.6}
+          />
           <Button sx={styles.editButton} leftIcon={<FaEdit />}>
             Edit Profile
           </Button>
@@ -166,8 +142,10 @@ const ProfilePage = () => {
               borderColor={"brand.200"}
             >
               <Avatar
-                src={user.profilePicture}
+                src={user.profilePic}
                 size="full"
+                padding={"4px"}
+                bg={"brand.100"}
                 position="absolute"
                 top={0}
               />
@@ -176,27 +154,27 @@ const ProfilePage = () => {
 
           <HStack justifyContent={"space-between"}>
             <Box marginLeft={"80px"}>
-              <Text sx={styles.name}>{user.name}</Text>
+              <Text sx={styles.name}>{user.legalName}</Text>
               <HStack sx={styles.connectionInfo}>
-                <Text>{user.connections.length}+ Connections</Text>
-                {user.connections.slice(0, 3).map((connection, index) => (
+                {/* <Text>{user.connections.length}+ Connections</Text>
+                {user.connections.slice(0, 8).map((connection, index) => (
                   <Image
                     key={index}
                     borderRadius="full"
                     boxSize="40px"
-                    src={connection.profilePicture}
+                    src={bannerImg}
                     alt="Connection"
                     marginRight={"-20px"}
                   />
-                ))}
+                ))} */}
               </HStack>
             </Box>
             <HStack gap={10} fontSize={18}>
               <Text>
-                <EmailIcon sx={styles.icon} /> aiman@gmail.com
+                <EmailIcon sx={styles.icon} /> {user.email}
               </Text>
               <Text>
-                <PhoneIcon sx={styles.icon} /> +454545545445
+                <PhoneIcon sx={styles.icon} /> {user.phoneNumber}
               </Text>
             </HStack>
           </HStack>
@@ -213,7 +191,7 @@ const ProfilePage = () => {
               <Text fontSize="2xl" mb={4} fontWeight="bold">
                 About
               </Text>
-              <Text>{company.bio}</Text>
+              <Text>{user.bio}</Text>
             </Box>
 
             {/* NETWORK SUGGESTIONS  */}
@@ -242,15 +220,15 @@ const ProfilePage = () => {
               </HStack>
               <HStack>
                 <Icon sx={styles.icon} as={FaVenusMars} />
-                <Text sx={styles.iconText}>{user.gender}</Text>
+                <Text sx={styles.iconText}>Male</Text>
               </HStack>
               <HStack>
                 <Icon sx={styles.icon} as={FaBriefcase} />
-                <Text sx={styles.iconText}>Works at {user.worksAt}</Text>
+                <Text sx={styles.iconText}>Works at {user.occupation}</Text>
               </HStack>
               <HStack>
                 <Icon sx={styles.icon} as={FaUniversity} />
-                <Text sx={styles.iconText}>Studied at {user.studiedAt}</Text>
+                <Text sx={styles.iconText}>Studied at {user.education}</Text>
               </HStack>
             </VStack>
 
@@ -276,7 +254,7 @@ const ProfilePage = () => {
               </SimpleGrid>
             </Box>
 
-            {/* EMPTY BOX FOR GAP  */}
+            {/* ABOUT COMPANY  */}
             <Box
               p={4}
               borderRadius={"8px"}
@@ -287,7 +265,7 @@ const ProfilePage = () => {
               <Heading fontSize={24}>About Company</Heading>
             </Box>
 
-            {/* MY COMPANY  */}
+            {/* CONNECTED COMPANY  */}
             <Box
               p={4}
               borderRadius={"8px"}
