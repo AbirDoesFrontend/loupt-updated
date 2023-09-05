@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-// import { Navigate } from "react-router-dom";
 import {
   getUser,
   Company,
@@ -7,7 +6,8 @@ import {
   getConnectedCompanies,
   updateUser,
 } from "../api";
-import { Link } from "react-router-dom";
+
+import { Link, useParams } from "react-router-dom";
 
 import {
   Box,
@@ -53,9 +53,14 @@ const ProfilePage = () => {
   const [user, setUser] = useState({} as User);
   const [suggestedUser, setSuggestedUser] = useState<User[]>([]);
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
-  const [allCompanies, setAllCompanies] = useState([] as Company[]);
+  // const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
   const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
+
+  const params = useParams();
+  // console.log(params);
+  const id = params.id;
+  console.log(id);
 
   useEffect(() => {
     //wait for auth0 to be done loading and make sure we have our user data
@@ -83,39 +88,54 @@ const ProfilePage = () => {
             console.log(response);
             setConnectedUsers(response);
           });
-
-          getSuggestedUsers().then((response) => {
-            console.log("Suggested Users", response);
-            setSuggestedUser(response);
-          });
-        } else console.log("Homepage: not authenticated..");
+        } else {
+          console.log("Homepage: not authenticated..");
+        }
       });
     }
   }, [isLoading]);
 
+  useEffect(() => {
+    getSuggestedUsers().then((response: User[]) => {
+      console.log("Suggested Users:", response);
+      response.filter((user) => {
+        if (user._id === id) {
+          setUser(user);
+          console.log(user);
+          // setConnectedUsers(user);
+        }
+      });
+    });
+  }, [id]);
+
   return (
     <>
-      <Box mb={{ base: "4", md: "150" }}>
+      <Box maxW={"7xl"} mx={"auto"}>
+        {/* BANNER  */}
         <Box
           bgImage={bannerImg}
-          h={{ base: "50", md: "210" }}
+          h={{ base: "100", md: "210" }}
           w="full"
           position="relative"
         >
-          <Link to="/edit-profile">
-            <Button
-              position="absolute"
-              top={{ base: "150px", md: "150px" }}
-              left={{ base: "22%", md: "87%" }}
-              leftIcon={<EditIcon />}
-              bg={"brand.100"}
-              color="white"
-              fontSize={"18px"}
-            >
-              Edit Profile
-            </Button>
-          </Link>
+          {/* EDIT PROFILE BTN  */}
+          {isLoading || (
+            <Link to="/edit-profile">
+              <Button
+                position="absolute"
+                top={{ base: "150px", md: "150px" }}
+                left={{ base: "22%", md: "87%" }}
+                leftIcon={<EditIcon />}
+                bg={"brand.100"}
+                color="white"
+                fontSize={"18px"}
+              >
+                Edit Profile
+              </Button>
+            </Link>
+          )}
 
+          {/* PROFILE PICTURE  */}
           <Box
             position="absolute"
             left={{ base: "5%", md: "5%" }}
@@ -154,15 +174,16 @@ const ProfilePage = () => {
               </Avatar>
             </Box>
           </Box>
-          <Button
-            position="absolute"
-            top={{ base: "150px", md: "310px" }}
-            left={{ base: "22%", md: "8.5%" }}
-            rightIcon={<EditIcon />}
-          >
-            Edit
-          </Button>
-
+          {isLoading || (
+            <Button
+              // position="absolute"
+              top={{ base: "150px", md: "310px" }}
+              left={{ base: "22%", md: "8.5%" }}
+              rightIcon={<EditIcon />}
+            >
+              Edit
+            </Button>
+          )}
           <Text
             position="absolute"
             top={{ base: "110px", md: "220px" }}
@@ -188,7 +209,7 @@ const ProfilePage = () => {
               {connectedUsers.length} Connections
             </Text>
             <HStack spacing={0}>
-              {connectedUsers.slice(0 , 10).map((user, index) => (
+              {connectedUsers.slice(0, 10).map((user, index) => (
                 <Avatar
                   key={user._id}
                   size="md"
@@ -205,24 +226,12 @@ const ProfilePage = () => {
           </HStack>
         </Box>
       </Box>
-      <Box>
-        <Center>
-          <Divider
-            mb={10}
-            orientation={"horizontal"}
-            size={"md"}
-            borderColor={"#8764FF"}
-            borderWidth={2}
-            width={"88%"}
-          />
-        </Center>
-      </Box>
-      <VStack>
-        <HStack spacing={5}>
-          <HStack spacing={5}>
+
+      <VStack marginTop={40} maxW={"1280px"} mx={"auto"}>
+        {/* <HStack spacing={5}>
+          <HStack spacing={5} flexBasis={"70%"}>
             <Box
-              h={"75px"}
-              w={700}
+              h={"5rem"}
               border={"solid"}
               borderRadius={10}
               display="flex"
@@ -234,11 +243,6 @@ const ProfilePage = () => {
                 <Text fontSize={"2xl"} fontWeight={700}>
                   Contact Information
                 </Text>
-                <Spacer />
-                <Spacer />
-                <Spacer />
-                <Spacer />
-                <Spacer />
                 <Spacer />
                 <Button w={20} colorScheme="purple">
                   <EmailIcon />
@@ -256,10 +260,10 @@ const ProfilePage = () => {
               </HStack>
             </Box>
           </HStack>
-          <HStack spacing={5}>
+          <HStack spacing={5} flexBasis={"30%"}>
             <Box
-              h={"75px"}
-              w={450}
+              h={"5rem"}
+              // w={"xl"}
               border={"solid"}
               borderRadius={10}
               display="flex"
@@ -285,7 +289,8 @@ const ProfilePage = () => {
               </Center>
             </Box>
           </HStack>
-        </HStack>
+        </HStack> */}
+        H
         <HStack mt={10} mb={10} spacing={5}>
           <VStack>
             <Box

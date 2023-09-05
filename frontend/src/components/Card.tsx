@@ -1,3 +1,4 @@
+import { User } from "@auth0/auth0-react";
 import { Box, Image, Flex, Text, Avatar, Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
@@ -29,22 +30,25 @@ const Card = ({
         },
       }}
     >
-      <Image src={banner} alt="card image" height="300px" width={"100%"} />
+      <Image src={banner} alt="card image" height="200px" width={"100%"} />
       <Flex justifyContent="space-between" p="4">
         <Flex alignItems="center">
-          <Image
+          {/* <Image
             src={logo}
             alt="company logo"
-            boxSize="70px"
+            boxSize="60px"
+            rounded={100}
             mr="1"
             color={"brand.100"}
-          />
-          <Text fontWeight="bold">{name}</Text>
+          /> */}
+          <Text fontWeight="bold" fontSize={20}>
+            {name}
+          </Text>
         </Flex>
-        <Avatar src={name} />
+        <Avatar src={logo} />
       </Flex>
       <Box p="4">
-        <Text>{bio}</Text>
+        <Text>{bio.split(0, 1)}</Text>
       </Box>
       <Box p="4">
         <Link to={`/company/${companyId}`}>

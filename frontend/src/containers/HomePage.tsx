@@ -31,13 +31,9 @@ import NetworkCard from "../components/NetworkCard";
 import CardGrid from "../components/CardGrid";
 
 const HomePage = () => {
-  // Fetching Data
-  // const [user, setUser] = useState({} as User);
-
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
-
   const { user, getAccessTokenSilently, isLoading } = useAuth0();
 
   useEffect(() => {
@@ -112,6 +108,7 @@ const HomePage = () => {
           </Box>
           <Divider sx={styles.divider} />
         </VStack>
+
         {/* DUAL BUTTONS  */}
         <HStack spacing={4} justify="center" py={10}>
           <Button sx={styles.buttonLarge} color={"brand.100"}>
@@ -121,6 +118,7 @@ const HomePage = () => {
             Explore
           </Button>
         </HStack>
+
         {/* COMPANY CARDS */}
         <Box m={"50px 20px"}>
           <CardGrid></CardGrid>

@@ -1,10 +1,19 @@
 import { useEffect, useState } from "react";
+import { MdLocalShipping } from "react-icons/md";
+
 import {
   Box,
   Flex,
   Avatar,
   Progress,
+  SimpleGrid,
+  ListItem,
+  List,
   Input,
+  StackDivider,
+  Container,
+  useColorModeValue,
+  Stack,
   Text,
   VStack,
   useTheme,
@@ -19,7 +28,7 @@ import {
   InputLeftElement,
   InputGroup,
 } from "@chakra-ui/react";
-import { Icon, InfoIcon } from "@chakra-ui/icons";
+import { Icon, InfoIcon, CheckIcon } from "@chakra-ui/icons";
 import { MdDiscount } from "react-icons/md";
 import {
   getUser,
@@ -30,24 +39,20 @@ import {
   User,
   getCompany,
 } from "../api";
-import image from "../assets/image 2.png";
-import imageTwo from "../assets/petronas.png";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+import styles from "./styles/CompanyStyles";
+import CompanyProfileCard from "../components/CompanyProfileCard";
 // import borderImg from '../assets/Rectangle 17.jpg';
 // import appleLogo from '../assets/Ellipse 14.jpg';
 const CompanyDetailPage = () => {
-  const theme = useTheme();
-  const mainPurple = theme.colors.mainPurple ?? "#8764FF";
-
-  const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
-
   const [user, setUser] = useState({} as User);
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
-  const [company, setCompany] = useState({});
+  const [company, setCompany] = useState({} as Company);
 
   const params = useParams();
+  console.log(params);
   const id = params.id;
   console.log(id);
 
@@ -93,256 +98,108 @@ const CompanyDetailPage = () => {
     });
   }, [id]);
 
+  // Highlights Dummy Data
+  const highlights = Array.apply(null, Array(6)).map(function (x, i) {
+    return {
+      id: i,
+      title: "Lorem ipsum dolor sit amet",
+      text: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam.",
+    };
+  });
+
   return (
     <>
-      <Heading pl={10} pt={10} color={mainPurple}>
-        Company Profile
-      </Heading>
-      <Heading pl={10} pt={10} color={mainPurple}>
-        {`Invest In ${company.name}!`}
-      </Heading>
-      <HStack my={5}>
-        <Text fontSize={"lg"} pl={10} color={mainPurple}>
-          Very Short Company Bio Goes Here/Company Slogan
-        </Text>
-        <Spacer />
-        <HStack mr={10}>
-          <Text color={mainPurple}>3 Network Investors:</Text>
-          <Avatar size="sm" src={user.profilePic} />
-          <Avatar size="sm" src={user.profilePic} />
-          <Avatar size="sm" src={user.profilePic} />
-        </HStack>
-      </HStack>
-      <Center>
-        <Divider
-          orientation="horizontal"
-          borderWidth={4}
-          borderColor={mainPurple}
-          w={"95%"}
-          borderRadius={10}
-          display={"flex"}
-          alignItems={"center"}
-          mb={5}
-        />
-      </Center>
+      <Container maxW={"7xl"}>
+        <SimpleGrid sx={styles.grid}>
+          <Flex>
+            <Box
+              w={"100%"}
+              bgGradient="linear(to-l, brand.200, brand.100)"
+              borderRadius={8}
+              marginBottom={10}
+            >
+              <Image
+                rounded={"md"}
+                alt={company.name}
+                src={
+                  "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                }
+                sx={styles.banner}
+              />
+            </Box>
+          </Flex>
+          <Box sx={styles.card}>
+            <CompanyProfileCard {...company}></CompanyProfileCard>
+          </Box>
+          <Stack spacing={{ base: 6, md: 10 }} marginTop={[10, 10, 0]}>
+            <Box as={"header"} textAlign={["center", "center", "left"]}>
+              <Heading
+                lineHeight={1.1}
+                fontWeight={600}
+                fontSize={{ base: "2xl", sm: "4xl", lg: "5xl" }}
+              >
+                {company.name}
+              </Heading>
+              <Text
+                color={useColorModeValue("gray.900", "gray.400")}
+                fontWeight={300}
+                fontSize={"2xl"}
+              >
+                Valuation: ${company.valuation}
+              </Text>
+            </Box>
 
-      <HStack ml={10} mb={10} spacing={6}>
-        <Image
-          w={"60%"}
-          border={"solid"}
-          borderColor={mainPurple}
-          borderRadius={30}
-          src={imageTwo}
-        ></Image>
-        <Box
-          w={"35%"}
-          h={470}
-          border={"solid"}
-          borderColor={mainPurple}
-          borderRadius={15}
-          bgGradient="linear(to-t, white, #8764FF, white)"
-        >
-          <VStack
-            alignItems={"flex-start"}
-            p={10}
-            textColor={"white"}
-            fontSize={"2xl"}
-            fontWeight={700}
-            spacing={6}
-          >
-            <Progress
-              value={50}
-              size="md"
-              colorScheme="purple"
-              w={"90%"}
-              borderRadius={10}
-            />
-            <Text mt={3}>Value Cap: $1,000,000</Text>
-            <Text>Raised: $500,000</Text>
-            <Text>Min: $100</Text>
-          </VStack>
+            <Stack
+              spacing={{ base: 4, sm: 6 }}
+              direction={"column"}
+              maxW={"3xl"}
+              divider={<StackDivider borderColor={"brand.200"} />}
+            >
+              <Text fontSize={"lg"} textAlign={["center", "center", "left"]}>
+                {company.bio}
+              </Text>
 
-          <VStack mt={0} mb={5} align={"center"} spacing={5}>
-            <HStack>
-              <Text fontSize={"3xl"} fontWeight={700} color={"purple.800"}>
-                Buy
-              </Text>
-              <InputGroup color={"purple.800"}>
-                <InputLeftElement
-                  pointerEvents="none"
-                  color={"purple.800"}
-                  fontSize="1.2em"
-                  children="$"
-                />
-                <Input borderColor={"purple.800"} w={20}></Input>
-              </InputGroup>
-            </HStack>
-            <Button color={"white"} bgColor={mainPurple} size={"lg"} w={40}>
-              <Text fontSize={"xl"} fontWeight={700}>
-                Invest
-              </Text>
-            </Button>
-          </VStack>
-        </Box>
-      </HStack>
-      <VStack
-        align={"start"}
-        px={20}
-        mt={20}
-        mb={10}
-        bgGradient="linear(to-t, white, #8764FF, white)"
-        spacing={5}
-      >
-        <Text fontSize={"3xl"} fontWeight={700}>
-          About Petronas
-        </Text>
+              <Box p={4}>
+                <Stack
+                  spacing={4}
+                  as={Container}
+                  maxW={"3xl"}
+                  textAlign={"left"}
+                >
+                  <Heading fontSize={"3xl"}>Our Highlights</Heading>
+                </Stack>
 
-        <Text>
-          Lorem ipsum dolor sit aLorem ipsum dolor sit amet, consectetur sit
-          amet, adipiscing elit. Nunc vitae commodo sit amet, augue.Lorem ipsum
-          dolor sit amet, sit amet, consectetur o augue.Lorem ipsum dolor sit
-          amet, consectetur sit amet, adipiscing elit. Nunc vitae commodo sit
-          amet, augue.Lorem ipsum dolor sit amet, sit amet, consectetur o
-          augue.Lorem ipsum dolor sit amet, consectetur sit amet, adipiscing
-          elit. Nunc vitae commodo sit amet, augue.Lorem ipsum dolor sit amet,
-          sit amet, consectetur o augue.Lorem ipsum dolor sit amet, consectetur
-          sit amet, adipiscing elit. Nunc vitae commodo sit amet, augue.Lorem
-          ipsum dolor sit amet, sit amet, consectetur o augue.Lorem ipsum dolor
-          sit amet, consectetur sit amet, adipiscing elit. Nunc vitae commodo
-          sit amet, augue.Lorem ipsum dolor sit amet, sit amet, consectetur o
-          augue.met, consectetur sit amet, adipiscing elit. Nunc vitae commodo
-          sit amet, augue.Lorem ipsum dolor sit amet, sit amet, consectetur o
-          augue.
-        </Text>
-      </VStack>
-      <VStack align={"start"} px={20} my={5}>
-        <Heading>Our Team</Heading>
-        <HStack my={5}>
-          <HStack
-            align={"center"}
-            borderRadius={10}
-            border={"solid"}
-            borderColor={mainPurple}
-            p={5}
-          >
-            <Avatar size={"xl"} src={user.profilePic}></Avatar>
-            <Text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
-              vitae commodo augue.
-            </Text>
-          </HStack>
-          <HStack
-            align={"center"}
-            borderRadius={10}
-            border={"solid"}
-            borderColor={mainPurple}
-            p={5}
-          >
-            <Avatar size={"xl"} src={user.profilePic}></Avatar>
-            <Text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
-              vitae commodo augue.
-            </Text>
-          </HStack>
-          <HStack
-            align={"center"}
-            borderRadius={10}
-            border={"solid"}
-            borderColor={mainPurple}
-            p={5}
-          >
-            <Avatar size={"xl"} src={user.profilePic}></Avatar>
-            <Text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
-              vitae commodo augue.
-            </Text>
-          </HStack>
-        </HStack>
-      </VStack>
-      <HStack pl={20} my={10} spacing={10}>
-        <Box
-          border={"solid"}
-          h={700}
-          w={"60%"}
-          borderRadius={10}
-          borderColor={mainPurple}
-        >
-          <VStack align={"start"}>
-            <Heading pl={10} pt={10}>
-              Highlights
-            </Heading>
-            <HStack px={10} pt={5} spacing={5}>
-              <InfoIcon color={mainPurple} boxSize={7} />
-              <Text fontSize={"xl"} fontWeight={500}>
-                Lorem ipsum dolor sit aLorem ipsum dolor sit amet, consectetur
-                sit amet, adipiscing elit. Nunc vitae commodo sit amet,
-              </Text>
-            </HStack>
-            <HStack px={10} pt={5} spacing={5}>
-              <InfoIcon color={mainPurple} boxSize={7} />
-              <Text fontSize={"xl"} fontWeight={500}>
-                Lorem ipsum dolor sit aLorem ipsum dolor sit amet, consectetur
-                sit amet, adipiscing elit. Nunc vitae commodo sit amet,
-              </Text>
-            </HStack>
-            <HStack px={10} pt={5} spacing={5}>
-              <InfoIcon color={mainPurple} boxSize={7} />
-              <Text fontSize={"xl"} fontWeight={500}>
-                Lorem ipsum dolor sit aLorem ipsum dolor sit amet, consectetur
-                sit amet, adipiscing elit. Nunc vitae commodo sit amet,
-              </Text>
-            </HStack>
-            <HStack px={10} pt={5} spacing={5}>
-              <InfoIcon color={mainPurple} boxSize={7} />
-              <Text fontSize={"xl"} fontWeight={500}>
-                Lorem ipsum dolor sit aLorem ipsum dolor sit amet, consectetur
-                sit amet, adipiscing elit. Nunc vitae commodo sit amet,
-              </Text>
-            </HStack>
-            <HStack px={10} pt={5} spacing={5}>
-              <InfoIcon color={mainPurple} boxSize={7} />
-              <Text fontSize={"xl"} fontWeight={500}>
-                Lorem ipsum dolor sit aLorem ipsum dolor sit amet, consectetur
-                sit amet, adipiscing elit. Nunc vitae commodo sit amet,
-              </Text>
-            </HStack>
-            <HStack px={10} pt={5} spacing={5}>
-              <InfoIcon color={mainPurple} boxSize={7} />
-              <Text fontSize={"xl"} fontWeight={500}>
-                Lorem ipsum dolor sit aLorem ipsum dolor sit amet, consectetur
-                sit amet, adipiscing elit. Nunc vitae commodo sit amet,
-              </Text>
-            </HStack>
-          </VStack>
-        </Box>
-        <Box
-          border={"solid"}
-          h={700}
-          w={"30%"}
-          borderRadius={10}
-          borderColor={mainPurple}
-        >
-          <VStack align={"start"} py={10} pl={10} fontSize={"xl"}>
-            <Heading>Deal Terms</Heading>
-            <Text mt={5}>Discount</Text>
-            <Text fontWeight={700} mt={-3}>
-              10%
-            </Text>
-            <Text mt={3}>Maximum Investment</Text>
-            <Text fontWeight={700} mt={-3}>
-              $100,000
-            </Text>
-            <Text mt={3}>Funding Goals</Text>
-            <Text fontWeight={700} mt={-3}>
-              $25k-$4.16M
-            </Text>
-            <Text mt={3}>Deadline</Text>
-            <Text fontWeight={700} mt={-3}>
-              August 18, 2023
-            </Text>
-          </VStack>
-        </Box>
-      </HStack>
+                <Container maxW={"6xl"} mt={10}>
+                  <SimpleGrid columns={{ base: 1, md: 2, lg: 2 }} spacing={10}>
+                    {highlights.map((feature) => (
+                      <HStack key={feature.id} align={"top"}>
+                        <Box color={"brand.100"} px={2}>
+                          <Icon as={CheckIcon} />
+                        </Box>
+                        <VStack align={"start"}>
+                          <Text fontWeight={600}>{feature.title}</Text>
+                          <Text color={"gray.600"}>{feature.text}</Text>
+                        </VStack>
+                      </HStack>
+                    ))}
+                  </SimpleGrid>
+                </Container>
+              </Box>
+            </Stack>
+
+            <Button sx={styles.button}>INVEST NOW</Button>
+
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent={"center"}
+            >
+              <MdLocalShipping />
+              <Text>Grow Fast With Us!</Text>
+            </Stack>
+          </Stack>
+        </SimpleGrid>
+      </Container>
     </>
   );
 };
