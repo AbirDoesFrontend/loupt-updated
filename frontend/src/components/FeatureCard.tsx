@@ -1,21 +1,16 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { Box, Button, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import Apple from "../assets/apple.jpg";
 
-interface FeatureProps {
-  title: string;
-}
-
-const FeatureCard = ({ title }: FeatureProps) => {
+const FeatureCard = ({ logo, name }: { logo: any; name: any }) => {
   return (
     <>
       <Stack>
         <Flex gap={4}>
-          <Image src={Apple} boxSize={14} />
+          <Image src={logo} boxSize={14} />
           <Box>
             <Text fontWeight={600} fontSize={16}>
-              {title}
+              {name}
             </Text>
             <Link to={"/"}>
               <Button background={"transparent"} p={0} color={"brand.100"}>

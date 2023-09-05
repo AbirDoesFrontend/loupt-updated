@@ -57,6 +57,7 @@ const ProfilePage = () => {
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   // const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
+  const [showEditButton, setShowEditButton] = useState(false)
   const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
 
   const params = useParams();
@@ -67,6 +68,9 @@ const ProfilePage = () => {
   useEffect(() => {
     //wait for auth0 to be done loading and make sure we have our user data
     if (!isLoading && auth0User) {
+
+      setShowEditButton(true);
+
       //get the auth0 sub and the JWT from auth0. this will be verified by our backend
       getUserToken(auth0User, getAccessTokenSilently).then((result) => {
         //is we get a success (we are authenticated), execute this logic
@@ -103,6 +107,7 @@ const ProfilePage = () => {
       response.filter((user) => {
         if (user._id === id) {
           setUser(user);
+          setShowEditButton(false);
           console.log(user);
           // setConnectedUsers(user);
         }
@@ -122,9 +127,11 @@ const ProfilePage = () => {
             borderRadius={8}
             opacity={0.6}
           />
-          <Button sx={styles.editButton} leftIcon={<FaEdit />}>
-            Edit Profile
-          </Button>
+          {auth0User && (
+            <Button sx={styles.editButton} leftIcon={<FaEdit />}>
+              Edit Profile
+            </Button>
+          )}
         </Box>
         {/* Profile Details */}
         <VStack align="left" spacing={0} position="relative">
@@ -281,9 +288,11 @@ const ProfilePage = () => {
                 alignItems={"start"}
                 height={"100%"}
               >
-                <FeatureCard title={"Lifetime Support"} />
-                <FeatureCard title={"Unlimited Donations"} />
-                <FeatureCard title={"Instant Delivery"} />
+                {
+                  connectedCompanies.map((company , index) => (
+                    <FeatureCard {...company} key={index} />
+                  ))
+                }
               </SimpleGrid>
             </Box>
           </Grid>
