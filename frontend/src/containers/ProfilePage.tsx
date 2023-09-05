@@ -163,8 +163,8 @@ const ProfilePage = () => {
             <Box marginLeft={"80px"}>
               <Text sx={styles.name}>{user.legalName}</Text>
               <HStack sx={styles.connectionInfo}>
-                {/* <Text>{user.connections.length}+ Connections</Text>
-                {user.connections.slice(0, 8).map((connection, index) => (
+                <Text>{user.connections?.length}+ Connections</Text>
+                {user.connections?.slice(0, 8).map((connection, index) => (
                   <Image
                     key={index}
                     borderRadius="full"
@@ -173,7 +173,7 @@ const ProfilePage = () => {
                     alt="Connection"
                     marginRight={"-20px"}
                   />
-                ))} */}
+                ))}
               </HStack>
             </Box>
             <HStack gap={10} fontSize={18}>
