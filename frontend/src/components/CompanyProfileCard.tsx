@@ -63,7 +63,7 @@ const CompanyProfileCard: React.FC<Company> = ({
 
   return (
     <Box sx={styles.profileCard}>
-      {/* Logo at the top corner */}
+      {/* Logo at the top center */}
       <Flex justifyContent="center" alignItems="center" h="20px">
         <Box sx={styles.profileBox}>
           <Avatar src={logo} size="full" position="absolute" top={0} />
