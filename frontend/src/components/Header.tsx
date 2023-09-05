@@ -152,11 +152,13 @@ const Header = () => {
                   </Link>
                 </Text>
                 <Text sx={NavItem}>
-                  <Link to="/profile">
-                    <Text _hover={NavItemHover} sx={NavLink}>
-                      Profile
-                    </Text>
-                  </Link>
+                  {user && (
+                    <Link to="/profile">
+                      <Text _hover={NavItemHover} sx={NavLink}>
+                        Profile
+                      </Text>
+                    </Link>
+                  )}
                 </Text>
               </Stack>
 

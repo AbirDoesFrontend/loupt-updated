@@ -113,41 +113,24 @@ const ProfilePage = () => {
   return (
     <>
       <Box maxW={"7xl"} mx={"auto"}>
-        {/* BANNER  */}
-        <Box
-          bgImage={bannerImg}
-          h={{ base: "100", md: "210" }}
-          w="full"
-          position="relative"
-        >
-          {/* EDIT PROFILE BTN  */}
-          {isLoading || (
-            <Link to="/edit-profile">
-              <Button
-                position="absolute"
-                top={{ base: "150px", md: "150px" }}
-                left={{ base: "22%", md: "87%" }}
-                leftIcon={<EditIcon />}
-                bg={"brand.100"}
-                color="white"
-                fontSize={"18px"}
-              >
-                Edit Profile
-              </Button>
-            </Link>
-          )}
-
-          {/* PROFILE PICTURE  */}
-          <Box
-            position="absolute"
-            left={{ base: "5%", md: "5%" }}
-            top={{ base: "10px", md: "100px" }}
-            width={{ base: "90px", md: "190px" }}
-            height={{ base: "90px", md: "190px" }}
-            borderRadius="50%"
-            bgColor="rgba(135, 100, 255, 0.5)"
-            border="0.5px solid #FFF"
-            display="flex"
+        {/* Banner */}
+        <Box sx={styles.banner}>
+          <Image
+            src={user.banner}
+            w={"100%"}
+            h={"100%"}
+            borderRadius={8}
+            opacity={0.6}
+          />
+          <Button sx={styles.editButton} leftIcon={<FaEdit />}>
+            Edit Profile
+          </Button>
+        </Box>
+        {/* Profile Details */}
+        <VStack align="left" spacing={0} position="relative">
+          {/* Profile Picture */}
+          <Flex
+            justifyContent="start"
             alignItems="center"
             h="0px"
             marginLeft={5}
