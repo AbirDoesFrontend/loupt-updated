@@ -119,7 +119,7 @@ const ProfilePage = () => {
           position="relative"
         >
           {/* EDIT PROFILE BTN  */}
-          {isLoading || (
+          {isLoading && (
             <Link to="/edit-profile">
               <Button
                 position="absolute"
