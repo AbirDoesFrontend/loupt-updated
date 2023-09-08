@@ -8,7 +8,7 @@ export const FlexStyle = {
   alignItems: "center",
   justifyContent: "space-between",
   bg: "brand.100",
-  gap: ["0", "0", "10"],
+  gap: ["0", "1", "4"],
 };
 
 export const LogoStyle = {
@@ -20,7 +20,7 @@ export const LogoStyle = {
 
 export const LogoText = {
   color: "white",
-  fontSize: { base: "24px", md: "30px", lg: "36px" },
+  fontSize: { base: "24px", md: "20px", lg: "30px" },
   fontWeight: "700",
   lineHeight: "normal",
   pl: "2",
@@ -29,7 +29,7 @@ export const LogoText = {
 
 export const NavItem = {
   textAlign: "center",
-  fontSize: "18px",
+  fontSize: "16px",
   fontStyle: "normal",
   fontWeight: "500",
   lineHeight: "normal",
@@ -45,6 +45,7 @@ export const NavLink = {
 export const NavItemHover = {
   textDecoration: "none",
   bg: "white",
+  transition: "background .5s ease",
   color: "brand.100",
   borderRadius: "md",
 };

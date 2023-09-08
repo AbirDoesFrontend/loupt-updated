@@ -42,8 +42,7 @@ import {
 import { useParams, Link } from "react-router-dom";
 import styles from "./styles/CompanyStyles";
 import CompanyProfileCard from "../components/CompanyProfileCard";
-// import borderImg from '../assets/Rectangle 17.jpg';
-// import appleLogo from '../assets/Ellipse 14.jpg';
+
 const CompanyDetailPage = () => {
   const [user, setUser] = useState({} as User);
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
@@ -111,6 +110,7 @@ const CompanyDetailPage = () => {
     <>
       <Container maxW={"7xl"}>
         <SimpleGrid sx={styles.grid}>
+          {/* BANNER  */}
           <Flex>
             <Box
               w={"100%"}
@@ -128,6 +128,7 @@ const CompanyDetailPage = () => {
               />
             </Box>
           </Flex>
+          {/* COMPANY PROFILE CARD  */}
           <Box sx={styles.card}>
             <CompanyProfileCard {...company}></CompanyProfileCard>
           </Box>
@@ -152,39 +153,80 @@ const CompanyDetailPage = () => {
             <Stack
               spacing={{ base: 4, sm: 6 }}
               direction={"column"}
-              maxW={"3xl"}
+              maxW={"7xl"}
               divider={<StackDivider borderColor={"brand.200"} />}
             >
               <Text fontSize={"lg"} textAlign={["center", "center", "left"]}>
                 {company.bio}
               </Text>
 
-              <Box p={4}>
-                <Stack
-                  spacing={4}
-                  as={Container}
-                  maxW={"3xl"}
-                  textAlign={"left"}
+              {/* Highlights */}
+              <Flex flexDirection={{ base: "column", lg: "row" }}>
+                <Box p={4} order={{ base: 2, md: 1, lg: 1 }}>
+                  <Stack
+                    spacing={4}
+                    as={Container}
+                    maxW={"3xl"}
+                    textAlign={"left"}
+                  >
+                    <Heading
+                      fontSize={"3xl"}
+                      marginTop={{ base: "10px", lg: "0px" }}
+                    >
+                      Our Highlights
+                    </Heading>
+                  </Stack>
+                  <Container mt={10}>
+                    <SimpleGrid
+                      columns={{ base: 1, md: 2, lg: 2 }}
+                      spacing={10}
+                    >
+                      {highlights.map((feature) => (
+                        <HStack key={feature.id} align={"top"}>
+                          <Box color={"brand.100"} px={2}>
+                            <Icon as={CheckIcon} />
+                          </Box>
+                          <VStack align={"start"}>
+                            <Text fontWeight={600}>{feature.title}</Text>
+                            <Text color={"gray.600"}>{feature.text}</Text>
+                          </VStack>
+                        </HStack>
+                      ))}
+                    </SimpleGrid>
+                  </Container>
+                </Box>
+                <Box
+                  // maxW={"34xl"}
+                  border={"1px solid"}
+                  borderColor="brand.200"
+                  p={4}
+                  background={"brand.200"}
+                  borderRadius={8}
+                  order={{ base: 1, md: 2, lg: 2 }}
                 >
-                  <Heading fontSize={"3xl"}>Our Highlights</Heading>
-                </Stack>
-
-                <Container maxW={"6xl"} mt={10}>
-                  <SimpleGrid columns={{ base: 1, md: 2, lg: 2 }} spacing={10}>
-                    {highlights.map((feature) => (
-                      <HStack key={feature.id} align={"top"}>
-                        <Box color={"brand.100"} px={2}>
-                          <Icon as={CheckIcon} />
-                        </Box>
-                        <VStack align={"start"}>
-                          <Text fontWeight={600}>{feature.title}</Text>
-                          <Text color={"gray.600"}>{feature.text}</Text>
-                        </VStack>
-                      </HStack>
-                    ))}
-                  </SimpleGrid>
-                </Container>
-              </Box>
+                  <Heading fontSize={30} mb={6}>
+                    Deals Terms
+                  </Heading>
+                  <VStack spacing={6} alignItems={"start"} fontSize={18}>
+                    <Box>
+                      <Text as={"h4"}>Discount:</Text>
+                      <Text fontWeight={"bold"}>10%</Text>
+                    </Box>
+                    <Box>
+                      <Text as={"h4"}>Maximum Investment:</Text>
+                      <Text fontWeight={"bold"}>$100,000</Text>
+                    </Box>
+                    <Box>
+                      <Text as={"h4"}>Funding Goals:</Text>
+                      <Text fontWeight={"bold"}>$25k-$4.16M</Text>
+                    </Box>
+                    <Box>
+                      <Text as={"h4"}>Deadline:</Text>
+                      <Text fontWeight={"bold"}>August 18, 2023</Text>
+                    </Box>
+                  </VStack>
+                </Box>
+              </Flex>
             </Stack>
 
             <Button sx={styles.button}>INVEST NOW</Button>

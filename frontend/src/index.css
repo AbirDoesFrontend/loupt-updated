@@ -10,3 +10,7 @@ input:focus {
 button:hover {
   color: rgb(65, 65, 65);
 }
+
+html {
+  overflow-x: hidden !important;
+}

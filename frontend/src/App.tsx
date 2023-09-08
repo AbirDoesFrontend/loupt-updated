@@ -10,6 +10,7 @@ import Route404 from "./containers/Route404";
 import SignUpModal from "./containers/SignUpModal";
 import SignupPage from "./containers/SignupPage";
 import CompanyDetailPage from "./containers/CompanyDetailPage";
+import RaiseCapital from "./containers/RaiseCapital";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/user-profile/:id" element={<ProfilePage />} />
       <Route path="/invest" element={<InvestPage />} />
+      <Route path="/raise-capital" element={<RaiseCapital />} />
       <Route path="/about" element={<AboutUsPage />} />
       <Route path="/edit-profile" element={<EditProfilePage />} />
       <Route path="/edit-company" element={<EditCompanyPage />} />

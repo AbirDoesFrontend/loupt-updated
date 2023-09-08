@@ -8,6 +8,7 @@ import {
   InputLeftElement,
   Input,
   Divider,
+  Text,
   Textarea,
   InputLeftAddon,
   Stack,
@@ -15,11 +16,14 @@ import {
   Heading,
   InputGroup,
   Slider,
+  useBreakpointValue,
+  Image,
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
   Flex,
   IconButton,
+  Container,
 } from "@chakra-ui/react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import {
@@ -49,7 +53,7 @@ interface FormData {
   corporateState: string;
 }
 
-const EditCompanyPage = () => {
+const RaiseCapital = () => {
   const [user, setUser] = useState({} as User);
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   const [allCompanies, setAllCompanies] = useState([] as Company[]);
@@ -133,6 +137,75 @@ const EditCompanyPage = () => {
 
   return (
     <>
+      <Divider></Divider>
+      {/* HERO SECTION  */}
+      <Stack background={"brand.100"}>
+        <Stack
+          minH={"600px"}
+          direction={{ base: "column", md: "row" }}
+          background={"brand.100"}
+          maxW={"8xl"}
+          mx={"auto"}
+        >
+          {/* HERO CONTENT  */}
+          <Flex p={8} flex={1} align={"center"} justify={"start"}>
+            <Stack spacing={6} w={"full"} maxW={"lg"}>
+              <Heading fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}>
+                <Text as={"span"} color={"white"} position={"relative"}>
+                  Why{" "}
+                  <Text
+                    as={"span"}
+                    _after={{
+                      content: "''",
+                      width: "70%",
+                      height: useBreakpointValue({ base: "20%", md: "30%" }),
+                      position: "absolute",
+                      bottom: 1,
+                      right: 0,
+                      bg: "brand.100",
+                      zIndex: -1,
+                    }}
+                  >
+                    Raise Funds
+                  </Text>
+                </Text>
+                <br />{" "}
+                <Text color={"white"} as={"span"}>
+                  With Loupt?
+                </Text>{" "}
+              </Heading>
+              <Text fontSize={{ base: "lg", lg: "xl" }} color={"gray.100"}>
+                Loupt gives companies access to investors who are deeply engaged
+                with their investments
+              </Text>
+              <Stack
+                direction={{ base: "column", md: "row" }}
+                spacing={4}
+                alignItems={"start"}
+              >
+                <Button px={10} py={6}>
+                  How It Works
+                </Button>
+              </Stack>
+            </Stack>
+          </Flex>
+          {/* HERO IMAGE  */}
+          <Flex flex={1} alignItems={"center"} justifyContent={"center"}>
+            <Image
+              alt={"Login Image"}
+              objectFit={"cover"}
+              height={"390px"}
+              borderRadius={10}
+              src={
+                "https://images.unsplash.com/photo-1527689368864-3a821dbccc34?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+              }
+            />
+          </Flex>
+        </Stack>
+      </Stack>
+
+      {/* CREATE COMPANY PROFILE */}
+
       <Box
         border="1px solid"
         borderColor={"brand.100"}
@@ -143,7 +216,7 @@ const EditCompanyPage = () => {
         padding={10}
       >
         <Center>
-          <Heading mb={10}>Edit Company Profile</Heading>
+          <Heading mb={10}>Create a Company Profile</Heading>
         </Center>
         <Divider mb={7}></Divider>
         <Flex justify="center" p={4} maxW="850px" mx={"auto"}>
@@ -409,7 +482,7 @@ const EditCompanyPage = () => {
                   mt={10}
                   type="submit"
                 >
-                  Update Company Profile
+                  Create Company Profile
                 </Button>
               </Center>
             </form>
@@ -419,4 +492,4 @@ const EditCompanyPage = () => {
     </>
   );
 };
-export default EditCompanyPage;
+export default RaiseCapital;

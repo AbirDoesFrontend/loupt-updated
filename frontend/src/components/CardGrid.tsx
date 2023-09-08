@@ -26,7 +26,7 @@ const CardGrid = () => {
 
   return (
     <SimpleGrid columns={[1, null, 3]} spacing="40px">
-      {allCompanies.map((company, index) => (
+      {allCompanies.slice(0, 9).map((company, index) => (
         <Card key={index} userName={""} {...company} /> //add userName="" to fix error
       ))}
     </SimpleGrid>

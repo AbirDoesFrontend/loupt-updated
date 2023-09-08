@@ -96,7 +96,11 @@ const NetworkCard = () => {
         </Flex>
       )} */}
 
-      <Flex>
+      <Flex
+        wrap={["wrap", "wrap", "nowrap"]}
+        justifyContent={"center"}
+        gap={["10px", "10px", "4px"]}
+      >
         {/* FOR PROFILE PAGE*/}
         {suggestedUsers.length !== 0 &&
           suggestedUsers.slice(0, 5).map((suggestedUser) => (

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUser, User , updateUser } from "../api";
+import { getUser, User, updateUser } from "../api";
 import {
   Box,
   Input,
@@ -11,7 +11,7 @@ import {
   Heading,
   Textarea,
   Button,
-  FormControl
+  FormControl,
 } from "@chakra-ui/react";
 import styles from "./styles/EditProfileStyle";
 import Logo from "../assets/Loupt app logo 4.png";
@@ -37,33 +37,33 @@ const EditProfilePage = () => {
         //setUser({}); this is default value anyways
       });
   }, []);
-  
-    const handleUpdateUser = (event : any) => {
-      event.preventDefault();
-  
-      const form = event.target;
-      const phoneNumber = form.phoneNumber.value;
-      const bio = form.bio.value;
-      const occupation = form.occupation.value;
-      localStorage.setItem('occupation' , occupation)
-      const education = form.education.value;
-      localStorage.setItem('education' , education)
-      const location = form.location.value;
-      localStorage.setItem('location' , location)
 
-      console.log(localStorage.getItem('occupation'))
+  const handleUpdateUser = (event: any) => {
+    event.preventDefault();
 
-      updateUser({
-        phoneNumber: phoneNumber,
-        bio: bio,
-        occupation: occupation,
-        education: education,
-        location: location
-      }).then((response) => {
-        console.log("User has been updated:");
-        console.log(response);
-      });
-    }
+    const form = event.target;
+    const phoneNumber = form.phoneNumber.value;
+    const bio = form.bio.value;
+    const occupation = form.occupation.value;
+    localStorage.setItem("occupation", occupation);
+    const education = form.education.value;
+    localStorage.setItem("education", education);
+    const location = form.location.value;
+    localStorage.setItem("location", location);
+
+    console.log(localStorage.getItem("occupation"));
+
+    updateUser({
+      phoneNumber: phoneNumber,
+      bio: bio,
+      occupation: occupation,
+      education: education,
+      location: location,
+    }).then((response) => {
+      console.log("User has been updated:");
+      console.log(response);
+    });
+  };
   return (
     <>
       <Box margin={"20px"}>
@@ -78,7 +78,17 @@ const EditProfilePage = () => {
           </Center>
           <form onSubmit={handleUpdateUser}>
             <Box sx={styles.formGroup}>
-              <FormLabel sx={styles.label}>Phone</FormLabel>
+              <FormLabel sx={styles.label}>Legal Name</FormLabel>
+              <Input
+                type="text"
+                sx={styles.input}
+                placeholder="Enter Your Name"
+                name="name"
+              />
+            </Box>
+
+            <Box sx={styles.formGroup}>
+              <FormLabel sx={styles.label}>Phone Number</FormLabel>
               <Input
                 type="text"
                 sx={styles.input}
@@ -145,7 +155,22 @@ const EditProfilePage = () => {
             </Box>
 
             <Box sx={styles.formGroup}>
-              <FormLabel sx={styles.label}>Change Image</FormLabel>
+              <FormLabel sx={styles.label}>$ Fund Balance</FormLabel>
+              <Input
+                type="number"
+                sx={styles.input}
+                placeholder="$"
+                name="fund"
+              />
+            </Box>
+
+            <Box sx={styles.formGroup}>
+              <FormLabel sx={styles.label}>Change Profile Pic</FormLabel>
+              <Input type="file" sx={styles.input} />
+            </Box>
+
+            <Box sx={styles.formGroup}>
+              <FormLabel sx={styles.label}>Change Banner</FormLabel>
               <Input type="file" sx={styles.input} />
             </Box>
 
@@ -154,8 +179,8 @@ const EditProfilePage = () => {
               <Input type="date" sx={styles.input} />
             </Box>
             <Button bg={"brand.100"} color="white" type="submit">
-            Update Profile
-          </Button>
+              Update Profile
+            </Button>
           </form>
         </Box>
       </Box>

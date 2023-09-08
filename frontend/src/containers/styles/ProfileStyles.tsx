@@ -23,6 +23,14 @@ const styles = {
     borderRadius: "10px",
     marginTop: "40px",
   },
+
+  bannerImg: {
+    w: "100%",
+    h: "100%",
+    borderRadius: 8,
+    opacity: 0.6,
+  },
+
   editButton: {
     position: "absolute",
     top: "5%",
@@ -32,19 +40,17 @@ const styles = {
     color: "white",
   },
   name: {
-    fontSize: "4xl",
+    fontSize: "2xl",
     fontWeight: "bold",
-    marginLeft: "120px",
-    marginTop: "20px",
+    marginTop: ["80px", "80px", "20px"],
     marginBottom: "10px",
   },
-  connectionInfo: {
-    marginLeft: "120px",
-  },
+  connectionInfo: {},
 
   icon: {
     color: "brand.100",
     fontSize: "20px",
+    // marginLeft: "20px",
   },
   iconText: {
     fontSize: "20px",
@@ -52,8 +58,8 @@ const styles = {
 
   profileBox: {
     position: "relative",
-    w: "160px",
-    h: "166px",
+    w: ["120px", "120px", "160px"],
+    h: ["120px", "120px", "160px"],
     _before: {
       content: "''",
       position: "relative",
@@ -67,7 +73,94 @@ const styles = {
       bgColor: "brand.100",
       animation: `2.25s ${pulseRing} cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite`,
     },
-    // Add more styles here
+  },
+
+  profilePicFlexContainer: {
+    justifyContent: "start",
+    alignItems: "center",
+    h: "0px",
+    marginLeft: 5,
+  },
+
+  userProfileImg: {
+    padding: "4px",
+    bg: "brand.100",
+    position: "absolute",
+    top: "0",
+  },
+
+  connectionImg: {
+    borderRadius: "full",
+    boxSize: "40px",
+    border: "1px solid",
+    borderColor: "brand.100",
+    alt: "Connection",
+    marginRight: "-20px",
+  },
+
+  profileContainer: {
+    gap: 8,
+    margin: "50px 0",
+  },
+
+  connectedCompany: {
+    borderRadius: "8px",
+    padding: "30px",
+    border: "1px solid",
+    borderColor: "brand.200",
+    order: 3,
+  },
+  connectedCompanyCard: {
+    gap: 10,
+    justifyItems: "start",
+    alignItems: "start",
+  },
+
+  contactInfo: {
+    gap: 6,
+    alignItems: "start",
+    borderRadius: "8px",
+    padding: "20px",
+    background: "brand.200",
+    order: 2,
+  },
+
+  aboutBio: {
+    alignItems: "start",
+    borderRadius: "8px",
+    padding: "20px",
+    background: "brand.200",
+    order: 1,
+  },
+
+  networkSuggestions: {
+    borderRadius: "8px",
+    padding: "30px",
+    border: "1px solid",
+    borderColor: "brand.200",
+    order: 5,
+  },
+
+  aboutCompany: {
+    order: 4,
+    p: 4,
+    borderRadius: "8px",
+    padding: "30px",
+    backgroundColor: "brand.200",
+  },
+
+  investmentGridCard: {
+    spacing: 10,
+    justifyItems: "start",
+    alignItems: "start",
+  },
+
+  investmentContainer: {
+    borderRadius: "8px",
+    padding: "30px",
+    border: "1px solid",
+    borderColor: "brand.200",
+    order: 6,
   },
 };
 

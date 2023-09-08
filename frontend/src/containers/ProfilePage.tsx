@@ -57,7 +57,7 @@ const ProfilePage = () => {
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   // const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
-  const [showEditButton, setShowEditButton] = useState(false)
+  const [showEditButton, setShowEditButton] = useState(false);
   const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
 
   const params = useParams();
@@ -68,7 +68,6 @@ const ProfilePage = () => {
   useEffect(() => {
     //wait for auth0 to be done loading and make sure we have our user data
     if (!isLoading && auth0User) {
-
       setShowEditButton(true);
 
       //get the auth0 sub and the JWT from auth0. this will be verified by our backend
@@ -117,66 +116,66 @@ const ProfilePage = () => {
 
   return (
     <>
-      <Box maxW={"7xl"} mx={"auto"}>
-        {/* Banner */}
-        <Box sx={styles.banner}>
-          <Image
-            src={user.banner}
-            w={"100%"}
-            h={"100%"}
-            borderRadius={8}
-            opacity={0.6}
-          />
+      <Box maxW={"7xl"} mx={["10px", "10px", "auto"]}>
+        {/* BANNER */}
+        <Box sx={styles.banner} mx={["10px", "10px", "auto"]}>
+          <Image src={user.banner} sx={styles.bannerImg} />
           {auth0User && (
-            <Button sx={styles.editButton} leftIcon={<FaEdit />}>
-              Edit Profile
-            </Button>
+            <Link to="/edit-profile">
+              <Button sx={styles.editButton} leftIcon={<FaEdit />}>
+                Edit Profile
+              </Button>
+            </Link>
           )}
         </Box>
-        {/* Profile Details */}
+
+        {/* PROFILE DETAILS */}
+
         <VStack align="left" spacing={0} position="relative">
           {/* Profile Picture */}
-          <Flex
-            justifyContent="start"
-            alignItems="center"
-            h="0px"
-            marginLeft={5}
-          >
-            <Box
-              sx={styles.profileBox}
-              border={"4px solid"}
-              borderRadius={100}
-              borderColor={"brand.200"}
-            >
+          <Flex sx={styles.profilePicFlexContainer}>
+            <Box sx={styles.profileBox}>
               <Avatar
                 src={user.profilePic}
-                size="full"
-                padding={"4px"}
-                bg={"brand.100"}
-                position="absolute"
-                top={0}
+                sx={styles.userProfileImg}
+                size={"full"}
               />
             </Box>
           </Flex>
 
-          <HStack justifyContent={"space-between"}>
-            <Box marginLeft={"80px"}>
+          {/* USER CONNECTIONS  */}
+
+          <HStack
+            flexDirection={["column", "column", "row"]}
+            justifyContent={"space-between"}
+            alignItems={["start", "start", "center"]}
+            marginLeft={["0px", "20px", "200px"]}
+          >
+            <Box marginBottom={"20px"}>
               <Text sx={styles.name}>{user.legalName}</Text>
               <HStack sx={styles.connectionInfo}>
-                {/* <Text>{user.connections.length}+ Connections</Text>
-                {user.connections.slice(0, 8).map((connection, index) => (
+                <Text fontWeight={"semibold"}>
+                  {user.connections?.length}+ Connections
+                </Text>
+                {user.connections?.slice(0, 6).map((connection, index) => (
                   <Image
                     key={index}
-                    borderRadius="full"
-                    boxSize="40px"
                     src={bannerImg}
-                    alt="Connection"
-                    marginRight={"-20px"}
+                    sx={styles.connectionImg}
                   />
-                ))} */}
+                ))}
               </HStack>
             </Box>
-            <HStack gap={10} fontSize={18}>
+
+            {/* DIVIDER  */}
+
+            <Divider maxW={"400px"}></Divider>
+            <HStack
+              gap={6}
+              fontSize={16}
+              flexDirection={["column", "column", "row"]}
+              alignItems={"start"}
+            >
               <Text>
                 <EmailIcon sx={styles.icon} /> {user.email}
               </Text>
@@ -186,40 +185,40 @@ const ProfilePage = () => {
             </HStack>
           </HStack>
 
-          <Grid templateColumns={"1fr 2fr"} gap={8} margin={"50px 0"}>
+          {/* PROFILE GRID CONTAINER  */}
+
+          <Grid
+            sx={styles.profileContainer}
+            templateColumns={["1fr", "1fr", "1fr 2fr"]}
+          >
             {/* ABOUT / BIO */}
-            <Box
-              // margin={"0 10px"}
-              alignItems={"start"}
-              borderRadius={"8px"}
-              padding={"20px"}
-              background={"brand.200"}
-            >
-              <Text fontSize="2xl" mb={4} fontWeight="bold">
-                About
-              </Text>
-              <Text>{user.bio}</Text>
+            <Box sx={styles.aboutBio}>
+              <Flex justifyContent={"space-between"} flexDirection={"column"}>
+                <Box>
+                  <Text fontSize="2xl" mb={4} fontWeight="bold">
+                    About
+                  </Text>
+                  <Text>{user.bio}</Text>
+                </Box>
+                <Box>
+                  <Heading fontSize={20} mt={6}>
+                    Fund Balance
+                  </Heading>
+                  <Text mt={3} fontSize={20}>
+                    ${user.fundsBalance}
+                  </Text>
+                </Box>
+              </Flex>
             </Box>
 
             {/* NETWORK SUGGESTIONS  */}
-            <Box
-              borderRadius={"8px"}
-              padding={"30px"}
-              border={"1px solid"}
-              borderColor={"brand.200"}
-            >
+            <Box sx={styles.networkSuggestions}>
               <Heading mb={6}>Network Suggestions</Heading>
               <NetworkCard></NetworkCard>
             </Box>
 
             {/* CONTACT INFORMATION */}
-            <VStack
-              spacing={6}
-              alignItems={"start"}
-              borderRadius={"8px"}
-              padding={"20px"}
-              background={"brand.200"}
-            >
+            <VStack sx={styles.contactInfo}>
               <Heading fontSize={24}>Basic Information</Heading>
               <HStack>
                 <Icon sx={styles.icon} as={FaMapMarkerAlt} />
@@ -240,59 +239,43 @@ const ProfilePage = () => {
             </VStack>
 
             {/* MY INVESTMENT  */}
-            <Box
-              p={4}
-              borderRadius={"8px"}
-              padding={"30px"}
-              border={"1px solid"}
-              borderColor={"brand.200"}
-            >
+            <Box sx={styles.investmentContainer}>
               <Heading mb={10}>My Investments</Heading>
               <SimpleGrid
-                columns={{ base: 1, md: 3 }}
-                spacing={10}
-                justifyItems={"start"}
-                alignItems={"start"}
-                height={"100%"}
+                sx={styles.investmentGridCard}
+                columns={{ base: 1, md: 2 }}
+                spacing={8}
               >
-                <FeatureCard title={"Lifetime Support"} />
-                <FeatureCard title={"Unlimited Donations"} />
-                <FeatureCard title={"Instant Delivery"} />
+                <FeatureCard logo={bannerImg} name={"Investment 1"} />
+                <FeatureCard logo={bannerImg} name={"Investment 2"} />
+                <FeatureCard logo={bannerImg} name={"Investment 3"} />
+                <FeatureCard logo={bannerImg} name={"Investment 4"} />
               </SimpleGrid>
             </Box>
 
             {/* ABOUT COMPANY  */}
-            <Box
-              p={4}
-              borderRadius={"8px"}
-              padding={"30px"}
-              // border={"1px solid"}
-              backgroundColor={"brand.200"}
-            >
-              <Heading fontSize={24}>About Company</Heading>
+            <Box sx={styles.aboutCompany}>
+              <Heading fontSize={24} mb={4}>
+                About Company
+              </Heading>
+              <Text>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Deleniti, voluptas. Lorem ipsum dolor sit amet consectetur
+                adipisicing elit. Doloremque, voluptatibus.
+              </Text>
             </Box>
 
             {/* CONNECTED COMPANY  */}
-            <Box
-              p={4}
-              borderRadius={"8px"}
-              padding={"30px"}
-              border={"1px solid"}
-              borderColor={"brand.200"}
-            >
+            <Box sx={styles.connectedCompany}>
               <Heading mb={10}>Connected Company</Heading>
               <SimpleGrid
+                sx={styles.connectedCompanyCard}
                 columns={{ base: 1, md: 3 }}
-                spacing={10}
-                justifyItems={"start"}
-                alignItems={"start"}
-                height={"100%"}
+                spacing={3}
               >
-                {
-                  connectedCompanies.map((company , index) => (
-                    <FeatureCard {...company} key={index} />
-                  ))
-                }
+                {connectedCompanies.map((company, index) => (
+                  <FeatureCard {...company} key={index} />
+                ))}
               </SimpleGrid>
             </Box>
           </Grid>

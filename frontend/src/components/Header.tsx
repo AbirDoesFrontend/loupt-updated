@@ -113,6 +113,7 @@ const Header = () => {
               src={logo} // Insert your logo url here
               alt="Logo"
               sx={LogoStyle}
+              display={["block", "none", "block"]}
             />
           </Link>
           <Link to="/">
@@ -130,7 +131,7 @@ const Header = () => {
                 <Input
                   color="white"
                   placeholder="Search"
-                  width={{ base: "200px", md: "300px", lg: "400px" }}
+                  width={{ base: "200px", md: "200px", lg: "250px" }}
                 />
               </InputGroup>
             </Flex>
@@ -148,6 +149,13 @@ const Header = () => {
                   <Link to="/about">
                     <Text _hover={NavItemHover} sx={NavLink}>
                       About
+                    </Text>
+                  </Link>
+                </Text>
+                <Text sx={NavItem}>
+                  <Link to="/raise-capital">
+                    <Text _hover={NavItemHover} sx={NavLink}>
+                      Raise Capital
                     </Text>
                   </Link>
                 </Text>
