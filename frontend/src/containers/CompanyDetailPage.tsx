@@ -51,7 +51,7 @@ const CompanyDetailPage = () => {
   const [company, setCompany] = useState({} as Company);
 
   const params = useParams();
-  console.log(params);
+  // console.log(params);
   const id = params.id;
   console.log(id);
 
