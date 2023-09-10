@@ -11,6 +11,7 @@ import SignUpModal from "./containers/SignUpModal";
 import SignupPage from "./containers/SignupPage";
 import CompanyDetailPage from "./containers/CompanyDetailPage";
 import RaiseCapital from "./containers/RaiseCapital";
+import Checkout from "./containers/Checkout";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
       <Route path="/about" element={<AboutUsPage />} />
       <Route path="/edit-profile" element={<EditProfilePage />} />
       <Route path="/edit-company" element={<EditCompanyPage />} />
+      <Route path="/checkout" element={<Checkout />} />
       <Route path="/company/:id" element={<CompanyDetailPage />} />
       <Route path="/signup-modal" element={<SignUpModal />} />
       <Route path="/" element={<HomePage />} />
