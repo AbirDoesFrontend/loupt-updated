@@ -135,7 +135,7 @@ const NetworkCard = () => {
               </svg>
 
               <Center h="full">
-                <Link to={`user-profile/${suggestedUser._id}`}>
+                <Link to={`/user-profile/${suggestedUser._id}`}>
                   <VStack>
                     <Image
                       src={suggestedUser.profilePic}

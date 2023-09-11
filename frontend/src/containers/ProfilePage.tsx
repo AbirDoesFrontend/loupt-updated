@@ -61,9 +61,7 @@ const ProfilePage = () => {
   const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
 
   const params = useParams();
-  // console.log(params);
   const id = params.id;
-  console.log(id);
 
   useEffect(() => {
     //wait for auth0 to be done loading and make sure we have our user data
@@ -113,6 +111,10 @@ const ProfilePage = () => {
       });
     });
   }, [id]);
+
+  const userLocation = localStorage.getItem("location");
+  const userEducation = localStorage.getItem("education");
+  const userOccupation = localStorage.getItem("occupation");
 
   return (
     <>
@@ -222,7 +224,7 @@ const ProfilePage = () => {
               <Heading fontSize={24}>Basic Information</Heading>
               <HStack>
                 <Icon sx={styles.icon} as={FaMapMarkerAlt} />
-                <Text sx={styles.iconText}>Lives In {user.location}</Text>
+                <Text sx={styles.iconText}>Lives In {userLocation}</Text>
               </HStack>
               <HStack>
                 <Icon sx={styles.icon} as={FaVenusMars} />
@@ -230,11 +232,11 @@ const ProfilePage = () => {
               </HStack>
               <HStack>
                 <Icon sx={styles.icon} as={FaBriefcase} />
-                <Text sx={styles.iconText}>Works at {user.occupation}</Text>
+                <Text sx={styles.iconText}>Works at {userOccupation}</Text>
               </HStack>
               <HStack>
                 <Icon sx={styles.icon} as={FaUniversity} />
-                <Text sx={styles.iconText}>Studied at {user.education}</Text>
+                <Text sx={styles.iconText}>Studied at {userEducation}</Text>
               </HStack>
             </VStack>
 

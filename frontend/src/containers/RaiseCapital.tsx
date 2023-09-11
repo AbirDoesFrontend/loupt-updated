@@ -33,6 +33,7 @@ import {
   getConnectedCompanies,
   Company,
   User,
+  createCompany
 } from "../api";
 
 interface FormData {
@@ -96,6 +97,29 @@ const RaiseCapital = () => {
   const handleFormSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     console.log(formData);
+
+    const name = formData.companyName;
+    const bio = formData.aboutCompany;
+    const valuation = formData.valuationCap;
+    const minimumInvestment = formData.minInvestment;
+    const location = formData.corporateAddress;
+    // const partners = formData.legalPartners;
+    const sharePrice = formData.numberOfShares;
+
+    const newCompany = {
+      name: name,
+      bio: bio,
+      valuation : parseInt(valuation),
+      minimumInvestment : parseInt(minimumInvestment),
+      sharePrice : parseInt(sharePrice),
+      sharesOutstanding: parseInt(minimumInvestment),
+      location : location,
+    }
+
+    createCompany(newCompany).then((response) => {
+      console.log('company updated')
+      console.log(response)
+    })
   };
 
   useEffect(() => {

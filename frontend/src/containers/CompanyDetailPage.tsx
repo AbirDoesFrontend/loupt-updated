@@ -51,9 +51,7 @@ const CompanyDetailPage = () => {
   const [company, setCompany] = useState({} as Company);
 
   const params = useParams();
-  // console.log(params);
   const id = params.id;
-  console.log(id);
 
   useEffect(() => {
     getUser()
@@ -105,6 +103,8 @@ const CompanyDetailPage = () => {
       text: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam.",
     };
   });
+
+  console.log(company)
 
   return (
     <>

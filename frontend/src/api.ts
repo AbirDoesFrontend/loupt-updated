@@ -47,11 +47,7 @@ export interface FundingRoundUpdateRequest {
 
 export interface CompanyCreationRequest {
   name: string;
-  logo: string;
   bio: string;
-  partners: string[];
-  industry: string[];
-  website: string;
   valuation: number;
   minimumInvestment: number;
   sharePrice: number;
@@ -87,6 +83,7 @@ export interface UserUpdateRequest {
   location?: string;
   occupation?: string;
   followers?: string[];
+  fundsBalance? : number;
 }
 
 export interface User {
