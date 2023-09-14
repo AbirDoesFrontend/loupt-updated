@@ -12,6 +12,7 @@ import SignupPage from "./containers/SignupPage";
 import CompanyDetailPage from "./containers/CompanyDetailPage";
 import RaiseCapital from "./containers/RaiseCapital";
 import Checkout from "./containers/Checkout";
+import Invest from "./containers/Invest";
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/user-profile/:id" element={<ProfilePage />} />
-      <Route path="/invest" element={<InvestPage />} />
+      <Route path="/invest" element={<Invest />} />
       <Route path="/raise-capital" element={<RaiseCapital />} />
       <Route path="/about" element={<AboutUsPage />} />
       <Route path="/edit-profile" element={<EditProfilePage />} />

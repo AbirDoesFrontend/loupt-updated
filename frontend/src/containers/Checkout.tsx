@@ -1,124 +1,207 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Box,
-  VStack,
-  HStack,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  Select,
   Button,
+  FormControl,
+  FormLabel,
+  Input,
+  VStack,
+  InputLeftAddon,
+  Heading,
+  Select,
+  HStack,
+  Divider,
   Checkbox,
+  InputGroup,
   Text,
+  Grid,
 } from "@chakra-ui/react";
-import { styles } from "./styles/CheckoutStyles";
+// import styles from "./styles/CheckoutStyles";
 
-const Checkout: React.FC = () => {
+function Checkout() {
   const [investAmount, setInvestAmount] = useState<number>(0);
 
   const totalCost = investAmount + investAmount * 0.1;
 
   return (
-    <HStack spacing={8} p={8} bg="#f8f9fa" minH="100vh">
-      {/* First Column */}
-      <VStack sx={styles.column} spacing={8}>
-        <Box sx={styles.box}>
-          <Text fontSize="lg" fontWeight="bold">
-            Invest Amount
-          </Text>
-          <InputGroup size="md" mt={4}>
-            <InputLeftAddon children="$" />
-            <Input
-              type="number"
-              placeholder="Amount"
-              onChange={(e) => setInvestAmount(parseFloat(e.target.value))}
-            />
-          </InputGroup>
-        </Box>
+    <Box p={10} maxW={"7xl"} mx={"auto"} height={"90vh"}>
+      <Heading mb={6} textTransform={"uppercase"}>
+        Checkout
+      </Heading>
+      <Grid templateColumns={{ base: "1fr", md: "2fr 1fr" }} gap={10}>
+        <Box
+          border={"1px solid"}
+          p={4}
+          borderColor={"gray.200"}
+          borderRadius={8}
+        >
+          <VStack spacing={6} align="stretch">
+            <Box>
+              <Text fontSize="2xl" fontWeight="bold" color={"gray.500"}>
+                Invest Amount
+              </Text>
+              <InputGroup size="md" mt={4}>
+                <InputLeftAddon children="$" />
+                <Input
+                  type="number"
+                  placeholder="Amount"
+                  onChange={(e) => setInvestAmount(parseFloat(e.target.value))}
+                />
+              </InputGroup>
+            </Box>
 
-        <Box sx={styles.box}>
-          <Text fontSize="lg" fontWeight="bold">
-            Investor Info
-          </Text>
-          <Input placeholder="Name" mt={4} />
-          <Input placeholder="Address" mt={4} />
-          <Select placeholder="Relation" mt={4}>
-            <option value="me">Me</option>
-            <option value="company">Company</option>
-            <option value="other">Other</option>
-          </Select>
-        </Box>
+            <Box>
+              <Text fontSize="2xl" fontWeight="bold" color={"gray.500"}>
+                Investor Info
+              </Text>
+              <Divider my={4}></Divider>
+              <Text fontSize="lg" fontWeight="normal">
+                Full Name:
+              </Text>
+              <Input placeholder="Name" my={4} />
+              <Text fontSize="lg" fontWeight="normal">
+                Address:
+              </Text>
+              <Input placeholder="Address" mt={4} my={4} />
+              <Text fontSize="lg" fontWeight="normal">
+                Investing As:
+              </Text>
+              <Select placeholder="Relation" mt={4}>
+                <option value="me">Me</option>
+                <option value="company">Company</option>
+                <option value="other">Other</option>
+              </Select>
+            </Box>
 
-        <Box sx={styles.box}>
-          <Text fontSize="lg" fontWeight="bold">
-            Payment
-          </Text>
-          <HStack mt={4} spacing={4}>
-            <Button sx={styles.button} colorScheme="blue">
-              Apple
+            <Box
+              border={"1px solid"}
+              p={4}
+              borderColor={"gray.200"}
+              borderRadius={8}
+            >
+              <Text fontSize="lg" fontWeight="bold">
+                2. Payment
+              </Text>
+              <HStack mt={4} spacing={4}>
+                <Button bg={"black"} color="white">
+                  Apple Pay
+                </Button>
+                <Button bg={"black"} color="white">
+                  Google Pay
+                </Button>
+                <Button bg={"black"} color="white">
+                  Paypal{" "}
+                </Button>
+              </HStack>
+            </Box>
+
+            <Box
+              border={"1px solid"}
+              p={4}
+              borderColor={"gray.200"}
+              borderRadius={8}
+            >
+              {" "}
+              <Text fontSize={"lg"} fontWeight={"bold"}>
+                3. Legal Stuff
+              </Text>
+              <Checkbox size="lg" mt={4}>
+                Accept Terms and Conditions
+              </Checkbox>
+              <Text fontSize="lg" mt={3}>
+                By using the services provided by Revolution with Loupt ("the
+                Platform"), you ("User") agree to comply with and be bound by
+                these Terms of Use. Please review them carefully before creating
+                a campaign, donating to a campaign, or otherwise using the
+                Platform.Accessing or using this Platform constitutes acceptance
+                of these Terms. If you do not agree with these Terms, please
+                refrain from using the Platform.
+              </Text>
+            </Box>
+            <Button background={"brand.100"} color={"white"} size="lg" mt={4}>
+              Place Order
             </Button>
-            <Button sx={styles.button} colorScheme="red">
-              Google
-            </Button>
-            <Button sx={styles.button} colorScheme="yellow">
-              Paypal
-            </Button>
-          </HStack>
-        </Box>
-
-        <Box sx={styles.box}>
-          <Checkbox size="lg" mt={4}>
-            Accept Terms and Conditions
-          </Checkbox>
-        </Box>
-
-        <Box sx={styles.box}>
-          <Text>Total Investment: {investAmount}</Text>
-          <Text>Fees: {investAmount * 0.1}</Text>
-          <Text>Total Cost: {totalCost}</Text>
-        </Box>
-
-        <Button sx={styles.button} colorScheme="teal" size="lg">
-          Checkout
-        </Button>
-      </VStack>
-
-      {/* Second Column */}
-      <VStack sx={styles.column} spacing={8}>
-        <Box sx={styles.box}>
-          <Text fontSize="xl" fontWeight="bold">
-            FAQ
-          </Text>
-          <VStack align="start" spacing={2} mt={4}>
-            <Text>1. Question 1?</Text>
-            <Text>2. Question 2?</Text>
-            <Text>3. Question 3?</Text>
-            <Text>4. Question 4?</Text>
-            <Text>5. Question 5?</Text>
           </VStack>
         </Box>
+        <Box
+          border={"1px solid"}
+          p={8}
+          borderRadius={8}
+          background={"#f6fafc"}
+          borderColor={"brand.200"}
+        >
+          <VStack spacing={4} align="stretch">
+            <Heading size="lg">Investment Summary</Heading>
+            <Divider />
+            <Box>
+              <Text>Total Investment:</Text>
+              <Text fontWeight="bold">${investAmount}</Text>
+            </Box>
+            <Box>
+              <Text>Fees: </Text>
+              <Text fontWeight="bold">${investAmount * 0.1}</Text>
+            </Box>
+            <Divider />
+            <Box>
+              <Text fontSize={24} fontWeight={"bold"}>
+                Total Cost: ${totalCost}
+              </Text>
+            </Box>
 
-        <Box sx={styles.box}>
-          <Text fontSize="xl" fontWeight="bold">
-            Deal Terms
-          </Text>
-          <VStack align="start" spacing={2} mt={4}>
-            <Text>Deal Amount: $1,000,000</Text>
-            <Text>Deadline: 31st December 2023</Text>
+            <Box
+              border={"1px solid"}
+              p={8}
+              borderRadius={8}
+              background={"gray.100"}
+              borderColor={"brand.200"}
+            >
+              <Text fontSize="xl" fontWeight="bold">
+                FAQ
+              </Text>
+              <VStack align="start" spacing={2} mt={4}>
+                <Text>1. Question 1?</Text>
+                <Text>2. Question 2?</Text>
+                <Text>3. Question 3?</Text>
+                <Text>4. Question 4?</Text>
+                <Text>5. Question 5?</Text>
+              </VStack>
+            </Box>
+
+            <Box
+              border={"1px solid"}
+              p={8}
+              borderRadius={8}
+              background={"gray.100"}
+              borderColor={"brand.200"}
+            >
+              <Text fontSize="xl" fontWeight="bold">
+                Deal Terms
+              </Text>
+              <VStack align="start" spacing={2} mt={4}>
+                <Text>Deal Amount: $1,000,000</Text>
+                <Text>Deadline: 31st December 2023</Text>
+              </VStack>
+            </Box>
+
+            <Box
+              border={"1px solid"}
+              p={8}
+              borderRadius={8}
+              background={"gray.100"}
+              borderColor={"brand.200"}
+            >
+              <Text fontSize="xl" fontWeight="bold">
+                Contract PDF
+              </Text>
+              <Button background="black" color={"white"} mt={4}>
+                Download
+              </Button>
+            </Box>
           </VStack>
         </Box>
-
-        <Box sx={styles.box}>
-          <Text fontSize="xl" fontWeight="bold">
-            Contract PDF
-          </Text>
-          <Button sx={styles.button} colorScheme="purple" mt={4}>
-            Download
-          </Button>
-        </Box>
-      </VStack>
-    </HStack>
+      </Grid>
+    </Box>
   );
-};
+}
 
 export default Checkout;
