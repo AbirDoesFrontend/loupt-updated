@@ -2,13 +2,13 @@ import { IUser } from "../models/user.interface";
 import { User } from "../models/user.schema";
 
 export const getUserById = async (userId : string): Promise<IUser | null> => {
-    return await User.findOne({userId: encodeURIComponent(userId)}).exec()
+    return await User.findOne({userId: (userId)}).exec()
 }
 
 export const getConnectedUsers = async ( userId: string): Promise<IUser[]> => {
     // return friends and friends of friends
 
-    const user = await User.findOne({userId: encodeURIComponent(userId)}).exec()
+    const user = await User.findOne({userId: (userId)}).exec()
     //if there is no user, return null (invalid credentials)
     if (!user) {
         return []
@@ -58,8 +58,8 @@ export const getSuggestedUsers = async (userCount: number, excludedUserIds?: str
 
 // user1 gets added in user2's followers. User 2 gets added in user1's connections
 export const addFollower = async (userId1 : string, userId2 : string) : Promise<boolean> => {
-    const user1 = await User.findOne({userId: encodeURIComponent(userId1)}).exec()
-    const user2 = await User.findOne({userId: encodeURIComponent(userId2)}).exec()
+    const user1 = await User.findOne({userId: (userId1)}).exec()
+    const user2 = await User.findOne({userId: (userId2)}).exec()
     if (user1 != null && user2 != null) {
         if (!user1.connections.includes(userId2)) {
             user1.connections.push(userId2)
@@ -76,7 +76,7 @@ export const addFollower = async (userId1 : string, userId2 : string) : Promise<
 }
 
 export const updateUser = async (user : IUser) : Promise<boolean> => {
-    const existing = await User.findOne({userId: encodeURIComponent(user.userId)}).exec()
+    const existing = await User.findOne({userId: (user.userId)}).exec()
     if (existing != null) {
         existing.legalName = user.legalName
         existing.bio = user.bio
@@ -86,9 +86,37 @@ export const updateUser = async (user : IUser) : Promise<boolean> => {
         existing.companies = user.companies
         existing.connections = user.connections
         existing.investments = user.investments
+        //transactAPI specific internal fields
+/*         existing.kycStatus = user.kycStatus
+        existing.amlStatus = user.amlStatus
+        existing.tapiAccountId = user.tapiAccountId
+        existing.tapiIssuerId = user.tapiIssuerId */
+
+
         await existing.save()
         return true
     } else {
         return false
     }
 }
+
+export const updateUserKycInfo = async (user : IUser) : Promise<boolean> => {
+    const existing = await User.findOne({userId: (user.userId)}).exec()
+    if (existing != null) {
+        existing.legalName = user.legalName
+        existing.domicile = user.domicile
+        existing.dob = user.dob
+        existing.primCountry = user.primCountry
+        existing.primAddress1 = user.primAddress1
+        existing.primCity = user.primCity
+        existing.primState = user.primState
+        existing.primZip = user.primZip
+        existing.kycStatus = user.kycStatus
+        existing.amlStatus = user.amlStatus
+        await existing.save()
+        return true
+    } else {  
+        return false
+    }
+}
+

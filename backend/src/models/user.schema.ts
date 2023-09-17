@@ -22,7 +22,20 @@ const userSchema = new Schema<IUser>({
     connections: {type : [String], default : [] },
     followers: {type : [String], default : [] },
     investments: {type : [InvestmentSchema], default : [] },
-    visibility: {type : String, default : 'public' }
+    visibility: {type : String, default : 'public' },
+    tapiIssuerId: {type : String, default : 'none' }, //transact API issuer ID (none if user has not created any funding rounds)
+    tapiPartyId: {type : String, default : 'none' }, //transact API party ID (none if user has not invested in any companies)
+    tapiAccountId: {type: String, default: 'none'}, //transact API account ID (none if user has no asociated account)
+    //for becoming a party through transactAPI:
+    domicile: {type : Boolean, default : null },
+    dob: {type : Date, default: new Date(1900, 0, 1) },
+    primCountry: {type : String, default : '' },
+    primAddress1: {type : String, default : '' },
+    primCity: {type : String, default : '' },
+    primState: {type : String, default : '' },
+    primZip: {type : String, default : 'none' },
+    kycStatus: {type : String, default : 'none' },
+    amlStatus: {type : String, default : 'none' },
 }, {timestamps: true, _id: true})
 
 export const User = model<IUser>('users', userSchema)

@@ -56,7 +56,7 @@ export async function updateUserRoute(req: Request, res: Response): Promise<void
     if (!userId) {
         return res.status(401).send("Unauthorized request")
     }
-    const {legalName, bio, email, profilePic, phoneNumber, companies, connections, investments, banner, education, location, occupation, followers} = req.body
+    const {legalName, bio, email, profilePic, phoneNumber, companies, connections, investments, banner, education, location, occupation, followers, domicile, dob, primCountry, primAddress1, primCity, primState, primZip} = req.body
     const existingUser = await getUserById(userId)
     
     const updatedUser = new User({
@@ -73,7 +73,16 @@ export async function updateUserRoute(req: Request, res: Response): Promise<void
         education: education || existingUser?.education,
         location: location || existingUser?.location,
         occupation: occupation || existingUser?.occupation,
-        followers: followers || existingUser?.followers
+        followers: followers || existingUser?.followers,
+        //new params for listing user as party
+        domicile: domicile || existingUser?.domicile,
+        dob: dob || existingUser?.dob,
+        primCountry: primCountry || existingUser?.primCountry,
+        primAddress1: primAddress1 || existingUser?.primAddress1,
+        primCity: primCity || existingUser?.primCity,
+        primState: primState || existingUser?.primState,
+        primZip: primZip || existingUser?.primZip
+        
     })
     const success = await updateUser(updatedUser)
     if (!success) {

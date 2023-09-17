@@ -76,7 +76,7 @@ function updateUserRoute(req, res) {
         if (!userId) {
             return res.status(401).send("Unauthorized request");
         }
-        const { legalName, bio, email, profilePic, phoneNumber, companies, connections, investments, banner, education, location, occupation, followers } = req.body;
+        const { legalName, bio, email, profilePic, phoneNumber, companies, connections, investments, banner, education, location, occupation, followers, domicile, dob, primCountry, primAddress1, primCity, primState, primZip } = req.body;
         const existingUser = yield (0, user_service_1.getUserById)(userId);
         const updatedUser = new user_schema_1.User({
             userId: existingUser === null || existingUser === void 0 ? void 0 : existingUser.userId,
@@ -92,7 +92,15 @@ function updateUserRoute(req, res) {
             education: education || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.education),
             location: location || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.location),
             occupation: occupation || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.occupation),
-            followers: followers || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.followers)
+            followers: followers || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.followers),
+            //new params for listing user as party
+            domicile: domicile || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.domicile),
+            dob: dob || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.dob),
+            primCountry: primCountry || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.primCountry),
+            primAddress1: primAddress1 || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.primAddress1),
+            primCity: primCity || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.primCity),
+            primState: primState || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.primState),
+            primZip: primZip || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.primZip)
         });
         const success = yield (0, user_service_1.updateUser)(updatedUser);
         if (!success) {

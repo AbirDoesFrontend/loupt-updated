@@ -12,6 +12,8 @@ const fundingRoundSchema = new Schema<IFundingRound>({
     fundingGoal: { type : Number, required: true },
     investments: {type : [InvestmentSchema], default : [] },
     deadline: {type : Date, required: true },
-    discountPercentage: {type: Number, default: 5}
+    discountPercentage: {type: Number, default: 5},
+    tapiOfferingId: {type: Number, default: 0},
+    tapiDocumentIds: {type: [String], default: []}
 })
 export const FundingRound = model<IFundingRound>('funding_rounds', fundingRoundSchema)

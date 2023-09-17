@@ -9,12 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addInvestment = exports.createFundingRound = exports.updateFundingRound = exports.getFundingRound = void 0;
+exports.linkFundingRoundToOffering = exports.addInvestment = exports.createFundingRound = exports.updateFundingRound = exports.getFundingRound = void 0;
 const investment_schema_1 = require("../models/investment.schema");
 const fundingRound_schema_1 = require("../models/fundingRound.schema");
 const user_schema_1 = require("../models/user.schema");
 const idUtils_1 = require("../utils/idUtils");
 const company_schema_1 = require("../models/company.schema");
+const transactapi_service_1 = require("./transactapi.service");
 const getFundingRound = (roundId) => __awaiter(void 0, void 0, void 0, function* () {
     return yield fundingRound_schema_1.FundingRound.findOne({ roundId: roundId }).exec();
 });
@@ -63,9 +64,10 @@ exports.createFundingRound = createFundingRound;
 const addInvestment = (roundId, userId, amount, shareCount) => __awaiter(void 0, void 0, void 0, function* () {
     const round = yield fundingRound_schema_1.FundingRound.findOne({ roundId: roundId }).exec();
     const user = yield user_schema_1.User.findOne({ userId: userId }).exec();
-    if (!round || !user || user.fundsBalance < amount) {
+    if (!round || !user || user.fundsBalance < amount) { //TODO: we don't need these funds balance checks
         return null;
     }
+    const partyIndividual = yield (0, transactapi_service_1.createPartyIndividualIfNotExist)(user);
     const investmentId = (0, idUtils_1.generateInvestmentId)();
     const investment = new investment_schema_1.Investment({
         investmentId: investmentId,
@@ -83,3 +85,19 @@ const addInvestment = (roundId, userId, amount, shareCount) => __awaiter(void 0,
     return yield investment.save();
 });
 exports.addInvestment = addInvestment;
+const linkFundingRoundToOffering = (roundId, tapiOfferingId) => __awaiter(void 0, void 0, void 0, function* () {
+    const round = yield fundingRound_schema_1.FundingRound.findOne({ roundId: roundId }).exec();
+    if (!round) {
+        return null;
+    }
+    if (round.tapiOfferingId == 0) {
+        round.tapiOfferingId = tapiOfferingId;
+        yield round.save();
+        return round;
+    }
+    else {
+        //user already has an issuerId and we will not create a new one
+        return round;
+    }
+});
+exports.linkFundingRoundToOffering = linkFundingRoundToOffering;

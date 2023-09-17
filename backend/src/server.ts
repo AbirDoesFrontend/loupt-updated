@@ -7,6 +7,7 @@ import morgan from 'morgan';
 
 import { User } from './models/user.schema';
 import { Company } from './models/company.schema';
+import multer from 'multer';
 
 // validate env config
 for (const [key, value] of Object.entries(Config)) {

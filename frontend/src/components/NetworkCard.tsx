@@ -13,17 +13,11 @@ import { useState, useEffect } from "react";
 import { User, getSuggestedUsers } from "../api";
 import { Link } from "react-router-dom";
 
-// type NetworkCardProps = {
-//   isAuthenticated: boolean;
-// };
-
-// const isAuthenticated = false;
 
 const NetworkCard = () => {
   const [suggestedUsers, setSuggestedUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    // if (isAuthenticated) return;
     getSuggestedUsers().then((response) => {
       if (response) {
         setSuggestedUsers(response);

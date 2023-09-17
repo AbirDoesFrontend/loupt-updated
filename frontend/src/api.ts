@@ -47,7 +47,11 @@ export interface FundingRoundUpdateRequest {
 
 export interface CompanyCreationRequest {
   name: string;
+  logo: string;
   bio: string;
+  partners: string[];
+  industry: string[];
+  website: string;
   valuation: number;
   minimumInvestment: number;
   sharePrice: number;
@@ -83,7 +87,6 @@ export interface UserUpdateRequest {
   location?: string;
   occupation?: string;
   followers?: string[];
-  fundsBalance? : number;
 }
 
 export interface User {
@@ -133,7 +136,7 @@ export interface ConnectResponse {
 }
 
 
-const API_BASE_URL = 'https://api.investloupt.com/';
+const API_BASE_URL = 'http://localhost:24100/';
 
 
 //DONE
@@ -156,7 +159,7 @@ const apiRequest = async<T>(
       data,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        'X-Auth0-Sub': `${localStorage.getItem('auth0Sub')}`
+        //'X-Auth0-Sub' : `${localStorage.getItem('auth0Sub')}`
       }
     });
     return response.data;
@@ -242,7 +245,7 @@ export const getUser = async (user_id?: string) => {
 
 //DONE
 export const getConnectedUsers = async () => {
-  const response = await apiRequest<User[]>('GET', 'users/connected')
+  const response = await apiRequest<User[]>('GET', 'users')
   return response
 }
 
@@ -254,7 +257,7 @@ export const getSuggestedUsers = async () => {
 
 //DONE
 export const updateUser = async (requestPayload: UserUpdateRequest) => {
-  const response = await apiRequest<User>('PUT', `user`, requestPayload)
+  const response = await apiRequest<User>('POST', `user`, requestPayload)
   return response
 }
 
@@ -267,7 +270,7 @@ export const addConnection = async (userId: string) => {
 }
 
 //DONE
-export const getCompany = async (companyId: any) => {
+export const getCompany = async (companyId: string) => {
   const response = await apiRequest<Company>('GET', `company/${companyId}`)
   return response
 }
@@ -322,4 +325,3 @@ const makeInvestment = async (requestPayload: InvestmentCreationRequest) => {
   const response = await apiRequest<{}>('POST', `investment`, requestPayload)
   return response
 }
-

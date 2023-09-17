@@ -6,6 +6,9 @@ import { FundingRound } from "../models/fundingRound.schema";
 import { User } from "../models/user.schema";
 import { generateInvestmentId, generateInvestmentRoundId } from "../utils/idUtils";
 import { Company } from "../models/company.schema";
+/* import { createPartyIndividualIfNotExist } from "./transactapi.service";
+ */
+
 
 export const getFundingRound = async ( roundId: string) : Promise<IFundingRound | null> => {
     return await FundingRound.findOne({roundId: roundId}).exec()
@@ -56,9 +59,11 @@ export const createFundingRound = async (companyId: string, displayName: string,
 export const addInvestment = async (roundId: string, userId: string, amount: number, shareCount: number) : Promise<IInvestment | null> => {
     const round = await FundingRound.findOne({roundId: roundId}).exec()
     const user = await User.findOne({userId: userId}).exec()
-    if (!round || !user || user.fundsBalance < amount) {
+    if (!round || !user /* || user.fundsBalance < amount */) { //TODO: we don't need these funds balance checks
+        //DEBUG console.log("round or user not found")
         return null
     }
+    
     const investmentId = generateInvestmentId()
     const investment = new Investment({
         investmentId: investmentId,
@@ -74,4 +79,20 @@ export const addInvestment = async (roundId: string, userId: string, amount: num
     await round.save()
     await user.save()
     return await investment.save()
+}
+
+export const linkFundingRoundToOffering = async (roundId: string, tapiOfferingId: number) : Promise<IFundingRound | null> => {
+    const round = await FundingRound.findOne({roundId: roundId}).exec()
+    if (!round) {
+        return null
+    }
+    if(round.tapiOfferingId == 0) {
+        round.tapiOfferingId = tapiOfferingId
+        await round.save()
+        return round
+    }
+    else{
+        //user already has an issuerId and we will not create a new one
+        return round
+    }
 }

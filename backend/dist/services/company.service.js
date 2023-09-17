@@ -9,11 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCompany = exports.listCompanies = exports.getConnectedCompanies = exports.getCompanyById = exports.createCompany = void 0;
+exports.deleteCompany = exports.updateCompany = exports.listCompanies = exports.getConnectedCompanies = exports.getCompanyById = exports.createCompany = void 0;
 const company_schema_1 = require("../models/company.schema");
 const user_schema_1 = require("../models/user.schema");
 const idUtils_1 = require("../utils/idUtils");
 const user_service_1 = require("./user.service");
+const transactapi_service_1 = require("./transactapi.service");
 const createCompany = (req, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const company = new company_schema_1.Company({
         companyId: (0, idUtils_1.generateCompanyId)(),
@@ -33,6 +34,8 @@ const createCompany = (req, userId) => __awaiter(void 0, void 0, void 0, functio
     if (!company.partners.includes(userId)) {
         company.partners.push(userId);
     }
+    //make user a "issuer"
+    let result = yield (0, transactapi_service_1.createIssuerIfNotExist)(userId);
     // add company Id to list of companies for the user
     const user = yield user_schema_1.User.findOne({ userId: userId }).exec();
     if (user) {
@@ -93,3 +96,11 @@ const updateCompany = (company) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.updateCompany = updateCompany;
+const deleteCompany = (company) => __awaiter(void 0, void 0, void 0, function* () {
+    const existing = yield company_schema_1.Company.findOne({ companyId: company.companyId });
+    if (!existing) {
+        return false;
+    }
+    return true;
+});
+exports.deleteCompany = deleteCompany;

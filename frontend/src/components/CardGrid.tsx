@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import { SimpleGrid } from "@chakra-ui/react";
 import Card from "./Card";
-// import CompanyImg1 from "../assets/companyImg.png";
-// import CompanyImg2 from "../assets/companyImg2.png";
-// import CompanyImg3 from "../assets/companyImg3.png";
 import userImg from "../assets/user.png";
 
 import { getAllCompanies, Company } from "../api";

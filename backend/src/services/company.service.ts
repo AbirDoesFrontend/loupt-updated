@@ -26,6 +26,9 @@ export const createCompany = async (req: CreateCompanyRequest, userId: string) :
         company.partners.push(userId)
     }
 
+    //make user a "issuer"
+
+
     // add company Id to list of companies for the user
     const user = await User.findOne({userId: userId}).exec()
     if (user) {
@@ -83,4 +86,12 @@ export const updateCompany = async (company : ICompany): Promise<boolean> => {
     } else {
         return false
     }
+}
+
+export const deleteCompany = async (company : ICompany): Promise<boolean> => {
+    const existing = await Company.findOne({companyId: company.companyId})
+    if(!existing) {
+        return false
+    }
+    return true
 }

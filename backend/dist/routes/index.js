@@ -7,16 +7,15 @@ const express_1 = __importDefault(require("express"));
 const company_routes_1 = require("./company.routes");
 const investment_routes_1 = require("./investment.routes");
 const user_routes_1 = require("./user.routes");
+const webhook_routes_1 = require("./webhook.routes");
+const multer_1 = __importDefault(require("multer"));
 const router = express_1.default.Router();
 // health check route
 router.get('/', (req, res) => {
     res.send('<h1>Hello World</h1> <hr> Express + TypeScript Server');
 });
-// auth related routes
-/*
-router.post('/signup', postSignupRoute)
-router.post('/login', loginRoute)
-*/
+const storage = multer_1.default.memoryStorage(); // Store the file in memory.
+const upload = (0, multer_1.default)({ storage: storage });
 // user related routes
 router.get('/user', user_routes_1.getLoggedInUserRoute);
 router.get('/user/:userId', user_routes_1.getUserRoute);
@@ -30,9 +29,14 @@ router.get('/companies/connected', company_routes_1.getConnectedCompaniesRoute);
 router.get('/company/:companyId', company_routes_1.getCompanyRoute);
 router.put('/company/:companyId', company_routes_1.updateCompanyRoute);
 router.post('/company', company_routes_1.createCompanyRoute);
+router.delete('/company/:companyId', company_routes_1.deleteCompanyRoute);
 // investment related routes
 router.get('/fundinground/:roundId', investment_routes_1.getFundingRoundRoute);
 router.put('/fundinground/:roundId', investment_routes_1.updateFundingRoundRoute);
 router.post('/fundinground', investment_routes_1.createFundingRoundRoute);
 router.post('/investment', investment_routes_1.addInvestmentRoute);
+router.post('/documents/:roundId', upload.single('document'), investment_routes_1.fileUploadRoute); //TODO: add routes for uploading documents to a funding round
+// webhooks for transactAPI
+router.post("/userCreated", webhook_routes_1.callbackTest);
+//TODO: add routes for uploading documents
 exports.default = router;

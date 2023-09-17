@@ -20,6 +20,19 @@ export interface IUser {
     pronouns: string,
     investments: [IInvestment],
     visibility: 'public' | 'network' | 'private'
+    tapiIssuerId: string,
+    tapiPartyId: string,
+    tapiAccountId: string,
+    //for becoming a party through transactAPI:
+    domicile: boolean,
+    dob: Date,
+    primCountry: string,
+    primAddress1: string,
+    primCity: string,
+    primState: string,
+    primZip: string,
+    kycStatus: string,
+    amlStatus: string,
 }
 
 export interface IUserDoc extends IUser, Document {}

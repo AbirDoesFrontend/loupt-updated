@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { IUser } from '../models/user.interface';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /* import { loginUserCheck, signupUser, generateToken } from '../services/auth.service';
 
 THIS IS REMOVED AS THE LOGIC HAS MOCED TO AUTH0
@@ -52,4 +52,4 @@ export async function loginRoute(req: Request, res: Response): Promise<void|Resp
             }
         })
     }
-} */
+} */ 
