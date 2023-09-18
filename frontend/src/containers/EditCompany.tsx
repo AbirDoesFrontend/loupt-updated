@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import {
   Box,
   Button,
@@ -29,17 +30,20 @@ import {
   getConnectedCompanies,
   Company,
   User,
+  getCompany,
+  updateCompany,
 } from "../api";
+import { useParams } from "react-router-dom";
 
 interface FormData {
   companyName: string;
   legalPartners: string;
-  numberOfShares: string;
+  sharePrice: any;
   aboutCompany: string;
   corporateZipCode: string;
-  valuationCap: string;
+  valuationCap: any;
   corporateCountry: string;
-  minInvestment: string;
+  minInvestment: any;
   maxInvestment: string;
   fundingGoal: any;
   corporateAddress: string;
@@ -47,6 +51,9 @@ interface FormData {
   highlights: string[];
   documents: any;
   corporateState: string;
+  industries: string[];
+  website: string;
+  sharesOutstanding: any;
 }
 
 const EditCompanyPage = () => {
@@ -54,24 +61,28 @@ const EditCompanyPage = () => {
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
+  const [company, setCompany] = useState({} as Company);
 
   const [highlights, setHighlights] = useState<string[]>([""]);
   const [formData, setFormData] = useState<FormData>({
     companyName: "",
     corporateZipCode: "",
-    numberOfShares: "",
+    sharePrice: 0,
     legalPartners: "",
     aboutCompany: "",
-    valuationCap: "",
+    valuationCap: 0,
     corporateCountry: "",
     corporateAddress: "",
-    minInvestment: "",
+    minInvestment: 0,
     corporateState: "",
     maxInvestment: "",
     fundingGoal: 10000,
     lastDate: "",
     documents: "",
     highlights: [""],
+    industries: [""],
+    website: "",
+    sharesOutstanding: 0,
   });
 
   const handleHighlightsChange = (index: any, value: any) => {
@@ -89,9 +100,48 @@ const EditCompanyPage = () => {
     setHighlights(updatedHighlights);
   };
 
+  const params = useParams();
+  // console.log(params);
+  const id = params.id;
+  console.log(id);
+
   const handleFormSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     console.log(formData);
+
+    const name = formData.companyName;
+    const bio = formData.aboutCompany;
+    const website = formData.website;
+    const valuation = formData.valuationCap;
+    const minimumInvestment = formData.minInvestment;
+    const sharePrice = formData.sharePrice;
+    const sharesOutstanding = formData.sharesOutstanding;
+    const location = formData.corporateAddress;
+
+    const updatedCompany = {
+      name: name,
+      bio: bio,
+      website: website,
+      valuation: valuation,
+      minimumInvestment: minimumInvestment,
+      sharePrice: sharePrice,
+      sharesOutstanding: sharesOutstanding,
+      location: location,
+    };
+
+    updateCompany(id, updatedCompany).then((response) => {
+      toast.success("Company has been updated!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      console.log("Updated Company : ", response);
+    });
   };
 
   useEffect(() => {
@@ -129,7 +179,12 @@ const EditCompanyPage = () => {
       console.log(response);
       setConnectedCompanies(response);
     });
-  }, []);
+
+    getCompany(id).then((response) => {
+      console.log("Single Company : ", response);
+      setCompany(response);
+    });
+  }, [id]);
 
   return (
     <>
@@ -142,6 +197,7 @@ const EditCompanyPage = () => {
         my={10}
         padding={10}
       >
+        <Heading>{company.name}</Heading>
         <Center>
           <Heading mb={10}>Edit Company Profile</Heading>
         </Center>
@@ -154,25 +210,25 @@ const EditCompanyPage = () => {
                   <FormControl mb={4}>
                     <FormLabel>Name of Company:</FormLabel>
                     <Input
-                      placeholder="Walmart"
-                      value={formData.companyName}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
                           companyName: e.target.value,
                         })
                       }
+                      defaultValue={company.name}
                     />
                   </FormControl>
                   <FormControl mb={4}>
-                    <FormLabel>Number of Shares:</FormLabel>
+                    <FormLabel>Share Price:</FormLabel>
                     <Input
+                      type="number"
                       placeholder="E.g. $50000"
-                      value={formData.numberOfShares}
+                      defaultValue={company.sharePrice}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          numberOfShares: e.target.value,
+                          sharePrice: e.target.value,
                         })
                       }
                     />
@@ -181,7 +237,7 @@ const EditCompanyPage = () => {
                     <FormLabel>Corporate Address</FormLabel>
                     <Input
                       placeholder="e.g. 903 Mill Road Kennett Square"
-                      value={formData.corporateAddress}
+                      defaultValue={company.location}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -193,7 +249,7 @@ const EditCompanyPage = () => {
                   <FormControl mb={4}>
                     <FormLabel>About the Company:</FormLabel>
                     <Textarea
-                      value={formData.aboutCompany}
+                      defaultValue={company.bio}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -213,7 +269,7 @@ const EditCompanyPage = () => {
                       </InputLeftElement>
                       <Input
                         placeholder="Valuation Cap"
-                        value={formData.valuationCap}
+                        defaultValue={company.valuation}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
@@ -227,8 +283,7 @@ const EditCompanyPage = () => {
                     <FormLabel>Corporate Country:</FormLabel>
                     <InputGroup>
                       <Input
-                        placeholder="e.g Chester"
-                        value={formData.corporateCountry}
+                        defaultValue={"United States"}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
@@ -240,14 +295,40 @@ const EditCompanyPage = () => {
                     </InputGroup>
                   </FormControl>
                   <FormControl mb={4}>
+                    <FormLabel>Industries:</FormLabel>
+                    <InputGroup>
+                      <Input
+                        defaultValue={"United States"}
+                        // onChange={(e) =>
+                        //   setFormData({
+                        //     ...formData,
+                        //     industries: e.target.value,
+                        //   })
+                        // }
+                      />
+                    </InputGroup>
+                  </FormControl>
+                  <FormControl mb={4}>
                     <FormLabel>Corporate Zip Code</FormLabel>
                     <Input
                       placeholder="e.g 19348"
-                      value={formData.corporateZipCode}
+                      defaultValue={"United States"}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
                           corporateZipCode: e.target.value,
+                        })
+                      }
+                    />
+                  </FormControl>
+                  <FormControl mb={4}>
+                    <FormLabel>Website</FormLabel>
+                    <Input
+                      defaultValue={company.website}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          website: e.target.value,
                         })
                       }
                     />
@@ -258,7 +339,7 @@ const EditCompanyPage = () => {
                       <InputLeftAddon>$</InputLeftAddon>
                       <Input
                         placeholder="Minimum Investment"
-                        value={formData.minInvestment}
+                        defaultValue={company.minimumInvestment}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
@@ -290,10 +371,10 @@ const EditCompanyPage = () => {
               <Flex direction={{ base: "column", md: "row" }}>
                 <Box flex={1} mb={{ base: 4, md: 0 }} mr={{ base: 0, md: 4 }}>
                   <FormControl mb={4}>
-                    <FormLabel>Corporate State</FormLabel>
+                    <FormLabel>Industries</FormLabel>
                     <Input
                       placeholder="e.g PA"
-                      value={formData.corporateState}
+                      defaultValue={company.industry}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -303,14 +384,14 @@ const EditCompanyPage = () => {
                     />
                   </FormControl>
                   <FormControl mb={4}>
-                    <FormLabel>Number of Shares:</FormLabel>
+                    <FormLabel>Shares Outstanding:</FormLabel>
                     <Input
                       placeholder="E.g. $50000"
-                      value={formData.numberOfShares}
+                      defaultValue={company.sharesOutstanding}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          numberOfShares: e.target.value,
+                          sharesOutstanding: e.target.value,
                         })
                       }
                     />
@@ -416,6 +497,19 @@ const EditCompanyPage = () => {
           </Box>
         </Flex>
       </Box>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <ToastContainer />
     </>
   );
 };
