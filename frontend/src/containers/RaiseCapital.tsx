@@ -33,25 +33,27 @@ import {
   getConnectedCompanies,
   Company,
   User,
-  createCompany
+  createCompany,
 } from "../api";
 
 interface FormData {
-  companyName: string;
-  legalPartners: string;
-  numberOfShares: string;
-  aboutCompany: string;
-  corporateZipCode: string;
-  valuationCap: string;
-  corporateCountry: string;
-  minInvestment: string;
-  maxInvestment: string;
-  fundingGoal: any;
-  corporateAddress: string;
-  lastDate: string;
-  highlights: string[];
-  documents: any;
-  corporateState: string;
+  name: string;
+  logo: string;
+  bio: string;
+  partners: string[];
+  industry: string[];
+  website: string;
+  valuation: any;
+  minimumInvestment: any;
+  sharePrice: any;
+  sharesOutstanding: any;
+  location: string;
+  // fundingGoal: number;
+  // corporateAddress: string;
+  // lastDate: string;
+  // highlights: string[];
+  // documents: any;
+  // corporateState: string;
 }
 
 const RaiseCapital = () => {
@@ -62,21 +64,32 @@ const RaiseCapital = () => {
 
   const [highlights, setHighlights] = useState<string[]>([""]);
   const [formData, setFormData] = useState<FormData>({
-    companyName: "",
-    corporateZipCode: "",
-    numberOfShares: "",
-    legalPartners: "",
-    aboutCompany: "",
-    valuationCap: "",
-    corporateCountry: "",
-    corporateAddress: "",
-    minInvestment: "",
-    corporateState: "",
-    maxInvestment: "",
-    fundingGoal: 10000,
-    lastDate: "",
-    documents: "",
-    highlights: [""],
+    // companyName: "",
+    // corporateZipCode: "",
+    // numberOfShares: "",
+    // legalPartners: "",
+    // aboutCompany: "",
+    // valuationCap: "",
+    // corporateCountry: "",
+    // corporateAddress: "",
+    // minInvestment: "",
+    // corporateState: "",
+    // maxInvestment: "",
+    // // fundingGoal: ""
+    // lastDate: "",
+    // documents: "",
+    // highlights: [""],
+    name: "",
+    logo: "",
+    bio: "",
+    partners: [""],
+    industry: [""],
+    website: "",
+    valuation: 0,
+    minimumInvestment: 0,
+    sharePrice: 0,
+    sharesOutstanding: 0,
+    location: "",
   });
 
   const handleHighlightsChange = (index: any, value: any) => {
@@ -96,30 +109,38 @@ const RaiseCapital = () => {
 
   const handleFormSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log(formData);
-
-    const name = formData.companyName;
-    const bio = formData.aboutCompany;
-    const valuation = formData.valuationCap;
-    const minimumInvestment = formData.minInvestment;
-    const location = formData.corporateAddress;
-    // const partners = formData.legalPartners;
-    const sharePrice = formData.numberOfShares;
+    const logo = formData.logo;
+    const name = formData.name;
+    const bio = formData.bio;
+    const partners = formData.partners;
+    const sharePrice = formData.sharePrice;
+    const industry = formData.industry;
+    const website = formData.website;
+    const valuation = formData.valuation;
+    const minimumInvestment = formData.minimumInvestment;
+    const location = formData.location;
+    const sharesOutstanding = formData.sharesOutstanding;
+    // const fundingGoal = formData.fundingGoal;
 
     const newCompany = {
+      logo: logo,
       name: name,
       bio: bio,
-      valuation : parseInt(valuation),
-      minimumInvestment : parseInt(minimumInvestment),
-      sharePrice : parseInt(sharePrice),
-      sharesOutstanding: parseInt(minimumInvestment),
-      location : location,
-    }
+      partners: partners,
+      industry: industry,
+      website: website,
+      valuation: parseInt(valuation),
+      minimumInvestment: parseInt(minimumInvestment),
+      sharePrice: parseInt(sharePrice),
+      sharesOutstanding: parseInt(sharesOutstanding),
+      location: location,
+      // fundingGoal: fundingGoal,
+    };
 
     createCompany(newCompany).then((response) => {
-      console.log('company updated')
-      console.log(response)
-    })
+      console.log("new company created");
+      console.log(response);
+    });
   };
 
   useEffect(() => {
@@ -252,11 +273,11 @@ const RaiseCapital = () => {
                     <FormLabel>Name of Company:</FormLabel>
                     <Input
                       placeholder="Walmart"
-                      value={formData.companyName}
+                      value={formData.name}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          companyName: e.target.value,
+                          name: e.target.value,
                         })
                       }
                     />
@@ -265,24 +286,25 @@ const RaiseCapital = () => {
                     <FormLabel>Number of Shares:</FormLabel>
                     <Input
                       placeholder="E.g. $50000"
-                      value={formData.numberOfShares}
+                      type={"number"}
+                      value={formData.sharesOutstanding}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          numberOfShares: e.target.value,
+                          sharesOutstanding: e.target.value,
                         })
                       }
                     />
                   </FormControl>
                   <FormControl mb={4}>
-                    <FormLabel>Corporate Address</FormLabel>
+                    <FormLabel>Location / Address</FormLabel>
                     <Input
                       placeholder="e.g. 903 Mill Road Kennett Square"
-                      value={formData.corporateAddress}
+                      value={formData.location}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          corporateAddress: e.target.value,
+                          location: e.target.value,
                         })
                       }
                     />
@@ -290,11 +312,11 @@ const RaiseCapital = () => {
                   <FormControl mb={4}>
                     <FormLabel>About the Company:</FormLabel>
                     <Textarea
-                      value={formData.aboutCompany}
+                      value={formData.bio}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          aboutCompany: e.target.value,
+                          bio: e.target.value,
                         })
                       }
                       rows={5}
@@ -310,17 +332,17 @@ const RaiseCapital = () => {
                       </InputLeftElement>
                       <Input
                         placeholder="Valuation Cap"
-                        value={formData.valuationCap}
+                        value={formData.valuation}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            valuationCap: e.target.value,
+                            valuation: e.target.value,
                           })
                         }
                       />
                     </InputGroup>
                   </FormControl>
-                  <FormControl mb={4}>
+                  {/* <FormControl mb={4}>
                     <FormLabel>Corporate Country:</FormLabel>
                     <InputGroup>
                       <Input
@@ -348,30 +370,30 @@ const RaiseCapital = () => {
                         })
                       }
                     />
-                  </FormControl>
+                  </FormControl> */}
                   <FormControl mb={4}>
                     <FormLabel>Minimum Investment:</FormLabel>
                     <InputGroup>
                       <InputLeftAddon>$</InputLeftAddon>
                       <Input
                         placeholder="Minimum Investment"
-                        value={formData.minInvestment}
+                        value={formData.minimumInvestment}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            minInvestment: e.target.value,
+                            minimumInvestment: e.target.value,
                           })
                         }
                       />
                     </InputGroup>
                   </FormControl>
-                  <FormControl mb={4}>
+                  {/* <FormControl mb={4}>
                     <FormLabel>Maximum Investment:</FormLabel>
                     <InputGroup>
                       <InputLeftAddon>$</InputLeftAddon>
                       <Input
                         placeholder="Maximum Investment"
-                        value={formData.maxInvestment}
+                        value={formData.max}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
@@ -380,11 +402,11 @@ const RaiseCapital = () => {
                         }
                       />
                     </InputGroup>
-                  </FormControl>
+                  </FormControl> */}
                   {/* ... (more right column fields) */}
                 </Box>
               </Flex>
-              <Flex direction={{ base: "column", md: "row" }}>
+              {/* <Flex direction={{ base: "column", md: "row" }}>
                 <Box flex={1} mb={{ base: 4, md: 0 }} mr={{ base: 0, md: 4 }}>
                   <FormControl mb={4}>
                     <FormLabel>Corporate State</FormLabel>
@@ -426,20 +448,20 @@ const RaiseCapital = () => {
                     />
                   </FormControl>
                 </Box>
-              </Flex>
+              </Flex> */}
               <FormControl mb={4}>
                 <FormLabel>Funding Goals:</FormLabel>
                 <InputGroup>
                   <InputLeftAddon>$</InputLeftAddon>
                   <Input
-                    placeholder="Maximum Investment"
-                    value={formData.fundingGoal}
-                    onChange={(value) =>
-                      setFormData({
-                        ...formData,
-                        fundingGoal: value,
-                      })
-                    }
+                  // placeholder="Funding Goals"
+                  // value={formData.fundingGoal}
+                  // onChange={(e) =>
+                  //   setFormData({
+                  //     ...formData,
+                  //     fundingGoal: e.target.value,
+                  //   })
+                  // }
                   />
                 </InputGroup>
               </FormControl>
@@ -447,19 +469,19 @@ const RaiseCapital = () => {
                 <FormLabel>Last Date:</FormLabel>
                 <Input
                   type="date"
-                  value={formData.lastDate}
-                  onChange={(e) =>
-                    setFormData({ ...formData, lastDate: e.target.value })
-                  }
+                  // value={formData.lastDate}
+                  // onChange={(e) =>
+                  //   setFormData({ ...formData, lastDate: e.target.value })
+                  // }
                 />
               </FormControl>
               <FormControl mb={4}>
                 <FormLabel>Upload Documents:</FormLabel>
                 <Input
                   type="file"
-                  onChange={(e) =>
-                    setFormData({ ...formData, documents: e.target.files })
-                  }
+                  // onChange={(e) =>
+                  //   setFormData({ ...formData, documents: e.target.files })
+                  // }
                 />
               </FormControl>
               <FormControl mb={4}>

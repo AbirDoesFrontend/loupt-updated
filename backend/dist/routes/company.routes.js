@@ -129,6 +129,14 @@ function createCompanyRoute(req, res) {
             return res.status(500).send("Invalid format for creating company");
         }
         const loggedInUserId = userId;
+        const existingUser = yield (0, user_service_1.getUserById)(loggedInUserId);
+        if (!existingUser) {
+            return res.status(404).send("User does not exist");
+        }
+        /*     if(existingUser.domicile == null || existingUser.dob.getFullYear() === 1900 || existingUser.primCountry == '' || existingUser.primAddress1 == '' || existingUser.primCity == '' || existingUser.primState == '' || existingUser.primZip == "none") {
+                return res.status(422).send("User must complete full details before creating a company")
+            }
+            createCompany */
         const company = yield (0, company_service_1.createCompany)(createCompanyRequest, loggedInUserId);
         if (!company) {
             return res.status(500).send("Error while creating company");

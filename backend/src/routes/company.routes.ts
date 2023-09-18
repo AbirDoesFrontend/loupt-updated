@@ -112,10 +112,10 @@ export async function createCompanyRoute(req: Request, res: Response): Promise<v
     if(!existingUser) {
         return res.status(404).send("User does not exist")
     }
-    if(existingUser.domicile == null || existingUser.dob.getFullYear() === 1900 || existingUser.primCountry == '' || existingUser.primAddress1 == '' || existingUser.primCity == '' || existingUser.primState == '' || existingUser.primZip == "none") {
+/*     if(existingUser.domicile == null || existingUser.dob.getFullYear() === 1900 || existingUser.primCountry == '' || existingUser.primAddress1 == '' || existingUser.primCity == '' || existingUser.primState == '' || existingUser.primZip == "none") {
         return res.status(422).send("User must complete full details before creating a company")
     }
-    createCompany
+    createCompany */
 
     const company = await createCompany(createCompanyRequest, loggedInUserId)
     if (!company) {

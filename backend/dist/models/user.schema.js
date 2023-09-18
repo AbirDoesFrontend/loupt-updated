@@ -27,13 +27,16 @@ const userSchema = new mongoose_1.Schema({
     visibility: { type: String, default: 'public' },
     tapiIssuerId: { type: String, default: 'none' },
     tapiPartyId: { type: String, default: 'none' },
+    tapiAccountId: { type: String, default: 'none' },
     //for becoming a party through transactAPI:
-    domicile: { type: Boolean, default: false },
+    domicile: { type: Boolean, default: null },
     dob: { type: Date, default: new Date(1900, 0, 1) },
     primCountry: { type: String, default: '' },
     primAddress1: { type: String, default: '' },
     primCity: { type: String, default: '' },
     primState: { type: String, default: '' },
-    primZip: { type: Number, default: 0 },
+    primZip: { type: String, default: 'none' },
+    kycStatus: { type: String, default: 'none' },
+    amlStatus: { type: String, default: 'none' },
 }, { timestamps: true, _id: true });
 exports.User = (0, mongoose_1.model)('users', userSchema);

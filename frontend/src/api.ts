@@ -136,7 +136,8 @@ export interface ConnectResponse {
 }
 
 
-const API_BASE_URL = 'http://localhost:24100/';
+// const API_BASE_URL = 'http://localhost:24100/';
+const API_BASE_URL = 'http://api.investloupt.com:24100/';
 
 
 //DONE
@@ -257,7 +258,7 @@ export const getSuggestedUsers = async () => {
 
 //DONE
 export const updateUser = async (requestPayload: UserUpdateRequest) => {
-  const response = await apiRequest<User>('POST', `user`, requestPayload)
+  const response = await apiRequest<User>('PUT', `user`, requestPayload)
   return response
 }
 

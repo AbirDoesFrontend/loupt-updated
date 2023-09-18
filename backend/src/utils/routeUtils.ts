@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Config } from "../config"
 import { User } from '../models/user.schema';
 import jwt from 'jsonwebtoken';
-
+import fs from 'fs';
 
 const auth0_key = "-----BEGIN CERTIFICATE-----\nMIIDHTCCAgWgAwIBAgIJOZnzt50F/eqfMA0GCSqGSIb3DQEBCwUAMCwxKjAoBgNVBAMTIWRldi00cWpoOGtpYWJkNnVxdG42LnVzLmF1dGgwLmNvbTAeFw0yMzA4MTAxNTA3MzhaFw0zNzA0MTgxNTA3MzhaMCwxKjAoBgNVBAMTIWRldi00cWpoOGtpYWJkNnVxdG42LnVzLmF1dGgwLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANUDyeWcJ/e/EiuPKDZfkvjnZxYLdVis/VUfN8mbPxWIFWS4NBHkuTGIyDqu3M2yC73UA0Yh9M9TegBdrDJ+QN3hu6WQmYEoYeq2ClJcvb0nYhIrh9q6CSyR0SbM8jfVR9LCuIm1SvzzZ5M0esV2II880MC7AC9B6AQimIz0uqMiqvD2NUT78lzB5Ctqk9oqRReEO2Cyqf1ROqAb2r5/giV9IDHv7Ny7N9JEKcszpjllEBu7yqbxvMf2+liahFBwto5Qel5SuKxZLUUUdfdZkvYgfKS4+CNMO/6Zmems6/Wc9614KfMsBguhiXLzX/EFE5czrB6QUHCmMN7Bg2SjBWMCAwEAAaNCMEAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUOq3klZ1nr5WFWu6s+qK83/NmQp4wDgYDVR0PAQH/BAQDAgKEMA0GCSqGSIb3DQEBCwUAA4IBAQBSpT7clJ1Amr053NRKjuwSBBh/DS+1d1YmoAiM7xxDIcCDnQ7pYK9/HZdtOvf+sEIj6jldUFKUPvuFS0NHSTomE7J8iM/rh2Xz+HWsz45nCzYXxQHlY4AIhVUDSerUd+TWelgRfGI8v2fqJi89LRzUdI9s1iGw8RJWkkvNDN2A8msIk1tnkIqh8JTYgPoUYMyZf1syD0IfHBJVboxHM3kvv0c5HMYE9jMagiS+p31l/erk3QnFJ5GRZgYQ33iN7p3JMeM1RN2LLUm2yUsIu05hNvPKigCy7ryyZG5lfN6d9kLrcygdky8pOFqDLo9F176wNFfWkOZ60K6C8fpqPfU6\n-----END CERTIFICATE-----"
 
@@ -23,7 +23,6 @@ type DecodedJWT = {
         scope: string;
     };
 }
-
 
 function decodeJWT(token: string): DecodedJWT {
     const parts = token.split('.');
@@ -120,6 +119,15 @@ export const authenticatedUserId = async (req : Request) : Promise<string | null
     //return null
 }
 
+export const deleteFile = (path: string): void  => {
+    fs.unlink(path, (err) => {
+        if (err) {
+            console.error(`Error deleting file at ${path}:`, err);
+        } else {
+            console.log(`Successfully deleted file at ${path}`);
+        }
+    });
+}
 
 
 export type CreateCompanyRequest = {

@@ -15,7 +15,8 @@ const fundingRound_schema_1 = require("../models/fundingRound.schema");
 const user_schema_1 = require("../models/user.schema");
 const idUtils_1 = require("../utils/idUtils");
 const company_schema_1 = require("../models/company.schema");
-const transactapi_service_1 = require("./transactapi.service");
+/* import { createPartyIndividualIfNotExist } from "./transactapi.service";
+ */
 const getFundingRound = (roundId) => __awaiter(void 0, void 0, void 0, function* () {
     return yield fundingRound_schema_1.FundingRound.findOne({ roundId: roundId }).exec();
 });
@@ -64,10 +65,10 @@ exports.createFundingRound = createFundingRound;
 const addInvestment = (roundId, userId, amount, shareCount) => __awaiter(void 0, void 0, void 0, function* () {
     const round = yield fundingRound_schema_1.FundingRound.findOne({ roundId: roundId }).exec();
     const user = yield user_schema_1.User.findOne({ userId: userId }).exec();
-    if (!round || !user || user.fundsBalance < amount) { //TODO: we don't need these funds balance checks
+    if (!round || !user /* || user.fundsBalance < amount */) { //TODO: we don't need these funds balance checks
+        //DEBUG console.log("round or user not found")
         return null;
     }
-    const partyIndividual = yield (0, transactapi_service_1.createPartyIndividualIfNotExist)(user);
     const investmentId = (0, idUtils_1.generateInvestmentId)();
     const investment = new investment_schema_1.Investment({
         investmentId: investmentId,
@@ -90,7 +91,7 @@ const linkFundingRoundToOffering = (roundId, tapiOfferingId) => __awaiter(void 0
     if (!round) {
         return null;
     }
-    if (round.tapiOfferingId == 0) {
+    if (round.tapiOfferingId == "none") {
         round.tapiOfferingId = tapiOfferingId;
         yield round.save();
         return round;

@@ -9,12 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fileUploadRoute = exports.addInvestmentRoute = exports.updateFundingRoundRoute = exports.getFundingRoundRoute = exports.createFundingRoundRoute = void 0;
+exports.fileUploadRoute = exports.getPaymentMethodsRoute = exports.addInvestmentRouteWithKYC = exports.addInvestmentRoute = exports.updateFundingRoundRoute = exports.getFundingRoundRoute = exports.createFundingRoundRoute = void 0;
 const fundingRound_schema_1 = require("../models/fundingRound.schema");
 const investment_service_1 = require("../services/investment.service");
 const user_service_1 = require("../services/user.service");
 const routeUtils_1 = require("../utils/routeUtils");
 const transactapi_service_1 = require("../services/transactapi.service");
+const routeUtils_2 = require("../utils/routeUtils");
 function createFundingRoundRoute(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -103,9 +104,11 @@ function addInvestmentRoute(req, res) {
                 return res.status(400).send("Expected: { roundId: string, amount: number, shareCount: number }");
             }
             const { roundId, amount, shareCount } = req.body;
+            /*         const party = createPartyIfNotExist(userId)
+             */
             const round = yield fundingRound_schema_1.FundingRound.findOne({ roundId: roundId }).exec();
             if (!round) {
-                return res.status(404).send("Funding round does not found");
+                return res.status(404).send("Funding round not found");
             }
             const investment = yield (0, investment_service_1.addInvestment)(roundId, userId, amount, shareCount);
             if (!investment) {
@@ -119,6 +122,96 @@ function addInvestmentRoute(req, res) {
     });
 }
 exports.addInvestmentRoute = addInvestmentRoute;
+//NEW ROUTES
+function addInvestmentRouteWithKYC(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            /*         const partyId = await createPartyIndividualIfNotExist(userId)
+             */
+            //DEBUG console.log("inside addInvestmentRouteWithKYC")
+            const userId = yield (0, routeUtils_1.authenticatedUserId)(req);
+            if (!userId) {
+                return res.status(401).send("Unauthorized request");
+            }
+            if (!req.body || !req.body.roundId || !req.body.amount || !req.body.shareCount || !req.body.domicile || !req.body.firstName || !req.body.lastName || !req.body.dob || !req.body.primCountry || !req.body.primAddress1 || !req.body.primCity || !req.body.primState || !req.body.primZip || !req.body.ssn || !req.body.phone) {
+                return res.status(400).send("Expected: { roundId: string, amount: number, shareCount: number, domicile: boolean, firstName: string, lastName: string, dob: string, primCountry: string, primAddress1: string, primCity: string, primState: string, primZip: string, ssn: string, phone: string }");
+            }
+            const { roundId, //TODO: create a new interface for this
+            amount, shareCount, domicile, firstName, lastName, dob, primCountry, primAddress1, primCity, primState, primZip, ssn, phone, paymentmethod } = req.body;
+            //first, update user with kyc info
+            //user should already be a party here
+            const user = yield (0, user_service_1.getUserById)(userId);
+            if (!user) {
+                return res.status(404).send("User not found");
+            }
+            console.log("kyc status: " + user.kycStatus);
+            if (user.kycStatus == "Disapproved") {
+                return res.status(401).send("KYC disapproved");
+            }
+            if (user.kycStatus == "none") {
+                user.domicile = domicile;
+                user.legalName = firstName + " " + lastName;
+                user.dob = /* new Date(dob) */ new Date(dob);
+                user.primCountry = primCountry;
+                user.primAddress1 = primAddress1;
+                user.primCity = primCity;
+                user.primState = primState;
+                user.primZip = primZip;
+                //user.ssn = "not stored" //TODO: how do we manage this?
+                //user.kycStatus = "pending"
+                //user.amlStatus = "pending"
+                const result = yield (0, user_service_1.updateUserKycInfo)(user /* , ssn */);
+                if (!result) {
+                    console.log("did not find user");
+                }
+                const isProvisioned = yield (0, transactapi_service_1.ensureInvestorProvisioned)(userId);
+                if (!isProvisioned) {
+                    return res.status(400).send("Unable to provision investor through transactAPI");
+                }
+                const kycHasStarted = yield (0, transactapi_service_1.beginUserKYC)(userId);
+                if (!kycHasStarted) {
+                    return res.status(400).send("Unable to begin KYC through transactAPI");
+                }
+                //need to add webhook logic to execute trade once kyc is passed TODO
+                if (user.amlStatus == "Disapproved") {
+                    return res.status(401).send("AML disapproved");
+                }
+                //for now, just create investment object as done before
+                const investment = yield (0, investment_service_1.addInvestment)(roundId, userId, amount, shareCount);
+                return res.status(200).send(investment);
+            }
+            else if (user.kycStatus == "passed")
+                console.log("KYC already passed");
+            const investment = yield (0, investment_service_1.addInvestment)(roundId, userId, amount, shareCount);
+        }
+        catch (e) {
+            //console.error(`Unable to complete addInvestmentWithKYC request.\n ${e}`);
+            return res.status(500).send("Internal server error");
+        }
+    });
+}
+exports.addInvestmentRouteWithKYC = addInvestmentRouteWithKYC;
+//For now, only CC is going to be supported. 
+function getPaymentMethodsRoute(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const userId = yield (0, routeUtils_1.authenticatedUserId)(req);
+            if (!userId) {
+                return res.status(401).send("Unauthorized request");
+            }
+            const response = yield (0, transactapi_service_1.checkPaymentMethods)(userId);
+            if (!response) {
+                return res.status(400).send("Error checking payment methods- is user enrolled in transactAPI?");
+            }
+            return res.status(200).send(response);
+        }
+        catch (e) {
+            //console.error(`Unable to complete getPaymentMethodsRoute request.\n ${e}`);
+            return res.status(500).send("Internal server error");
+        }
+    });
+}
+exports.getPaymentMethodsRoute = getPaymentMethodsRoute;
 function fileUploadRoute(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -131,38 +224,20 @@ function fileUploadRoute(req, res) {
             if (!fundingRound) {
                 return res.status(404).send("Funding round does not exist");
             }
-            /*         if (!file){
-                        const result = await uploadDocumentToOffering(fundingRound, doctitle)
-                        //return res.status(400).send("No file uploaded")
-                    } */
+            if (!file) {
+                return res.status(400).send("No file uploaded");
+            }
+            const offeringNum = fundingRound.tapiOfferingId;
+            if (!offeringNum) {
+                return res.status(400).send("No offering number found for this funding round");
+            }
+            console.log("offeringNum: " + offeringNum);
             const result = yield (0, transactapi_service_1.uploadDocumentToOffering)(fundingRound, doctitle, file);
             if (!result) {
-                return res.status(400).send("Error uploading document");
+                return res.status(400).send("Error uploading document to TransactAPI");
             }
-            return res.status(200).json({ message: 'Document uploaded successfully!', data: file });
-            /*         // Construct form data for the TransactAPI
-                     const formData = new FormData();
-                    formData.append('clientID', 'YourClientID'); // Replace with your client ID
-                    formData.append('developerAPIKey', 'YourDeveloperAPIKey'); // Replace with your API key
-                    formData.append('offeringId', roundId);
-                    formData.append('documentTitle', 'TitleForYourDocument'); // Modify as required
-                    formData.append('documentFileReferenceCode', 'SomeReferenceCode'); // Modify as required
-                    formData.append('file_name', file.originalname);
-                    formData.append('userfile0', file.buffer, { filename: file.originalname });
-            
-                    // You can add additional fields like approval, supervisorname, etc. to formData as required.
-            
-                    // Call TransactAPI to upload the document
-                    const apiResponse = await axios.post('https://api-sandboxdash.norcapsecurities.com/tapiv3/index.php/v3/addDocumentsforOffering', formData, {
-                        headers: formData.getHeaders()
-                    });
-            
-                    // Check the response and send a reply back to the frontend
-                    if (apiResponse.data && apiResponse.data.statusCode === "101") {
-                        return res.status(200).json({ message: 'Document uploaded successfully!', data: apiResponse.data });
-                    } else {
-                        return res.status(400).json({ message: 'Error uploading document.', error: apiResponse.data });
-                    } */
+            (0, routeUtils_2.deleteFile)(file.path);
+            return res.status(200).json({ message: 'Document uploaded successfully!', data: file.filename }); // Using file.filename to send the name of the uploaded file
         }
         catch (error) {
             console.error('Error uploading document:', error);

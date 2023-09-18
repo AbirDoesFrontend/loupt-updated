@@ -12,7 +12,16 @@ router.get('/', (req: Request, res: Response) => {
     res.send('<h1>Hello World</h1> <hr> Express + TypeScript Server');
 });
 
-const storage = multer.memoryStorage(); // Store the file in memory.
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'uploads/'); // The directory where uploaded files will be stored
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + '-' + file.originalname); // Creating a unique filename
+    }
+  });
+
+
 const upload = multer({ storage: storage });
 
 
@@ -41,7 +50,7 @@ router.post('/investment', addInvestmentRoute)
 //router.post('/addkycdetails', addkycdetails)
 router.post('/investmentwithkyc', addInvestmentRouteWithKYC)
 router.get('/paymentmethods', getPaymentMethodsRoute)
-router.post('/documents/:roundId', upload.single('document'), fileUploadRoute) //TODO: add routes for uploading documents to a funding round
+router.post('/documents/:roundId', upload.single('document'), fileUploadRoute);
 
 
 // webhooks for transactAPI

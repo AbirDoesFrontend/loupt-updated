@@ -12,11 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticatedUserId = exports.verifyJWT = exports.getAuth0UserId = void 0;
+exports.deleteFile = exports.authenticatedUserId = exports.verifyJWT = exports.getAuth0UserId = void 0;
 const axios_1 = __importDefault(require("axios"));
 const config_1 = require("../config");
 const user_schema_1 = require("../models/user.schema");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const fs_1 = __importDefault(require("fs"));
 const auth0_key = "-----BEGIN CERTIFICATE-----\nMIIDHTCCAgWgAwIBAgIJOZnzt50F/eqfMA0GCSqGSIb3DQEBCwUAMCwxKjAoBgNVBAMTIWRldi00cWpoOGtpYWJkNnVxdG42LnVzLmF1dGgwLmNvbTAeFw0yMzA4MTAxNTA3MzhaFw0zNzA0MTgxNTA3MzhaMCwxKjAoBgNVBAMTIWRldi00cWpoOGtpYWJkNnVxdG42LnVzLmF1dGgwLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANUDyeWcJ/e/EiuPKDZfkvjnZxYLdVis/VUfN8mbPxWIFWS4NBHkuTGIyDqu3M2yC73UA0Yh9M9TegBdrDJ+QN3hu6WQmYEoYeq2ClJcvb0nYhIrh9q6CSyR0SbM8jfVR9LCuIm1SvzzZ5M0esV2II880MC7AC9B6AQimIz0uqMiqvD2NUT78lzB5Ctqk9oqRReEO2Cyqf1ROqAb2r5/giV9IDHv7Ny7N9JEKcszpjllEBu7yqbxvMf2+liahFBwto5Qel5SuKxZLUUUdfdZkvYgfKS4+CNMO/6Zmems6/Wc9614KfMsBguhiXLzX/EFE5czrB6QUHCmMN7Bg2SjBWMCAwEAAaNCMEAwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUOq3klZ1nr5WFWu6s+qK83/NmQp4wDgYDVR0PAQH/BAQDAgKEMA0GCSqGSIb3DQEBCwUAA4IBAQBSpT7clJ1Amr053NRKjuwSBBh/DS+1d1YmoAiM7xxDIcCDnQ7pYK9/HZdtOvf+sEIj6jldUFKUPvuFS0NHSTomE7J8iM/rh2Xz+HWsz45nCzYXxQHlY4AIhVUDSerUd+TWelgRfGI8v2fqJi89LRzUdI9s1iGw8RJWkkvNDN2A8msIk1tnkIqh8JTYgPoUYMyZf1syD0IfHBJVboxHM3kvv0c5HMYE9jMagiS+p31l/erk3QnFJ5GRZgYQ33iN7p3JMeM1RN2LLUm2yUsIu05hNvPKigCy7ryyZG5lfN6d9kLrcygdky8pOFqDLo9F176wNFfWkOZ60K6C8fpqPfU6\n-----END CERTIFICATE-----";
 function decodeJWT(token) {
     const parts = token.split('.');
@@ -51,7 +52,7 @@ const verifyJWT = (token) => {
             return false
         } */
     try {
-        console.log("verifying JWT: " + actualToken);
+        //DEBUG console.log("verifying JWT: " + actualToken)
         jsonwebtoken_1.default.verify(actualToken, auth0_key, { algorithms: ['RS256'] });
         return true;
     }
@@ -71,6 +72,7 @@ const authenticatedUserId = (req) => __awaiter(void 0, void 0, void 0, function*
     console.log("JWT verified");
     //check if user exists in db
     //TODO: change user schema
+    console.log("auth0Sub: " + auth0Sub);
     const url = `https://${config_1.Config.AUTH0_DOMAIN}/api/v2/users/${decodeURI(auth0Sub)}`;
     const existing = yield user_schema_1.User.findOne({ userId: auth0Sub }).exec();
     try {
@@ -79,31 +81,43 @@ const authenticatedUserId = (req) => __awaiter(void 0, void 0, void 0, function*
             if (response && response.status > 199 && response.status < 300 && response.data) {
                 const auth0User = response.data;
                 const user = new user_schema_1.User({
-                    userId: auth0User.user_id,
+                    userId: encodeURI(auth0User.user_id),
                     email: auth0User.email,
-                    legalFName: auth0User.name,
+                    legalName: auth0User.name,
                     bio: auth0User.nickname,
                     profilePic: auth0User.picture,
                     countryCode: '+1',
                     fundsBalance: 0
                 });
+                //DEBUG console.log("User provisioned as " + user.userId)
                 yield user.save();
                 return user.userId;
             }
             else {
-                console.log("recieved error from auth0 in authenticatedUserId");
+                //DEBUG console.log("recieved error from auth0 in authenticatedUserId")
                 return null;
             }
         }
         else {
-            console.log("user already exists in db: " + existing.userId);
+            //DEBUG console.log("user already exists in db: " + existing.userId)
             return existing.userId;
         }
     }
     catch (e) {
-        console.log(`error provisioning user: ${e}`);
+        //DEBUG console.log(`error provisioning user: ${e}`)
         return null;
     }
     //return null
 });
 exports.authenticatedUserId = authenticatedUserId;
+const deleteFile = (path) => {
+    fs_1.default.unlink(path, (err) => {
+        if (err) {
+            console.error(`Error deleting file at ${path}:`, err);
+        }
+        else {
+            console.log(`Successfully deleted file at ${path}`);
+        }
+    });
+};
+exports.deleteFile = deleteFile;

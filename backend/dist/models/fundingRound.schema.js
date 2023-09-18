@@ -14,7 +14,7 @@ const fundingRoundSchema = new mongoose_1.Schema({
     investments: { type: [investment_schema_1.InvestmentSchema], default: [] },
     deadline: { type: Date, required: true },
     discountPercentage: { type: Number, default: 5 },
-    tapiOfferingId: { type: Number, default: 0 },
+    tapiOfferingId: { type: String, default: "none" },
     tapiDocumentIds: { type: [String], default: [] }
 });
 exports.FundingRound = (0, mongoose_1.model)('funding_rounds', fundingRoundSchema);

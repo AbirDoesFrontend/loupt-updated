@@ -5,45 +5,66 @@ import { IUser } from '../models/user.interface';
 import { User } from "../models/user.schema";
 import {IFundingRound} from "../models/fundingRound.interface";
 import FormData from 'form-data';
+import * as fs from 'fs';
 
+type UploadData = {
+  offeringId: string;
+  documentTitle: string;
+  documentFileName: string;
+  documentFileReferenceCode: string;
+  file_name: string;
+  userfile0?: Buffer;
+  templateName?: string;
+  approval?: 'yes' | 'no'; // I'm assuming it's either 'yes' or 'no' from the provided documentation.
+  supervisorname?: string;
+  date?: string;
+  createdIpAddress?: string;
+};
 
-//incomplete
-const tapiApiFileUpload = async<T>(
-  method: 'POST',
+type tApiUploadResponse = {
+  statusCode: string;
+  statusDesc: string;
+  document_details: {
+    offeringId: string;
+    documentId: string;
+    documentReferenceCode: string;
+    documentURL: string;
+  }[];
+};
+
+const tapiApiFileUpload = async (
   endpoint: string,
-  data: {
-    offeringId: string,
-    documentTitle: string,
-    documentFileReferenceCode: string,
-    file_name: string,
-    userfile0?: Buffer,
-  }
-): Promise<any> => {
-
+  data: UploadData
+): Promise<tApiUploadResponse> => {
   const formData = new FormData();
 
   formData.append('clientID', Config.TRANSACTAPI_CLIENTID);
   formData.append('developerAPIKey', Config.TRANSACTAPI_DEVKEY);
   formData.append('offeringId', data.offeringId);
   formData.append('documentTitle', data.documentTitle);
+  formData.append('file_name', data.documentFileName);
   formData.append('documentFileReferenceCode', data.documentFileReferenceCode);
-  formData.append('file_name', data.file_name);
-  if(data.userfile0)
-    formData.append('userfile0', data.userfile0, data.file_name);
+
+
+  Object.keys(data).forEach(key => {
+/*     //formData.append(key, data[key as keyof UploadData]);
+ */    formData.append('userfile0', data['userfile0'], data['file_name']);
+  });
+  
 
   try {
-    const response: AxiosResponse<T> = await axios({
-      method,
-      url: `${Config.TRANSACTAPI_URI}${endpoint}`,
-      data: formData,  // Changed to formData
-/*       headers: {
+    const response: AxiosResponse<tApiUploadResponse> = await axios({
+      method: 'POST',
+      url: `${Config.TRANSACTAPI_URI}/addDocumentsforOffering`,
+      data: formData,
+      headers: {
         ...formData.getHeaders(),
-      } */
+      }
     });
     return response.data;
   } catch (error: any) {
-    console.log("Error caught: " + error.response.data)
-    console.log(error.response.data)
+    console.log("Error caught: ", error);
+    throw error;
   }
 };
 
@@ -123,7 +144,7 @@ const createIssuerIfNotExist = async(userId: string): Promise<string | undefined
 }
 
 //connect this when we create a funding round for the company
-export const createOffering = async(fundingRound: IFundingRound, userId: string) : Promise<number | undefined> => {
+export const createOffering = async(fundingRound: IFundingRound, userId: string) : Promise<string | undefined> => {
   //const existing = await User.findOne({userId: (userId)}).exec()
   const issuerId = await createIssuerIfNotExist(userId)
 
@@ -154,7 +175,7 @@ export const createOffering = async(fundingRound: IFundingRound, userId: string)
   return result.offeringDetails[1][0].offeringId
 }
 
-export const uploadDocumentToOffering = async(fundingRound: IFundingRound, doctitle: string, file?: Express.Multer.File): Promise<boolean> => {
+/* export const uploadDocumentToOffering = async(fundingRound: IFundingRound, doctitle: string, file?: Express.Multer.File): Promise<boolean> => {
   if(fundingRound.tapiOfferingId == 0){
     console.log("funding round is not connected to an offering")
     return false;
@@ -174,6 +195,33 @@ export const uploadDocumentToOffering = async(fundingRound: IFundingRound, docti
       userfile0: file?.buffer,  // Pass the buffer from multer's file object
     }
   );
+} */
+
+export const uploadDocumentToOffering = async(fundingRound: IFundingRound, doctitle: string, file: Express.Multer.File)/* : Promise<boolean | undefined>  */ => {
+
+  //TODO: will keeping file in-memory improve performance?
+  const fileBuffer = fs.readFileSync(file.path);/*  file.buffer; */
+
+  const docId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+  console.log("uploadDocumentToOffering: " + fundingRound.tapiOfferingId)
+
+  console.log("original name: " + file.originalname)
+
+  const data: UploadData = {
+      offeringId: fundingRound.tapiOfferingId.toString(),  // Adjust based on your fundingRound structure
+      documentTitle: doctitle,
+      documentFileName: file.originalname,
+      documentFileReferenceCode: docId, // Add logic to generate/reference code
+      file_name: file.originalname, // Using the original name of the file
+      userfile0: fileBuffer
+  };
+
+  //console.log("uploadDocumentToOffering: " + fundingRound.offeringId)
+
+  const result =  tapiApiFileUpload('/tapiv3/index.php/v3/addDocumentsforOffering', data);
+
+
 }
 
 const createPartyIndividualIfNotExist = async(userId: string ): Promise<string | undefined> => {
@@ -248,7 +296,7 @@ const getLinkedCreditCard = async(accountId: string): Promise<any> => {
   );
   return result
 }
-
+/* 
 const createTrade = async(accountId: string, offeringId: string, amount: number): Promise<any> => {
   const response = await tApiRequest<any>(
     'DELETE',
@@ -266,7 +314,7 @@ const createTrade = async(accountId: string, offeringId: string, amount: number)
 const executeTrade = async(accountId: string, offeringId: string, amount: number): Promise<any> => {
   //no-op TODOD: implement
 }
-
+ */
 const linkCreditCard = async(accountId: string/* , cardId: string */): Promise<string | undefined> => {
   const result = await tApiRequest<any>(
     'POST',

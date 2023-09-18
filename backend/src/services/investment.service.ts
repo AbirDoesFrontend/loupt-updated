@@ -81,12 +81,12 @@ export const addInvestment = async (roundId: string, userId: string, amount: num
     return await investment.save()
 }
 
-export const linkFundingRoundToOffering = async (roundId: string, tapiOfferingId: number) : Promise<IFundingRound | null> => {
+export const linkFundingRoundToOffering = async (roundId: string, tapiOfferingId: string) : Promise<IFundingRound | null> => {
     const round = await FundingRound.findOne({roundId: roundId}).exec()
     if (!round) {
         return null
     }
-    if(round.tapiOfferingId == 0) {
+    if(round.tapiOfferingId == "none") {
         round.tapiOfferingId = tapiOfferingId
         await round.save()
         return round

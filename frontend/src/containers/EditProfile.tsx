@@ -53,19 +53,19 @@ const EditProfilePage = () => {
     const fundsBalance = parseInt(form.fund.value);
 
     updateUser({
-      legalName : legalName,
+      legalName: legalName,
       phoneNumber: phoneNumber,
       bio: bio,
       occupation: occupation,
       education: education,
       location: location,
-      fundsBalance: fundsBalance
+      // fundsBalance: fundsBalance,
     }).then((response) => {
       console.log("User has been updated:");
       console.log(response);
     });
   };
-  return (    
+  return (
     <>
       <Box margin={"20px"}>
         <Box sx={styles.container} shadow={"md"}>
@@ -188,4 +188,5 @@ const EditProfilePage = () => {
     </>
   );
 };
+
 export default EditProfilePage;

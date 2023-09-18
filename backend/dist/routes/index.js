@@ -14,7 +14,14 @@ const router = express_1.default.Router();
 router.get('/', (req, res) => {
     res.send('<h1>Hello World</h1> <hr> Express + TypeScript Server');
 });
-const storage = multer_1.default.memoryStorage(); // Store the file in memory.
+const storage = multer_1.default.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // The directory where uploaded files will be stored
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname); // Creating a unique filename
+    }
+});
 const upload = (0, multer_1.default)({ storage: storage });
 // user related routes
 router.get('/user', user_routes_1.getLoggedInUserRoute);
@@ -35,8 +42,13 @@ router.get('/fundinground/:roundId', investment_routes_1.getFundingRoundRoute);
 router.put('/fundinground/:roundId', investment_routes_1.updateFundingRoundRoute);
 router.post('/fundinground', investment_routes_1.createFundingRoundRoute);
 router.post('/investment', investment_routes_1.addInvestmentRoute);
-router.post('/documents/:roundId', upload.single('document'), investment_routes_1.fileUploadRoute); //TODO: add routes for uploading documents to a funding round
+//NEW:
+//router.post('/addkycdetails', addkycdetails)
+router.post('/investmentwithkyc', investment_routes_1.addInvestmentRouteWithKYC);
+router.get('/paymentmethods', investment_routes_1.getPaymentMethodsRoute);
+router.post('/documents/:roundId', upload.single('document'), investment_routes_1.fileUploadRoute);
 // webhooks for transactAPI
-router.post("/userCreated", webhook_routes_1.callbackTest);
+router.post("/usercreated", webhook_routes_1.callbackTest);
+router.post("/kycstatuschanged", webhook_routes_1.callbackTest);
 //TODO: add routes for uploading documents
 exports.default = router;

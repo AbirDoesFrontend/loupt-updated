@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.addFollower = exports.getSuggestedUsers = exports.getConnectedUsers = exports.getUserById = void 0;
+exports.updateUserKycInfo = exports.updateUser = exports.addFollower = exports.getSuggestedUsers = exports.getConnectedUsers = exports.getUserById = void 0;
 const user_schema_1 = require("../models/user.schema");
 const getUserById = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     return yield user_schema_1.User.findOne({ userId: (userId) }).exec();
@@ -93,6 +93,11 @@ const updateUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
         existing.companies = user.companies;
         existing.connections = user.connections;
         existing.investments = user.investments;
+        //transactAPI specific internal fields
+        /*         existing.kycStatus = user.kycStatus
+                existing.amlStatus = user.amlStatus
+                existing.tapiAccountId = user.tapiAccountId
+                existing.tapiIssuerId = user.tapiIssuerId */
         yield existing.save();
         return true;
     }
@@ -101,3 +106,24 @@ const updateUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.updateUser = updateUser;
+const updateUserKycInfo = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const existing = yield user_schema_1.User.findOne({ userId: (user.userId) }).exec();
+    if (existing != null) {
+        existing.legalName = user.legalName;
+        existing.domicile = user.domicile;
+        existing.dob = user.dob;
+        existing.primCountry = user.primCountry;
+        existing.primAddress1 = user.primAddress1;
+        existing.primCity = user.primCity;
+        existing.primState = user.primState;
+        existing.primZip = user.primZip;
+        existing.kycStatus = user.kycStatus;
+        existing.amlStatus = user.amlStatus;
+        yield existing.save();
+        return true;
+    }
+    else {
+        return false;
+    }
+});
+exports.updateUserKycInfo = updateUserKycInfo;

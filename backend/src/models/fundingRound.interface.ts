@@ -11,7 +11,7 @@ export interface IFundingRound {
     investments: [IInvestment],
     deadline: Date,
     discountPercentage: number,
-    tapiOfferingId: number,
+    tapiOfferingId: string,
     tapiDocumentIds: [string]
 }
 export interface IFundingRoundDoc extends IFundingRound, Document {}
