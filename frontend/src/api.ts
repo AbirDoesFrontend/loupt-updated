@@ -61,10 +61,10 @@ export interface CompanyCreationRequest {
 
 export interface CompanyUpdateRequest {
   name?: string;
-  logo?: string;
+  // logo?: string;
   bio?: string;
-  partners?: string[];
-  industry?: string[];
+  // partners?: string[];
+  // industry?: string[];
   website?: string;
   valuation?: number;
   minimumInvestment?: number;
@@ -296,7 +296,7 @@ export const createCompany = async (requestPayload: CompanyCreationRequest): Pro
 }
 
 //DONE
-export const updateCompany = async (companyId: string, requestPayload: CompanyUpdateRequest) => {
+export const updateCompany = async (companyId: any, requestPayload: CompanyUpdateRequest) => {
   const response = await apiRequest<Company>('PUT', `company/${companyId}`, requestPayload)
   return response
 }

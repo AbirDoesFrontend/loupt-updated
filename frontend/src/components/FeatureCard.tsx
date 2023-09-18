@@ -9,7 +9,7 @@ const FeatureCard = ({
 }: {
   logo: any;
   name: any;
-  _id: any;
+  companyId: any;
 }) => {
   console.log(companyId);
   return (

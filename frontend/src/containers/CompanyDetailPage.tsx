@@ -109,7 +109,7 @@ const CompanyDetailPage = () => {
   return (
     <>
       <Container maxW={"7xl"} position={"relative"}>
-        <Link to="/edit-company">
+        <Link to={`/edit-company/${id}`}>
           <Button sx={styles.editBtn}>Edit Company Profile</Button>
         </Link>
         <SimpleGrid sx={styles.grid}>

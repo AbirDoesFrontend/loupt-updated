@@ -23,7 +23,7 @@ function App() {
       <Route path="/raise-capital" element={<RaiseCapital />} />
       <Route path="/about" element={<AboutUsPage />} />
       <Route path="/edit-profile" element={<EditProfilePage />} />
-      <Route path="/edit-company" element={<EditCompanyPage />} />
+      <Route path="/edit-company/:id" element={<EditCompanyPage />} />
       <Route path="/company/:id" element={<CompanyDetailPage />} />
       <Route path="/signup-modal" element={<SignUpModal />} />
       <Route path="/" element={<HomePage />} />
