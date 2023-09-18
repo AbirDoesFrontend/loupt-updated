@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { getUser, User, updateUser } from "../api";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   Box,
   Input,
@@ -15,9 +17,11 @@ import {
 } from "@chakra-ui/react";
 import styles from "./styles/EditProfileStyle";
 import Logo from "../assets/Loupt app logo 4.png";
+import { useNavigate } from "react-router-dom";
 
 const EditProfilePage = () => {
   const [user, setUser] = useState({} as User);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getUser()
@@ -41,19 +45,21 @@ const EditProfilePage = () => {
   const handleUpdateUser = (event: any) => {
     event.preventDefault();
 
-    // const form = event.target;
-    // const phoneNumber = form.phoneNumber.value;
-    // const bio = form.bio.value;
-    // const occupation = form.occupation.value;
-    // localStorage.setItem("occupation", occupation);
-    // const education = form.education.value;
-    // localStorage.setItem("education", education);
-    // const location = form.location.value;
-    // localStorage.setItem("location", location);
+    const form = event.target;
+    const legalName = form.name.value;
+    const phoneNumber = form.phoneNumber.value;
+    const bio = form.bio.value;
+    const occupation = form.occupation.value;
+    localStorage.setItem("occupation", occupation);
+    const education = form.education.value;
+    localStorage.setItem("education", education);
+    const location = form.location.value;
+    localStorage.setItem("location", location);
 
-    // console.log(localStorage.getItem("occupation"));
+    console.log(localStorage.getItem("occupation"));
 
     updateUser({
+      legalName : legalName,
       phoneNumber: phoneNumber,
       bio: bio,
       occupation: occupation,
@@ -62,6 +68,19 @@ const EditProfilePage = () => {
     }).then((response) => {
       console.log("User has been updated:");
       console.log(response);
+      toast.success('🦄 User has been updated!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+        setTimeout(() => {
+          navigate('/profile')
+        } , 3000)
     });
   };
   return (
@@ -84,6 +103,7 @@ const EditProfilePage = () => {
                 sx={styles.input}
                 placeholder="Enter Your Name"
                 name="name"
+                defaultValue={user.legalName}
               />
             </Box>
 
@@ -94,6 +114,7 @@ const EditProfilePage = () => {
                 sx={styles.input}
                 placeholder="Enter your phone number"
                 name="phoneNumber"
+                defaultValue={user.phoneNumber}
               />
             </Box>
 
@@ -103,10 +124,11 @@ const EditProfilePage = () => {
                 sx={styles.input}
                 placeholder="Tell something about yourself"
                 name="bio"
+                defaultValue={user.bio}
               />
             </Box>
 
-            <Box sx={styles.formGroup}>
+            {/* <Box sx={styles.formGroup}>
               <FormLabel sx={styles.label}>Company Bio</FormLabel>
               <Textarea
                 sx={styles.input}
@@ -122,7 +144,7 @@ const EditProfilePage = () => {
                 <option>Female</option>
                 <option>Other</option>
               </Select>
-            </Box>
+            </Box> */}
 
             <Box sx={styles.formGroup}>
               <FormLabel sx={styles.label}>Working At</FormLabel>
@@ -131,6 +153,7 @@ const EditProfilePage = () => {
                 sx={styles.input}
                 placeholder="Your workplace"
                 name="occupation"
+                defaultValue={user.occupation}
               />
             </Box>
 
@@ -141,6 +164,7 @@ const EditProfilePage = () => {
                 sx={styles.input}
                 placeholder="Where do you live?"
                 name="location"
+                defaultValue={user.location}
               />
             </Box>
 
@@ -151,6 +175,7 @@ const EditProfilePage = () => {
                 sx={styles.input}
                 placeholder="Your alma mater"
                 name="education"
+                defaultValue={user.education}
               />
             </Box>
 
@@ -161,6 +186,7 @@ const EditProfilePage = () => {
                 sx={styles.input}
                 placeholder="$"
                 name="fund"
+                defaultValue={user.fundsBalance}
               />
             </Box>
 
@@ -184,6 +210,19 @@ const EditProfilePage = () => {
           </form>
         </Box>
       </Box>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <ToastContainer />
     </>
   );
 };

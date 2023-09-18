@@ -26,6 +26,7 @@ import {
   Container,
 } from "@chakra-ui/react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   getUser,
   getConnectedUsers,
@@ -34,7 +35,9 @@ import {
   Company,
   User,
   createCompany,
+  getUserToken,
 } from "../api";
+import { Link } from "react-router-dom";
 
 interface FormData {
   name: string;
@@ -57,7 +60,7 @@ interface FormData {
 }
 
 const RaiseCapital = () => {
-  const [user, setUser] = useState({} as User);
+  const [users, setUsers] = useState({} as User);
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
@@ -91,6 +94,26 @@ const RaiseCapital = () => {
     sharesOutstanding: 0,
     location: "",
   });
+
+  const { user, getAccessTokenSilently, isLoading } = useAuth0();
+
+  useEffect(() => {
+    //wait for auth0 to be done loading and make sure we have our user data
+    if (!isLoading && user) {
+      //get the auth0 sub and the JWT from auth0. this will be verified by our backend
+      getUserToken(user, getAccessTokenSilently).then((result) => {
+        //is we get a success (we are authenticated), execute this logic
+        if (result.isAuthenticated) {
+          console.log("authenticated!");
+
+          getUser().then((response) => {
+            console.log("User:");
+            console.log(response);
+          });
+        } else console.log("Raise Capital: not authenticated..");
+      });
+    }
+  }, [isLoading]);
 
   const handleHighlightsChange = (index: any, value: any) => {
     const updatedHighlights = [...highlights];
@@ -149,7 +172,7 @@ const RaiseCapital = () => {
         if (response) {
           console.log("User:");
           console.log(response);
-          setUser(response);
+          setUsers(response);
         } else {
           // handle the scenario when user is not returned
           console.error("No user returned");
@@ -521,15 +544,28 @@ const RaiseCapital = () => {
                 </Stack>
               </FormControl>
               <Center>
-                <Button
-                  padding={"30px 32px"}
-                  bg="brand.100"
-                  color={"white"}
-                  mt={10}
-                  type="submit"
-                >
-                  Create Company Profile
-                </Button>
+                {user ? (
+                  <Button
+                    padding={"30px 32px"}
+                    bg="brand.100"
+                    color={"white"}
+                    mt={10}
+                    type="submit"
+                  >
+                    Create Company Profile
+                  </Button>
+                ) : (
+                  <Link to={`/`}>
+                    <Button
+                      padding={"30px 32px"}
+                      bg="brand.100"
+                      color={"white"}
+                      mt={10}
+                    >
+                      Login / Register to Raise Funding
+                    </Button>
+                  </Link>
+                )}
               </Center>
             </form>
           </Box>
