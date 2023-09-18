@@ -95,7 +95,8 @@ const RaiseCapital = () => {
     location: "",
   });
 
-  const { user, getAccessTokenSilently, isLoading } = useAuth0();
+  const { user, getAccessTokenSilently, isLoading, loginWithRedirect } =
+    useAuth0();
 
   useEffect(() => {
     //wait for auth0 to be done loading and make sure we have our user data
@@ -555,16 +556,15 @@ const RaiseCapital = () => {
                     Create Company Profile
                   </Button>
                 ) : (
-                  <Link to={`/`}>
-                    <Button
-                      padding={"30px 32px"}
-                      bg="brand.100"
-                      color={"white"}
-                      mt={10}
-                    >
-                      Login / Register to Raise Funding
-                    </Button>
-                  </Link>
+                  <Button
+                    padding={"30px 32px"}
+                    bg="brand.100"
+                    color={"white"}
+                    mt={10}
+                    onClick={() => loginWithRedirect({})}
+                  >
+                    Login / Register to Raise Funding
+                  </Button>
                 )}
               </Center>
             </form>
