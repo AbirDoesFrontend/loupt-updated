@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getUser, User, updateUser } from "../api";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   Box,
   Input,
@@ -44,22 +44,30 @@ const EditProfilePage = () => {
 
   const handleUpdateUser = (event: any) => {
     event.preventDefault();
+    //   legalName?: string;
+    // bio?: string;
+    // email?: string;
+    // profilePic?: string;
+    // phoneNumber?: number;
+    // companies?: string[];
+    // connections?: string[];
+    // investments?: string[];
+    // banner?: string;
+    // education?: string;
+    // location?: string;
+    // occupation?: string;
+    // followers?: string[];
 
     const form = event.target;
     const legalName = form.name.value;
     const phoneNumber = form.phoneNumber.value;
     const bio = form.bio.value;
     const occupation = form.occupation.value;
-    localStorage.setItem("occupation", occupation);
     const education = form.education.value;
-    localStorage.setItem("education", education);
     const location = form.location.value;
-    localStorage.setItem("location", location);
-
-    console.log(localStorage.getItem("occupation"));
 
     updateUser({
-      legalName : legalName,
+      legalName: legalName,
       phoneNumber: phoneNumber,
       bio: bio,
       occupation: occupation,
@@ -67,20 +75,21 @@ const EditProfilePage = () => {
       location: location,
     }).then((response) => {
       console.log("User has been updated:");
-      console.log(response);
-      toast.success('🦄 User has been updated!', {
+      // console.log(response);
+      setUser(response);
+      toast.success("User has been updated!", {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
         theme: "light",
-        });
-        setTimeout(() => {
-          navigate('/profile')
-        } , 3000)
+      });
+      // setTimeout(() => {
+      //   navigate("/profile");
+      // }, 3000);
     });
   };
   return (
