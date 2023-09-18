@@ -108,7 +108,10 @@ const CompanyDetailPage = () => {
 
   return (
     <>
-      <Container maxW={"7xl"}>
+      <Container maxW={"7xl"} position={"relative"}>
+        <Link to="/edit-company">
+          <Button sx={styles.editBtn}>Edit Company Profile</Button>
+        </Link>
         <SimpleGrid sx={styles.grid}>
           {/* BANNER  */}
           <Flex>
