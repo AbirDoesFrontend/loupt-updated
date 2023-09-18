@@ -51,7 +51,9 @@ const CompanyDetailPage = () => {
   const [company, setCompany] = useState({} as Company);
 
   const params = useParams();
+  // console.log(params);
   const id = params.id;
+  console.log(id);
 
   useEffect(() => {
     getUser()
@@ -96,7 +98,7 @@ const CompanyDetailPage = () => {
   }, [id]);
 
   // Highlights Dummy Data
-  const highlights = Array.apply(null, Array(6)).map(function (x, i) {
+  const highlights = Array.apply(null, Array(6)).map(function (_, i) {
     return {
       id: i,
       title: "Lorem ipsum dolor sit amet",
@@ -104,15 +106,10 @@ const CompanyDetailPage = () => {
     };
   });
 
-  console.log(company)
-
   return (
     <>
       <Container maxW={"7xl"}>
         <SimpleGrid sx={styles.grid}>
-          <Link to="/edit-company">
-            <Button sx={styles.editBtn}>Edit Company Profile</Button>
-          </Link>
           {/* BANNER  */}
           <Flex>
             <Box

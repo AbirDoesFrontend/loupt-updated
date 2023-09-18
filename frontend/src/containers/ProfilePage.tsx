@@ -61,7 +61,9 @@ const ProfilePage = () => {
   const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
 
   const params = useParams();
+  // console.log(params);
   const id = params.id;
+  console.log(id);
 
   useEffect(() => {
     //wait for auth0 to be done loading and make sure we have our user data
@@ -112,10 +114,6 @@ const ProfilePage = () => {
     });
   }, [id]);
 
-  const userLocation = localStorage.getItem("location");
-  const userEducation = localStorage.getItem("education");
-  const userOccupation = localStorage.getItem("occupation");
-
   return (
     <>
       <Box maxW={"7xl"} mx={["10px", "10px", "auto"]}>
@@ -159,7 +157,7 @@ const ProfilePage = () => {
                 <Text fontWeight={"semibold"}>
                   {user.connections?.length}+ Connections
                 </Text>
-                {user.connections?.slice(0, 6).map((connection, index) => (
+                {user.connections?.slice(0, 6).map((_, index) => (
                   <Image
                     key={index}
                     src={bannerImg}
@@ -224,7 +222,7 @@ const ProfilePage = () => {
               <Heading fontSize={24}>Basic Information</Heading>
               <HStack>
                 <Icon sx={styles.icon} as={FaMapMarkerAlt} />
-                <Text sx={styles.iconText}>Lives In {userLocation}</Text>
+                <Text sx={styles.iconText}>Lives In {user.location}</Text>
               </HStack>
               <HStack>
                 <Icon sx={styles.icon} as={FaVenusMars} />
@@ -232,11 +230,11 @@ const ProfilePage = () => {
               </HStack>
               <HStack>
                 <Icon sx={styles.icon} as={FaBriefcase} />
-                <Text sx={styles.iconText}>Works at {userOccupation}</Text>
+                <Text sx={styles.iconText}>Works at {user.occupation}</Text>
               </HStack>
               <HStack>
                 <Icon sx={styles.icon} as={FaUniversity} />
-                <Text sx={styles.iconText}>Studied at {userEducation}</Text>
+                <Text sx={styles.iconText}>Studied at {user.education}</Text>
               </HStack>
             </VStack>
 
@@ -248,10 +246,10 @@ const ProfilePage = () => {
                 columns={{ base: 1, md: 2 }}
                 spacing={8}
               >
-                <FeatureCard logo={bannerImg} name={"Investment 1"} />
-                <FeatureCard logo={bannerImg} name={"Investment 2"} />
-                <FeatureCard logo={bannerImg} name={"Investment 3"} />
-                <FeatureCard logo={bannerImg} name={"Investment 4"} />
+                <FeatureCard logo={bannerImg} name={"Investment 1"} _id={""} />
+                <FeatureCard logo={bannerImg} name={"Investment 2"} _id={""} />
+                <FeatureCard logo={bannerImg} name={"Investment 3"} _id={""} />
+                <FeatureCard logo={bannerImg} name={"Investment 4"} _id={""} />
               </SimpleGrid>
             </Box>
 

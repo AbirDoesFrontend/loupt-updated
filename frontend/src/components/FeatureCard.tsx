@@ -5,12 +5,13 @@ import { Link } from "react-router-dom";
 const FeatureCard = ({
   logo,
   name,
-  companyId,
+  _id,
 }: {
   logo: any;
   name: any;
-  companyId: any;
+  _id: any;
 }) => {
+  console.log(_id);
   return (
     <>
       <Stack>
@@ -20,7 +21,7 @@ const FeatureCard = ({
             <Text fontWeight={600} fontSize={16}>
               {name}
             </Text>
-            <Link to={`/company/${companyId}`}>
+            <Link to={`/company/${_id}`}>
               <Button
                 background={"transparent"}
                 p={0}

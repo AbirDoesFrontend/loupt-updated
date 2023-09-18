@@ -14,6 +14,7 @@ import {
   FormControl,
 } from "@chakra-ui/react";
 import styles from "./styles/EditProfileStyle";
+import Logo from "../assets/Loupt app logo 4.png";
 
 const EditProfilePage = () => {
   const [user, setUser] = useState({} as User);
@@ -40,26 +41,24 @@ const EditProfilePage = () => {
   const handleUpdateUser = (event: any) => {
     event.preventDefault();
 
-    const form = event.target;
-    const legalName = form.name.value;
-    const phoneNumber = form.phoneNumber.value;
-    const bio = form.bio.value;
-    const occupation = form.occupation.value;
-    localStorage.setItem("occupation", occupation);
-    const education = form.education.value;
-    localStorage.setItem("education", education);
-    const location = form.location.value;
-    localStorage.setItem("location", location);
-    const fundsBalance = parseInt(form.fund.value);
+    // const form = event.target;
+    // const phoneNumber = form.phoneNumber.value;
+    // const bio = form.bio.value;
+    // const occupation = form.occupation.value;
+    // localStorage.setItem("occupation", occupation);
+    // const education = form.education.value;
+    // localStorage.setItem("education", education);
+    // const location = form.location.value;
+    // localStorage.setItem("location", location);
+
+    // console.log(localStorage.getItem("occupation"));
 
     updateUser({
-      legalName: legalName,
       phoneNumber: phoneNumber,
       bio: bio,
       occupation: occupation,
       education: education,
       location: location,
-      // fundsBalance: fundsBalance,
     }).then((response) => {
       console.log("User has been updated:");
       console.log(response);
@@ -188,5 +187,4 @@ const EditProfilePage = () => {
     </>
   );
 };
-
 export default EditProfilePage;

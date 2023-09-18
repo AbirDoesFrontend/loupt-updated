@@ -54,13 +54,6 @@ const styles = {
     borderRadius: "12px",
     zIndex: 999,
   },
-
-  editBtn: {
-    position: "absolute",
-    zIndex: "3",
-    top: "4%",
-    left: "2%",
-  },
 };
 
 export default styles;

@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { SimpleGrid } from "@chakra-ui/react";
 import Card from "./Card";
+// import CompanyImg1 from "../assets/companyImg.png";
+// import CompanyImg2 from "../assets/companyImg2.png";
+// import CompanyImg3 from "../assets/companyImg3.png";
 import userImg from "../assets/user.png";
 
 import { getAllCompanies, Company } from "../api";
@@ -12,18 +15,19 @@ const CardGrid = () => {
   const { user, isLoading } = useAuth0();
 
   useEffect(() => {
-    if (!isLoading && user) {
+    if (!isLoading /* && user */) {
       getAllCompanies().then((response) => {
+        console.log('All Companies :: ' , response )
         setAllCompanies(response);
       });
+
     }
-  }, [isLoading, user]);
+  }, [isLoading])
 
-  console.log("All Companies : ", allCompanies);
-
+  
   return (
-    <SimpleGrid columns={[1, null, 3]} spacing="40px" mt={15}>
-      {allCompanies.slice(0, 6).map((company, index) => (
+    <SimpleGrid columns={[1, null, 3]} spacing="40px">
+      {allCompanies.slice(0, 9).map((company, index) => (
         <Card key={index} userName={""} {...company} /> //add userName="" to fix error
       ))}
     </SimpleGrid>
