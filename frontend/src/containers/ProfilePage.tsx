@@ -5,6 +5,7 @@ import {
   User,
   getConnectedCompanies,
   updateUser,
+  addConnection,
 } from "../api";
 
 import { Link, useParams } from "react-router-dom";
@@ -60,6 +61,7 @@ const ProfilePage = () => {
   const [user, setUser] = useState({} as User);
   const [userConnectedCompanyID, setUserConnectedCompanyID] = useState([]);
   const [userConnectedCompany, setUserConnectedCompany] = useState([]);
+  const [connectedConnection, setConnectedConnection] = useState(true);
   const [suggestedUser, setSuggestedUser] = useState<User[]>([]);
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   // const [allCompanies, setAllCompanies] = useState([] as Company[]);
@@ -136,7 +138,15 @@ const ProfilePage = () => {
     });
   }, [user]);
 
-  // Add User Connection
+  // Add User Connection (only for Accept Connection Btn)
+  const addConnectionButton = (id: any) => {
+    addConnection(id).then((response) => {
+      if (response) {
+        console.log("Connection Added", id);
+        setConnectedConnection(false);
+      }
+    });
+  };
 
   return (
     <>
@@ -207,6 +217,13 @@ const ProfilePage = () => {
                       />
                     ))}
                   </HStack>
+                  {connectedConnection ? (
+                    <Button mt={4}>Accept Connection + </Button>
+                  ) : (
+                    <Button mt={4} bg={"purple.100"}>
+                      Connected{" "}
+                    </Button>
+                  )}
                 </Box>
 
                 {/* DIVIDER  */}
@@ -216,7 +233,7 @@ const ProfilePage = () => {
                   gap={6}
                   fontSize={16}
                   flexDirection={["column", "column", "row"]}
-                  alignItems={"start"}
+                  alignItems={"center"}
                 >
                   <Text>
                     <EmailIcon sx={styles.icon} /> {user.email}

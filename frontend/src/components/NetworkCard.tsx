@@ -11,13 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { User, addConnection, getSuggestedUsers } from "../api";
-import { Link, useParams } from "react-router-dom";
-
-// type NetworkCardProps = {
-//   isAuthenticated: boolean;
-// };
-
-// const isAuthenticated = false;
+import { Link } from "react-router-dom";
 
 const NetworkCard = () => {
   const [suggestedUsers, setSuggestedUsers] = useState<User[]>([]);
