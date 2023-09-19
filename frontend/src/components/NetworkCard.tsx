@@ -105,7 +105,7 @@ const NetworkCard = () => {
         {suggestedUsers.length !== 0 &&
           suggestedUsers.slice(0, 5).map((suggestedUser) => (
             <Box
-              key={suggestedUser._id} // Don't forget to include a key when mapping in React
+              key={suggestedUser.userId} // Don't forget to include a key when mapping in React
               padding={"20px 20px"}
               // margin={"0px"}
               marginRight={"20px"}
@@ -135,7 +135,7 @@ const NetworkCard = () => {
               </svg>
 
               <Center h="full">
-                <Link to={`/user-profile/${suggestedUser._id}`}>
+                <Link to={`/user-profile/${suggestedUser.userId}`}>
                   <VStack>
                     <Image
                       src={suggestedUser.profilePic}
