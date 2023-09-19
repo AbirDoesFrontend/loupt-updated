@@ -26,7 +26,7 @@ function Checkout() {
   return (
     <Box p={10} maxW={"7xl"} mx={"auto"} height={"90vh"}>
       <Heading mb={6} textTransform={"uppercase"}>
-        Checkout
+        Invest in Company
       </Heading>
       <Grid templateColumns={{ base: "1fr", md: "2fr 1fr" }} gap={10}>
         <Box
@@ -66,10 +66,8 @@ function Checkout() {
               <Text fontSize="lg" fontWeight="normal">
                 Investing As:
               </Text>
-              <Select placeholder="Relation" mt={4}>
-                <option value="me">Me</option>
-                <option value="company">Company</option>
-                <option value="other">Other</option>
+              <Select placeholder="Myself" mt={4}>
+                <option value="me">Myself</option>
               </Select>
             </Box>
 

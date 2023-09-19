@@ -27,23 +27,23 @@ import AppleImg from "../assets/apple.jpg";
 import { Company } from "../api";
 
 const CompanyProfileCard: React.FC<Company> = ({
-  companyId,
-  name,
+  //companyId,
+  //name,
   logo,
-  banner,
-  bio,
-  shortBio,
-  partners,
-  website,
+  //banner,
+  //bio,
+  //shortBio,
+  //partners,
+  //website,
   valuation,
   minimumInvestment,
   sharePrice,
   sharesOutstanding,
-  location,
-  _id,
-  createdAt,
-  updatedAt,
-  __v,
+  //location,
+  //_id,
+  //createdAt,
+  //updatedAt,
+  //__v,
 }) => {
   const [fundRaised, setFundRaised] = useState<number>(50000);
   const [investment, setInvestment] = useState<string | number>(""); // can be a string initially due to the empty input field

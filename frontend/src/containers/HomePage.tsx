@@ -19,6 +19,8 @@ import {
   Heading,
   useColorModeValue,
   Image,
+  Center,
+  Link,
 } from "@chakra-ui/react";
 import {
   FcAbout,
@@ -48,6 +50,7 @@ import TestimonialSection from "../components/TestimonialSection";
 import Newsletter from "../components/Newsletter";
 
 const HomePage = () => {
+  const [activeSection, setActiveSection] = useState("");
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
@@ -140,7 +143,7 @@ const HomePage = () => {
                 spacing={{ base: 4, sm: 6 }}
                 direction={{ base: "column", sm: "row" }}
               >
-                <Button
+                {/* <Button
                   rounded={"lg"}
                   size={"lg"}
                   fontWeight={"normal"}
@@ -150,8 +153,8 @@ const HomePage = () => {
                   _hover={{ bg: "purple.500", color: "white" }}
                 >
                   Get started
-                </Button>
-                <Button
+                </Button> */}
+                {/* <Button
                   rounded={"lg"}
                   size={"lg"}
                   fontWeight={"normal"}
@@ -159,7 +162,7 @@ const HomePage = () => {
                   leftIcon={<PlayIcon h={4} w={4} color={"gray.300"} />}
                 >
                   How It Works
-                </Button>
+                </Button> */}
               </Stack>
             </Stack>
             <Flex
@@ -203,10 +206,8 @@ const HomePage = () => {
       </Container>
 
       {/* SECOND SECTION STARTS  */}
-      <Container maxW={"1280px"}>
+      {/* <Container maxW={"1280px"}>
         <Divider sx={styles.divider} mt={20} mb={20} />
-
-        {/* FEATURES SECTION  */}
         <Box p={4}>
           <Stack spacing={4} as={Container} maxW={"3xl"} textAlign={"center"}>
             <Heading
@@ -329,83 +330,107 @@ const HomePage = () => {
             </Flex>
           </Container>
         </Box>
-      </Container>
+      </Container> */}
 
       {/* TESTIMONIALS  */}
-      <Container maxWidth={"100%"} bg={"brand.200"} my={100} py={20}>
+      {/* <Container maxWidth={"100%"} bg={"brand.200"} my={100} py={20}>
         <TestimonialSection></TestimonialSection>
-      </Container>
+      </Container> */}
 
       {/* COMPANY CARDS */}
-      <Box m={"140px 20px"} maxW="7xl" mx={"auto"}>
-        <Heading
-          fontSize={{ base: "2xl", sm: "4xl", lg: "5xl" }}
-          fontWeight={"bold"}
-          position={"relative"}
-          _after={{
-            content: "''",
-            width: "300px",
-            height: "20%",
-            position: "absolute",
-            bottom: 1,
-            left: ["10px", "20px", "95px"],
-            bg: "brand.300",
-            zIndex: -1,
-          }}
-          mb={10}
+
+      {/* DUAL BUTTONS  */}
+      <HStack spacing={4} justify="center" py={10}>
+        <Button
+          sx={styles.buttonLarge}
+          color={"brand.100"}
+          onClick={() => setActiveSection("network")}
         >
-          Popular Companies
-        </Heading>
-        <CardGrid></CardGrid>
-      </Box>
+          My Network
+        </Button>
+        <Button
+          sx={styles.buttonLarge}
+          color="white"
+          bg="brand.100"
+          onClick={() => setActiveSection("explore")}
+        >
+          Explore
+        </Button>
+      </HStack>
+
+      {/* NETWORK SUGGESTIONS  */}
+      {activeSection === "network" && (
+        <div>
+          {/* Content for My Network */}
+          {/* NETWORK SUGGESTIONS  */}
+          <VStack spacing={20} mt={5}>
+            <Box>
+              <Flex
+                direction="column"
+                alignItems="center"
+                justifyContent="center"
+                gap={10}
+              >
+                <Heading
+                  fontSize={{ base: "2xl", sm: "4xl", lg: "5xl" }}
+                  fontWeight={"bold"}
+                  position={"relative"}
+                  _after={{
+                    content: "''",
+                    width: "300px",
+                    height: "20%",
+                    position: "absolute",
+                    bottom: 1,
+                    left: ["10px", "20px", "95px"],
+                    bg: "brand.300",
+                    zIndex: -1,
+                  }}
+                  mb={8}
+                >
+                  Network Suggestions
+                </Heading>
+                <HStack>
+                  <NetworkCard></NetworkCard>
+                </HStack>
+              </Flex>
+            </Box>
+            <Divider sx={styles.divider} />
+          </VStack>
+        </div>
+      )}
+
+      {activeSection === "explore" && (
+        <div>
+          {/* Content for Explore */}
+          {/* COMPANY CARDS */}
+          <Box m={10} maxW="7xl" mx={"auto"}>
+            <Center>
+              <Heading
+                fontSize={{ base: "2xl", sm: "4xl", lg: "5xl" }}
+                fontWeight={"bold"}
+                position={"relative"}
+                _after={{
+                  content: "''",
+                  width: "300px",
+                  height: "20%",
+                  position: "absolute",
+                  bottom: 1,
+                  left: ["10px", "20px", "95px"],
+                  bg: "brand.300",
+                  zIndex: -1,
+                }}
+                mb={10}
+              >
+                Popular Companies
+              </Heading>
+            </Center>
+            <CardGrid></CardGrid>
+          </Box>
+        </div>
+      )}
 
       {/* NEWSLETTER SECTION  */}
       <Newsletter></Newsletter>
-
-      {/* NETWORK SUGGESTIONS  */}
-      <VStack spacing={20} mt={20}>
-        <Box>
-          <Flex
-            direction="column"
-            alignItems="center"
-            justifyContent="center"
-            gap={10}
-          >
-            <Heading
-              fontSize={{ base: "2xl", sm: "4xl", lg: "5xl" }}
-              fontWeight={"bold"}
-              position={"relative"}
-              _after={{
-                content: "''",
-                width: "300px",
-                height: "20%",
-                position: "absolute",
-                bottom: 1,
-                left: ["10px", "20px", "95px"],
-                bg: "brand.300",
-                zIndex: -1,
-              }}
-              mb={8}
-            >
-              Network Suggestions
-            </Heading>
-            <HStack>
-              <NetworkCard></NetworkCard>
-            </HStack>
-          </Flex>
-        </Box>
-        <Divider sx={styles.divider} />
-      </VStack>
-
-      {/* DUAL BUTTONS  */}
-      {/* <HStack spacing={4} justify="center" py={10}>
-        <Button sx={styles.buttonLarge} color={"brand.100"}>
-          My Network
-        </Button>
-        <Button sx={styles.buttonLarge} color="white" bg="brand.100">
-          Explore
-        </Button>
-      </HStack> */}
     </>
   );
 };
@@ -444,7 +469,7 @@ interface CardProps {
   href: string;
 }
 
-const Card = ({ heading, description, icon, href }: CardProps) => {
+const Card = ({ heading, description, icon /* href */ }: CardProps) => {
   return (
     <Box
       maxW={{ base: "full", md: "275px" }}

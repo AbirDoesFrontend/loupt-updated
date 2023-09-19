@@ -26,6 +26,7 @@ import {
   Container,
 } from "@chakra-ui/react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   getUser,
   getConnectedUsers,
@@ -34,7 +35,9 @@ import {
   Company,
   User,
   createCompany,
+  getUserToken,
 } from "../api";
+import { Link } from "react-router-dom";
 
 interface FormData {
   name: string;
@@ -50,14 +53,14 @@ interface FormData {
   location: string;
   // fundingGoal: number;
   // corporateAddress: string;
-  // lastDate: string;
+  lastDate: string;
   // highlights: string[];
-  // documents: any;
+  documents: any;
   // corporateState: string;
 }
 
 const RaiseCapital = () => {
-  const [user, setUser] = useState({} as User);
+  const [users, setUsers] = useState({} as User);
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
@@ -76,8 +79,8 @@ const RaiseCapital = () => {
     // corporateState: "",
     // maxInvestment: "",
     // // fundingGoal: ""
-    // lastDate: "",
-    // documents: "",
+    lastDate: "",
+    documents: "",
     // highlights: [""],
     name: "",
     logo: "",
@@ -91,6 +94,27 @@ const RaiseCapital = () => {
     sharesOutstanding: 0,
     location: "",
   });
+
+  const { user, getAccessTokenSilently, isLoading, loginWithRedirect } =
+    useAuth0();
+
+  useEffect(() => {
+    //wait for auth0 to be done loading and make sure we have our user data
+    if (!isLoading && user) {
+      //get the auth0 sub and the JWT from auth0. this will be verified by our backend
+      getUserToken(user, getAccessTokenSilently).then((result) => {
+        //is we get a success (we are authenticated), execute this logic
+        if (result.isAuthenticated) {
+          console.log("authenticated!");
+
+          getUser().then((response) => {
+            console.log("User:");
+            console.log(response);
+          });
+        } else console.log("Raise Capital: not authenticated..");
+      });
+    }
+  }, [isLoading]);
 
   const handleHighlightsChange = (index: any, value: any) => {
     const updatedHighlights = [...highlights];
@@ -120,6 +144,7 @@ const RaiseCapital = () => {
     const minimumInvestment = formData.minimumInvestment;
     const location = formData.location;
     const sharesOutstanding = formData.sharesOutstanding;
+    
     // const fundingGoal = formData.fundingGoal;
 
     const newCompany = {
@@ -134,6 +159,7 @@ const RaiseCapital = () => {
       sharePrice: parseInt(sharePrice),
       sharesOutstanding: parseInt(sharesOutstanding),
       location: location,
+     
       // fundingGoal: fundingGoal,
     };
 
@@ -143,13 +169,20 @@ const RaiseCapital = () => {
     });
   };
 
+
+  const dataAsArray = Object.values(formData);
+  console.log(dataAsArray);
+  for (const [key, value] of Object.entries(formData)) {
+    console.log(`${key}: ${value}`);
+  }
+
   useEffect(() => {
     getUser()
       .then((response) => {
         if (response) {
           console.log("User:");
           console.log(response);
-          setUser(response);
+          setUsers(response);
         } else {
           // handle the scenario when user is not returned
           console.error("No user returned");
@@ -278,6 +311,19 @@ const RaiseCapital = () => {
                         setFormData({
                           ...formData,
                           name: e.target.value,
+                        })
+                      }
+                    />
+                  </FormControl>
+                  <FormControl mb={4}>
+                    <FormLabel>Website:</FormLabel>
+                    <Input
+                      placeholder="Walmart"
+                      value={formData.website}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          website: e.target.value,
                         })
                       }
                     />
@@ -469,19 +515,19 @@ const RaiseCapital = () => {
                 <FormLabel>Last Date:</FormLabel>
                 <Input
                   type="date"
-                  // value={formData.lastDate}
-                  // onChange={(e) =>
-                  //   setFormData({ ...formData, lastDate: e.target.value })
-                  // }
+                  value={formData.lastDate}
+                  onChange={(e) =>
+                    setFormData({ ...formData, lastDate: e.target.value })
+                  }
                 />
               </FormControl>
               <FormControl mb={4}>
                 <FormLabel>Upload Documents:</FormLabel>
                 <Input
                   type="file"
-                  // onChange={(e) =>
-                  //   setFormData({ ...formData, documents: e.target.files })
-                  // }
+                  onChange={(e) =>
+                    setFormData({ ...formData, documents: e.target.files })
+                  }
                 />
               </FormControl>
               <FormControl mb={4}>
@@ -521,15 +567,27 @@ const RaiseCapital = () => {
                 </Stack>
               </FormControl>
               <Center>
-                <Button
-                  padding={"30px 32px"}
-                  bg="brand.100"
-                  color={"white"}
-                  mt={10}
-                  type="submit"
-                >
-                  Create Company Profile
-                </Button>
+                {user ? (
+                  <Button
+                    padding={"30px 32px"}
+                    bg="brand.100"
+                    color={"white"}
+                    mt={10}
+                    type="submit"
+                  >
+                    Create Company Profile
+                  </Button>
+                ) : (
+                  <Button
+                    padding={"30px 32px"}
+                    bg="brand.100"
+                    color={"white"}
+                    mt={10}
+                    onClick={() => loginWithRedirect({})}
+                  >
+                    Login / Register to Raise Funding
+                  </Button>
+                )}
               </Center>
             </form>
           </Box>

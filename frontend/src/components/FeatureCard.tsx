@@ -11,6 +11,7 @@ const FeatureCard = ({
   name: any;
   companyId: any;
 }) => {
+  // console.log(companyId);
   return (
     <>
       <Stack>

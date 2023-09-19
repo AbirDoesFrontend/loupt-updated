@@ -16,6 +16,24 @@ export interface InvestmentCreationRequest {
   shareCount: number;
 }
 
+
+export interface InvestmentData {
+  roundId: string;
+  amount: number;
+  shareCount: number;
+  domicile: boolean;
+  firstName: string;
+  lastName: string;
+  dob: string;
+  primCountry: string;
+  primAddress1: string;
+  primCity: string;
+  primState: string;
+  primZip: string;
+  ssn: string;
+  phone: string;
+}
+
 export interface Company {
   companyId: string;
   name: string;
@@ -136,9 +154,10 @@ export interface ConnectResponse {
 }
 
 
-// const API_BASE_URL = 'http://localhost:24100/';
-const API_BASE_URL = 'http://api.investloupt.com:24100/';
+const API_BASE_URL = 'https://api.investloupt.com/';
 
+// const API_BASE_URL = 'http://localhost:24100/';
+// const API_BASE_URL = 'http://api.investloupt.com:24100/';
 
 //DONE
 const apiRequest = async<T>(
@@ -160,7 +179,7 @@ const apiRequest = async<T>(
       data,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        //'X-Auth0-Sub' : `${localStorage.getItem('auth0Sub')}`
+        'X-Auth0-Sub': `${localStorage.getItem('auth0Sub')}`
       }
     });
     return response.data;
@@ -246,7 +265,7 @@ export const getUser = async (user_id?: string) => {
 
 //DONE
 export const getConnectedUsers = async () => {
-  const response = await apiRequest<User[]>('GET', 'users')
+  const response = await apiRequest<User[]>('GET', 'users/connected')
   return response
 }
 
@@ -271,7 +290,7 @@ export const addConnection = async (userId: string) => {
 }
 
 //DONE
-export const getCompany = async (companyId: string) => {
+export const getCompany = async (companyId: any) => {
   const response = await apiRequest<Company>('GET', `company/${companyId}`)
   return response
 }
@@ -326,3 +345,10 @@ const makeInvestment = async (requestPayload: InvestmentCreationRequest) => {
   const response = await apiRequest<{}>('POST', `investment`, requestPayload)
   return response
 }
+
+export const submitInvestmentData = async (requestPayload: InvestmentData) => {
+
+  const response = await apiRequest<{}>('POST', `investmentwithkyc`, requestPayload);
+  return response;
+
+};

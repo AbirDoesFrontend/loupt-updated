@@ -54,7 +54,6 @@ const styles = {
     borderRadius: "12px",
     zIndex: 999,
   },
-
   editBtn: {
     position: "absolute",
     zIndex: "3",
