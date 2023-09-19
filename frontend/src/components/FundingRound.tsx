@@ -13,9 +13,11 @@ import {
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import styles from "../containers/styles/CompanyStyles";
-import { createFundingRound, submitInvestmentData } from "../api";
+import { createFundingRound } from "../api";
 import { Company, getCompany } from "../api";
 import { useParams } from "react-router-dom";
 
@@ -40,20 +42,13 @@ function FundingRound() {
   }, [id]);
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
-    roundId: "",
-    amount: 0,
-    shareCount: 0,
-    domicile: false,
-    firstName: "",
-    lastName: "",
-    dob: "",
-    primCountry: "",
-    primAddress1: "",
-    primCity: "",
-    primState: "",
-    primZip: "",
-    ssn: "",
-    phone: "",
+    companyId: "",
+    displayName: "",
+    fundingGoal: 0,
+    deadline: "",
+    minimumInvestmentAmount: 0,
+    maximumInvestmentAmount: 0,
+    discountPercentage: 0,
   });
 
   const dataAsArray = Object.values(formData);
@@ -62,36 +57,58 @@ function FundingRound() {
     console.log(`${key}: ${value}`);
   }
 
-  const handleChange = (e: { target: { name: any; value: any } }) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
+    const form = event.target;
+    console.log(form);
+    const companyId = form.companyId.value;
+    const displayName = form.displayName.value;
+    const fundingGoal = form.fundingGoal.value;
+    const deadline = form.deadline.value;
+    const minimumInvestmentAmount = form.minimumInvestmentAmount.value;
+    const maximumInvestmentAmount = form.maximumInvestmentAmount.value;
+    const discountPercentage = form.discountPercentage.value;
 
-    try {
-      const response = await submitInvestmentData(formData);
-      console.log(formData);
-      if (response === 200) {
-        console.log("Data submitted successfully:", response);
+    const createdFundingRound = {
+      companyId: companyId,
+      displayName: displayName,
+      fundingGoal: fundingGoal,
+      deadline : deadline,
+      minimumInvestmentAmount: minimumInvestmentAmount,
+      maximumInvestmentAmount: maximumInvestmentAmount,
+      discountPercentage: discountPercentage,
+    };
+
+    console.log(createdFundingRound);
+
+    createFundingRound(createdFundingRound).then(response => {
+      console.log('Funding round created' , response)
+      if (response) {
+        toast.success("Founding Round Has Been Created!", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       } else {
-        console.error("Error in submission:", response);
+        toast.error('Something went wrong!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
       }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-
-    // Logging data as a list
-    console.log("Data as List:");
-    for (const [key, value] of Object.entries(formData)) {
-      console.log(`${key}: ${value}`);
-    }
+    })
   };
-
-  useEffect(() => {
-    createFundingRound();
-  }, []);
 
   return (
     <>
@@ -114,20 +131,43 @@ function FundingRound() {
               <ModalBody>
                 <form onSubmit={handleSubmit}>
                   <FormControl mt={4}>
-                    <FormLabel>Round ID</FormLabel>
+                    <FormLabel>Comapny ID</FormLabel>
+                    <Input type="text" name="companyId" defaultValue={id} />
+                  </FormControl>
+                  <FormControl mt={4}>
+                    <FormLabel>Comapny Name</FormLabel>
                     <Input
-                      name="roundId"
-                      value={formData.roundId}
-                      onChange={handleChange}
+                      type="text"
+                      name="displayName"
+                      defaultValue={company.name}
                     />
                   </FormControl>
-
                   <FormControl mt={4}>
+                    <FormLabel>Funding Goal</FormLabel>
+                    <Input type="number" name="fundingGoal" />
+                  </FormControl>
+                  <FormControl mt={4}>
+                    <FormLabel>Deadline</FormLabel>
+                    <Input type="date" name="deadline" />
+                  </FormControl>
+                  <FormControl mt={4}>
+                    <FormLabel>Minimum Investment</FormLabel>
+                    <Input type="number" name="minimumInvestmentAmount" />
+                  </FormControl>
+                  <FormControl mt={4}>
+                    <FormLabel>Maximum Investment</FormLabel>
+                    <Input type="number" name="maximumInvestmentAmount" />
+                  </FormControl>
+                  <FormControl mt={4}>
+                    <FormLabel>Discount Percentage</FormLabel>
+                    <Input type="number" name="discountPercentage" />
+                  </FormControl>
+
+                  {/* <FormControl mt={4}>
                     <FormLabel>Amount</FormLabel>
                     <Input
                       name="amount"
-                      value={formData.amount}
-                      onChange={handleChange}
+              
                     />
                   </FormControl>
 
@@ -135,12 +175,11 @@ function FundingRound() {
                     <FormLabel>Share Count</FormLabel>
                     <Input
                       name="shareCount"
-                      value={formData.shareCount}
-                      onChange={handleChange}
+                      
                     />
-                  </FormControl>
+                  </FormControl> */}
 
-                  <FormControl mt={4}>
+                  {/* <FormControl mt={4}>
                     <FormLabel>Domicile (from USA)</FormLabel>
                     <input
                       type="checkbox"
@@ -153,14 +192,12 @@ function FundingRound() {
                         }))
                       }
                     />
-                  </FormControl>
+                  </FormControl> */}
 
-                  <FormControl mt={4}>
+                  {/* <FormControl mt={4}>
                     <FormLabel>First Name</FormLabel>
                     <Input
                       name="firstName"
-                      value={formData.firstName}
-                      onChange={handleChange}
                     />
                   </FormControl>
 
@@ -171,9 +208,9 @@ function FundingRound() {
                       value={formData.lastName}
                       onChange={handleChange}
                     />
-                  </FormControl>
+                  </FormControl> */}
 
-                  <FormControl mt={4}>
+                  {/* <FormControl mt={4}>
                     <FormLabel>Date of Birth</FormLabel>
                     <Input
                       name="dob"
@@ -189,9 +226,9 @@ function FundingRound() {
                       value={formData.primCountry}
                       onChange={handleChange}
                     />
-                  </FormControl>
+                  </FormControl> */}
 
-                  <FormControl mt={4}>
+                  {/* <FormControl mt={4}>
                     <FormLabel>Primary Address</FormLabel>
                     <Input
                       name="primAddress1"
@@ -207,9 +244,9 @@ function FundingRound() {
                       value={formData.primCity}
                       onChange={handleChange}
                     />
-                  </FormControl>
+                  </FormControl> */}
 
-                  <FormControl mt={4}>
+                  {/* <FormControl mt={4}>
                     <FormLabel>Primary State</FormLabel>
                     <Input
                       name="primState"
@@ -225,9 +262,9 @@ function FundingRound() {
                       value={formData.primZip}
                       onChange={handleChange}
                     />
-                  </FormControl>
+                  </FormControl> */}
 
-                  <FormControl mt={4}>
+                  {/* <FormControl mt={4}>
                     <FormLabel>SSN</FormLabel>
                     <Input
                       name="ssn"
@@ -244,17 +281,17 @@ function FundingRound() {
                       value={formData.phone}
                       onChange={handleChange}
                     />
-                  </FormControl>
+                  </FormControl> */}
+                  <ModalFooter>
+                    <Button colorScheme="blue" mr={3} type="submit">
+                      Submit
+                    </Button>
+                    <Button variant="ghost" onClick={() => setIsOpen(false)}>
+                      Cancel
+                    </Button>
+                  </ModalFooter>
                 </form>
               </ModalBody>
-              <ModalFooter>
-                <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
-                  Submit
-                </Button>
-                <Button variant="ghost" onClick={() => setIsOpen(false)}>
-                  Cancel
-                </Button>
-              </ModalFooter>
             </ModalContent>
           </div>
         ) : (
@@ -277,6 +314,19 @@ function FundingRound() {
           </div>
         )}
       </Modal>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <ToastContainer />
     </>
   );
 }
