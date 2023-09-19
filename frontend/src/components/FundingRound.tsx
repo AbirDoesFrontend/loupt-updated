@@ -15,10 +15,11 @@ import {
 } from "@chakra-ui/react";
 
 import styles from "../containers/styles/CompanyStyles";
-import { submitInvestmentData } from "../api";
+import { createFundingRound, submitInvestmentData } from "../api";
 import { Company, getCompany } from "../api";
 import { useParams } from "react-router-dom";
-function InvestForm() {
+
+function FundingRound() {
   const [company, setCompany] = useState({} as Company);
   const [hasFundingRound, setHasFundingRound] = useState(false);
   const params = useParams();
@@ -29,7 +30,7 @@ function InvestForm() {
       console.log("Single Company : ", response.fundingRounds.length);
       setCompany(response);
       if (response.fundingRounds.length > 0) {
-        // setHasFundingRound(true);
+        setHasFundingRound(true);
         const fundingRoundID = response.fundingRounds[0];
         console.log("RoundID: ", fundingRoundID);
       } else {
@@ -88,6 +89,10 @@ function InvestForm() {
     }
   };
 
+  useEffect(() => {
+    createFundingRound();
+  }, []);
+
   return (
     <>
       <Button
@@ -95,7 +100,7 @@ function InvestForm() {
         sx={styles.button}
         disabled={!hasFundingRound}
       >
-        INVEST NOW
+        START FUNDING ROUND
       </Button>
 
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
@@ -275,4 +280,4 @@ function InvestForm() {
   );
 }
 
-export default InvestForm;
+export default FundingRound;

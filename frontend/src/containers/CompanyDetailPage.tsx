@@ -43,6 +43,7 @@ import { useParams, Link } from "react-router-dom";
 import styles from "./styles/CompanyStyles";
 import CompanyProfileCard from "../components/CompanyProfileCard";
 import InvestForm from "../components/InvestForm";
+import FundingRound from "../components/FundingRound";
 
 const CompanyDetailPage = () => {
   const [user, setUser] = useState({} as User);
@@ -234,7 +235,8 @@ const CompanyDetailPage = () => {
             </Stack>
 
             {/* <Button sx={styles.button}>INVEST NOW</Button> */}
-            <InvestForm />
+            {/* <InvestForm /> */}
+            <FundingRound></FundingRound>
 
             <Stack
               direction="row"

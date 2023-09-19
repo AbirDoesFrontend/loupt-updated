@@ -7,8 +7,12 @@ export interface FundingRoundCreationRequest {
   companyId: string;
   displayName: string;
   fundingGoal: number;
-  deadline: string;
+  deadline: any;
+  minimumInvestmentAmount: number;
+  maximumInvestmentAmount: number;
+  discountPercentage: number;
 }
+
 
 export interface InvestmentCreationRequest {
   roundId: string;
