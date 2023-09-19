@@ -70,7 +70,7 @@ const ProfilePage = () => {
   const params = useParams();
   // console.log(params);
   const id = params.id;
-  console.log(id);
+  // console.log(id);
 
   useEffect(() => {
     //wait for auth0 to be done loading and make sure we have our user data
@@ -136,7 +136,7 @@ const ProfilePage = () => {
     });
   }, [user]);
 
-  // console.log(userConnectedCompany);
+  // Add User Connection
 
   return (
     <>
@@ -162,7 +162,7 @@ const ProfilePage = () => {
             {/* BANNER */}
             <Box sx={styles.banner} mx={["10px", "10px", "auto"]}>
               <Image src={user.banner} sx={styles.bannerImg} />
-              {auth0User && (
+              {showEditButton && (
                 <Link to="/edit-profile">
                   <Button sx={styles.editButton} leftIcon={<FaEdit />}>
                     Edit Profile
@@ -335,10 +335,10 @@ const ProfilePage = () => {
                     alignItems={"flex-start"}
                   >
                     <Heading mb={10}>Connected Company</Heading>
-                    <Link to={'/connected-companies'}>
-                    <Button bg={"brand.100"} color={"white"}>
-                      View All
-                    </Button>
+                    <Link to={"/connected-companies"}>
+                      <Button bg={"brand.100"} color={"white"}>
+                        View All
+                      </Button>
                     </Link>
                   </HStack>
                   <SimpleGrid
