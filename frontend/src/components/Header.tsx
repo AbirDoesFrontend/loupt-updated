@@ -54,7 +54,7 @@ const Header = () => {
   const breakpoint = useBreakpointValue({ base: "base", md: "md", lg: "lg" });
 
   //const navigate = useNavigate();
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [userData, setUserData] = useState({} as User);
   const [companyData, setCompanyData] = useState({} as Company[]);
   const [avatar, setAvatar] = useState("" as string);
@@ -104,6 +104,11 @@ const Header = () => {
     }
   }, [isLoading]);
 
+  // const filteredCompanies = companyData.filter(company =>
+  //   company.name.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
+  // console.log(filteredCompanies)
+
   return (
     <Box bg={"brand.100"} maxWidth={"100%"}>
       <Flex sx={FlexStyle}>
@@ -132,6 +137,7 @@ const Header = () => {
                   color="white"
                   placeholder="Search"
                   width={{ base: "200px", md: "200px", lg: "250px" }}
+                  // onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </InputGroup>
             </Flex>
@@ -139,7 +145,7 @@ const Header = () => {
             <Flex alignItems="center">
               <Stack direction="row" spacing={6}>
                 <Text sx={NavItem}>
-                  <Link to="/invest">
+                  <Link to="/">
                     <Text _hover={NavItemHover} sx={NavLink}>
                       Invest
                     </Text>

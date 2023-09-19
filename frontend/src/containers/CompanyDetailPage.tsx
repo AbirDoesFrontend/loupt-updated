@@ -42,6 +42,7 @@ import {
 import { useParams, Link } from "react-router-dom";
 import styles from "./styles/CompanyStyles";
 import CompanyProfileCard from "../components/CompanyProfileCard";
+import InvestForm from "../components/InvestForm";
 
 const CompanyDetailPage = () => {
   const [user, setUser] = useState({} as User);
@@ -232,7 +233,8 @@ const CompanyDetailPage = () => {
               </Flex>
             </Stack>
 
-            <Button sx={styles.button}>INVEST NOW</Button>
+            {/* <Button sx={styles.button}>INVEST NOW</Button> */}
+            <InvestForm />
 
             <Stack
               direction="row"

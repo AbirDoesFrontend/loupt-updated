@@ -103,7 +103,7 @@ const EditCompanyPage = () => {
   const params = useParams();
   // console.log(params);
   const id = params.id;
-  console.log(id);
+  //console.log(id);
 
   const handleFormSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -128,6 +128,11 @@ const EditCompanyPage = () => {
       sharesOutstanding: sharesOutstanding,
       location: location,
     };
+
+    if (!id) {
+      console.log("No id param found to edit company.");
+      return;
+    }
 
     updateCompany(id, updatedCompany).then((response) => {
       toast.success("Company has been updated!", {
@@ -162,23 +167,23 @@ const EditCompanyPage = () => {
         //setUser({}); this is default value anyways
       });
 
-    getConnectedUsers().then((response) => {
-      console.log("Connected Users:");
-      console.log(response);
-      setConnectedUsers(response);
-    });
+    // getConnectedUsers().then((response) => {
+    //   console.log("Connected Users:");
+    //   console.log(response);
+    //   setConnectedUsers(response);
+    // });
 
-    getAllCompanies().then((response) => {
-      console.log("All Companies:");
-      console.log(response);
-      setAllCompanies(response);
-    });
+    // getAllCompanies().then((response) => {
+    //   console.log("All Companies:");
+    //   console.log(response);
+    //   setAllCompanies(response);
+    // });
 
-    getConnectedCompanies().then((response) => {
-      console.log("Connected Companies:");
-      console.log(response);
-      setConnectedCompanies(response);
-    });
+    // getConnectedCompanies().then((response) => {
+    //   console.log("Connected Companies:");
+    //   console.log(response);
+    //   setConnectedCompanies(response);
+    // });
 
     getCompany(id).then((response) => {
       console.log("Single Company : ", response);
@@ -197,7 +202,7 @@ const EditCompanyPage = () => {
         my={10}
         padding={10}
       >
-        <Heading>{company.name}</Heading>
+        {/* <Heading>{company.name}</Heading> */}
         <Center>
           <Heading mb={10}>Edit Company Profile</Heading>
         </Center>
@@ -238,6 +243,19 @@ const EditCompanyPage = () => {
                     <Input
                       placeholder="e.g. 903 Mill Road Kennett Square"
                       defaultValue={company.location}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          corporateAddress: e.target.value,
+                        })
+                      }
+                    />
+                  </FormControl>
+                  <FormControl mb={4}>
+                    <FormLabel>Corporate Address</FormLabel>
+                    <Input
+                      placeholder="e.g. 903 Mill Road Kennett Square"
+                      value={formData.corporateAddress}
                       onChange={(e) =>
                         setFormData({
                           ...formData,

@@ -17,17 +17,15 @@ const CardGrid = () => {
   useEffect(() => {
     if (!isLoading /* && user */) {
       getAllCompanies().then((response) => {
-        console.log('All Companies :: ' , response )
+        console.log("All Companies :: ", response);
         setAllCompanies(response);
       });
-
     }
-  }, [isLoading])
+  }, [isLoading]);
 
-  
   return (
-    <SimpleGrid columns={[1, null, 3]} spacing="40px">
-      {allCompanies.slice(0, 9).map((company, index) => (
+    <SimpleGrid columns={[1, null, 3]} spacing="40px" mx={10} mt={0}>
+      {allCompanies.slice(0, 6).map((company, index) => (
         <Card key={index} userName={""} {...company} /> //add userName="" to fix error
       ))}
     </SimpleGrid>

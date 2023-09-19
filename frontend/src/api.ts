@@ -16,6 +16,24 @@ export interface InvestmentCreationRequest {
   shareCount: number;
 }
 
+
+export interface InvestmentData {
+  roundId: string;
+  amount: number;
+  shareCount: number;
+  domicile: boolean;
+  firstName: string;
+  lastName: string;
+  dob: string;
+  primCountry: string;
+  primAddress1: string;
+  primCity: string;
+  primState: string;
+  primZip: string;
+  ssn: string;
+  phone: string;
+}
+
 export interface Company {
   companyId: string;
   name: string;
@@ -61,10 +79,10 @@ export interface CompanyCreationRequest {
 
 export interface CompanyUpdateRequest {
   name?: string;
-  // logo?: string;
+  logo?: string;
   bio?: string;
-  // partners?: string[];
-  // industry?: string[];
+  partners?: string[];
+  industry?: string[];
   website?: string;
   valuation?: number;
   minimumInvestment?: number;
@@ -296,7 +314,7 @@ export const createCompany = async (requestPayload: CompanyCreationRequest): Pro
 }
 
 //DONE
-export const updateCompany = async (companyId: any, requestPayload: CompanyUpdateRequest) => {
+export const updateCompany = async (companyId: string, requestPayload: CompanyUpdateRequest) => {
   const response = await apiRequest<Company>('PUT', `company/${companyId}`, requestPayload)
   return response
 }
@@ -328,3 +346,9 @@ const makeInvestment = async (requestPayload: InvestmentCreationRequest) => {
   return response
 }
 
+export const submitInvestmentData = async (requestPayload: InvestmentData) => {
+
+  const response = await apiRequest<{}>('POST', `investmentwithkyc`, requestPayload);
+  return response;
+
+};

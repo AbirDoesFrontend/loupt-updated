@@ -53,9 +53,9 @@ interface FormData {
   location: string;
   // fundingGoal: number;
   // corporateAddress: string;
-  // lastDate: string;
+  lastDate: string;
   // highlights: string[];
-  // documents: any;
+  documents: any;
   // corporateState: string;
 }
 
@@ -79,8 +79,8 @@ const RaiseCapital = () => {
     // corporateState: "",
     // maxInvestment: "",
     // // fundingGoal: ""
-    // lastDate: "",
-    // documents: "",
+    lastDate: "",
+    documents: "",
     // highlights: [""],
     name: "",
     logo: "",
@@ -144,6 +144,7 @@ const RaiseCapital = () => {
     const minimumInvestment = formData.minimumInvestment;
     const location = formData.location;
     const sharesOutstanding = formData.sharesOutstanding;
+    
     // const fundingGoal = formData.fundingGoal;
 
     const newCompany = {
@@ -158,6 +159,7 @@ const RaiseCapital = () => {
       sharePrice: parseInt(sharePrice),
       sharesOutstanding: parseInt(sharesOutstanding),
       location: location,
+     
       // fundingGoal: fundingGoal,
     };
 
@@ -166,6 +168,13 @@ const RaiseCapital = () => {
       console.log(response);
     });
   };
+
+
+  const dataAsArray = Object.values(formData);
+  console.log(dataAsArray);
+  for (const [key, value] of Object.entries(formData)) {
+    console.log(`${key}: ${value}`);
+  }
 
   useEffect(() => {
     getUser()
@@ -302,6 +311,19 @@ const RaiseCapital = () => {
                         setFormData({
                           ...formData,
                           name: e.target.value,
+                        })
+                      }
+                    />
+                  </FormControl>
+                  <FormControl mb={4}>
+                    <FormLabel>Website:</FormLabel>
+                    <Input
+                      placeholder="Walmart"
+                      value={formData.website}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          website: e.target.value,
                         })
                       }
                     />
@@ -493,19 +515,19 @@ const RaiseCapital = () => {
                 <FormLabel>Last Date:</FormLabel>
                 <Input
                   type="date"
-                  // value={formData.lastDate}
-                  // onChange={(e) =>
-                  //   setFormData({ ...formData, lastDate: e.target.value })
-                  // }
+                  value={formData.lastDate}
+                  onChange={(e) =>
+                    setFormData({ ...formData, lastDate: e.target.value })
+                  }
                 />
               </FormControl>
               <FormControl mb={4}>
                 <FormLabel>Upload Documents:</FormLabel>
                 <Input
                   type="file"
-                  // onChange={(e) =>
-                  //   setFormData({ ...formData, documents: e.target.files })
-                  // }
+                  onChange={(e) =>
+                    setFormData({ ...formData, documents: e.target.files })
+                  }
                 />
               </FormControl>
               <FormControl mb={4}>
