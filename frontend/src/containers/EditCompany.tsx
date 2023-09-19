@@ -33,7 +33,7 @@ import {
   getCompany,
   updateCompany,
 } from "../api";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface FormData {
   companyName: string;
@@ -62,6 +62,8 @@ const EditCompanyPage = () => {
   const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
   const [company, setCompany] = useState({} as Company);
+
+  const navigate = useNavigate();
 
   const [highlights, setHighlights] = useState<string[]>([""]);
   const [formData, setFormData] = useState<FormData>({
@@ -135,16 +137,32 @@ const EditCompanyPage = () => {
     }
 
     updateCompany(id, updatedCompany).then((response) => {
-      toast.success("Company has been updated!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      if(response) {
+        toast.success("Company has been updated!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } else {
+        toast.error('Something went wrong!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+      }
+      setTimeout(() => {
+        navigate(`/company/${id}`);
+      }, 3000);
       console.log("Updated Company : ", response);
     });
   };

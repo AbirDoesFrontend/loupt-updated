@@ -16,7 +16,6 @@ import {
   FormControl,
 } from "@chakra-ui/react";
 import styles from "./styles/EditProfileStyle";
-import Logo from "../assets/Loupt app logo 4.png";
 import { useNavigate } from "react-router-dom";
 
 const EditProfilePage = () => {
@@ -77,19 +76,32 @@ const EditProfilePage = () => {
       console.log("User has been updated:");
       // console.log(response);
       setUser(response);
-      toast.success("User has been updated!", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      // setTimeout(() => {
-      //   navigate("/profile");
-      // }, 3000);
+      if (response) {
+        toast.success("User has been updated!", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } else {
+        toast.error('Something went wrong!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+      }
+      setTimeout(() => {
+        navigate("/profile");
+      }, 3000);
     });
   };
   return (

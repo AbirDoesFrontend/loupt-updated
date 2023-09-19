@@ -23,7 +23,6 @@ import {
   FaLink,
 } from "react-icons/fa";
 import styles from "./styles/CompanyProfileCardStyles";
-import AppleImg from "../assets/apple.jpg";
 import { Company } from "../api";
 
 const CompanyProfileCard: React.FC<Company> = ({

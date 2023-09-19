@@ -128,8 +128,8 @@ const ProfilePage = () => {
   //User Connected Companies
   useEffect(() => {
     getAllCompanies().then((response: any) => {
-      let allCompanies = response;
-      let filteredCompanies = allCompanies.filter((company: any) =>
+      const allCompanies = response;
+      const filteredCompanies = allCompanies.filter((company: any) =>
         userConnectedCompanyID.includes(company.companyId)
       );
       setUserConnectedCompany(filteredCompanies);
@@ -335,9 +335,11 @@ const ProfilePage = () => {
                     alignItems={"flex-start"}
                   >
                     <Heading mb={10}>Connected Company</Heading>
+                    <Link to={'/connected-companies'}>
                     <Button bg={"brand.100"} color={"white"}>
                       View All
                     </Button>
+                    </Link>
                   </HStack>
                   <SimpleGrid
                     sx={styles.connectedCompanyCard}
