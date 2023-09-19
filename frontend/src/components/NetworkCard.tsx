@@ -11,10 +11,17 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { User, addConnection, getSuggestedUsers } from "../api";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+// type NetworkCardProps = {
+//   isAuthenticated: boolean;
+// };
+
+// const isAuthenticated = false;
 
 const NetworkCard = () => {
   const [suggestedUsers, setSuggestedUsers] = useState<User[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // if (isAuthenticated) return;
@@ -29,6 +36,8 @@ const NetworkCard = () => {
     addConnection(id).then((response) => {
       if (response) {
         console.log("Connection Added", id);
+        navigate(0);
+        localStorage.setItem(id, id);
       }
     });
   };
@@ -105,9 +114,9 @@ const NetworkCard = () => {
       >
         {/* FOR PROFILE PAGE*/}
         {suggestedUsers.length !== 0 &&
-          suggestedUsers.slice(0, 5).map((suggestedUser) => (
+          suggestedUsers.slice(0, 5).map((suggestedUser, index) => (
             <Box
-              key={suggestedUser.userId} // Don't forget to include a key when mapping in React
+              key={index} // Don't forget to include a key when mapping in React
               padding={"20px 20px"}
               // margin={"0px"}
               marginRight={"20px"}
@@ -149,11 +158,9 @@ const NetworkCard = () => {
                       boxShadow="0px 4px 15px 0px rgba(0, 0, 0, 0.07)"
                     />
                   </Link>
-                  <Link to={`/user-profile/${suggestedUser.userId}`}>
-                    <Text fontSize={"14px"}>
-                      {suggestedUser.legalName.slice(0, 10)}..
-                    </Text>
-                  </Link>
+                  <Text fontSize={"14px"}>
+                    {suggestedUser.legalName.slice(0, 10)}..
+                  </Text>
                   <Button
                     h={"24px"}
                     w={"100%"}

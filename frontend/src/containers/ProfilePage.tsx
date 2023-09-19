@@ -72,7 +72,7 @@ const ProfilePage = () => {
   const params = useParams();
   // console.log(params);
   const id = params.id;
-  // console.log(id);
+  console.log(id);
 
   useEffect(() => {
     //wait for auth0 to be done loading and make sure we have our user data
@@ -120,7 +120,7 @@ const ProfilePage = () => {
         if (user.userId === id) {
           setUser(user);
           setShowEditButton(false);
-          // console.log(user);
+          console.log(user);
           // setConnectedUsers(user);
         }
       });
@@ -137,6 +137,7 @@ const ProfilePage = () => {
       setUserConnectedCompany(filteredCompanies);
     });
   }, [user]);
+  
 
   // Add User Connection (only for Accept Connection Btn)
   const addConnectionButton = (id: any) => {
