@@ -286,7 +286,7 @@ export const updateUser = async (requestPayload: UserUpdateRequest) => {
 }
 
 //DONE
-export const addConnection = async (userId: string) => {
+export const addConnection = async (userId: any) => {
   const response = await apiRequest<ConnectResponse>('POST', `follow`, {
     userId: userId
   })

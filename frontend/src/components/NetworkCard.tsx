@@ -10,8 +10,8 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { User, getSuggestedUsers } from "../api";
-import { Link } from "react-router-dom";
+import { User, addConnection, getSuggestedUsers } from "../api";
+import { Link, useParams } from "react-router-dom";
 
 // type NetworkCardProps = {
 //   isAuthenticated: boolean;
@@ -30,6 +30,14 @@ const NetworkCard = () => {
       }
     });
   }, []);
+
+  const addConnectionButton = (id : any) => {
+    addConnection(id).then((response) => {
+      if (response) {
+        console.log("Connection Added", id);
+      }
+    });
+  };
 
   return (
     <>
@@ -135,29 +143,31 @@ const NetworkCard = () => {
               </svg>
 
               <Center h="full">
-                <Link to={`/user-profile/${suggestedUser.userId}`}>
-                  <VStack>
-                    <Image
-                      src={suggestedUser.profilePic}
-                      boxSize="60px"
-                      borderRadius="63px"
-                      border="1px solid var(--main-purple, #9583F4)"
-                      bg="lightgray"
-                      objectFit="cover"
-                      boxShadow="0px 4px 15px 0px rgba(0, 0, 0, 0.07)"
-                    />
+                <VStack>
+                  <Image
+                    src={suggestedUser.profilePic}
+                    boxSize="60px"
+                    borderRadius="63px"
+                    border="1px solid var(--main-purple, #9583F4)"
+                    bg="lightgray"
+                    objectFit="cover"
+                    boxShadow="0px 4px 15px 0px rgba(0, 0, 0, 0.07)"
+                  />
+                  <Link to={`/user-profile/${suggestedUser.userId}`}>
                     <Text fontSize={"14px"}>{suggestedUser.legalName}</Text>
-
-                    <Button
-                      h={"24px"}
-                      w={"100%"}
-                      color={"white"}
-                      bg={"brand.100"}
-                    >
-                      Accept
-                    </Button>
-                  </VStack>
-                </Link>
+                  </Link>
+                  <Button
+                    h={"24px"}
+                    w={"100%"}
+                    color={"white"}
+                    bg={"brand.100"}
+                    onClick={() => {
+                      addConnectionButton(suggestedUser.userId);
+                    }}
+                  >
+                    Accept
+                  </Button>
+                </VStack>
               </Center>
             </Box>
           ))}
