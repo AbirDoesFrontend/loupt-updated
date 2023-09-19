@@ -236,16 +236,19 @@ const CompanyDetailPage = () => {
 
             {/* <Button sx={styles.button}>INVEST NOW</Button> */}
             {/* <InvestForm /> */}
-            <FundingRound></FundingRound>
+            <HStack maxW={"3xl"}>
+              <FundingRound></FundingRound>
+              <InvestForm></InvestForm>
+            </HStack>
 
-            <Stack
+            {/* <Stack
               direction="row"
               alignItems="center"
               justifyContent={"center"}
             >
               <MdLocalShipping />
               <Text>Grow Fast With Us!</Text>
-            </Stack>
+            </Stack> */}
           </Stack>
         </SimpleGrid>
       </Container>

@@ -29,7 +29,7 @@ function InvestForm() {
       console.log("Single Company : ", response.fundingRounds.length);
       setCompany(response);
       if (response.fundingRounds.length > 0) {
-        // setHasFundingRound(true);
+        setHasFundingRound(true);
         const fundingRoundID = response.fundingRounds[0];
         console.log("RoundID: ", fundingRoundID);
       } else {
@@ -99,7 +99,7 @@ function InvestForm() {
       </Button>
 
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        {!hasFundingRound ? (
+        {hasFundingRound ? (
           <div>
             <ModalOverlay />
             <ModalContent>

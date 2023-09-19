@@ -98,6 +98,7 @@ function FundingRound() {
       <Button
         onClick={() => setIsOpen(true)}
         sx={styles.button}
+        backgroundColor={"gray.500"}
         disabled={!hasFundingRound}
       >
         START FUNDING ROUND
