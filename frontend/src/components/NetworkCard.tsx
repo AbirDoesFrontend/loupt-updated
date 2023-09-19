@@ -31,7 +31,7 @@ const NetworkCard = () => {
     });
   }, []);
 
-  const addConnectionButton = (id : any) => {
+  const addConnectionButton = (id: any) => {
     addConnection(id).then((response) => {
       if (response) {
         console.log("Connection Added", id);
@@ -144,17 +144,21 @@ const NetworkCard = () => {
 
               <Center h="full">
                 <VStack>
-                  <Image
-                    src={suggestedUser.profilePic}
-                    boxSize="60px"
-                    borderRadius="63px"
-                    border="1px solid var(--main-purple, #9583F4)"
-                    bg="lightgray"
-                    objectFit="cover"
-                    boxShadow="0px 4px 15px 0px rgba(0, 0, 0, 0.07)"
-                  />
                   <Link to={`/user-profile/${suggestedUser.userId}`}>
-                    <Text fontSize={"14px"}>{suggestedUser.legalName}</Text>
+                    <Image
+                      src={suggestedUser.profilePic}
+                      boxSize="60px"
+                      borderRadius="63px"
+                      border="1px solid var(--main-purple, #9583F4)"
+                      bg="lightgray"
+                      objectFit="cover"
+                      boxShadow="0px 4px 15px 0px rgba(0, 0, 0, 0.07)"
+                    />
+                  </Link>
+                  <Link to={`/user-profile/${suggestedUser.userId}`}>
+                    <Text fontSize={"14px"}>
+                      {suggestedUser.legalName.slice(0, 10)}..
+                    </Text>
                   </Link>
                   <Button
                     h={"24px"}
