@@ -160,8 +160,6 @@ export interface ConnectResponse {
 
 const API_BASE_URL = 'https://api.investloupt.com/';
 
-// const API_BASE_URL = 'http://localhost:24100/';
-// const API_BASE_URL = 'http://api.investloupt.com:24100/';
 
 //DONE
 const apiRequest = async<T>(
@@ -352,7 +350,7 @@ const makeInvestment = async (requestPayload: InvestmentCreationRequest) => {
 
 export const submitInvestmentData = async (requestPayload: InvestmentData) => {
 
-  const response = await apiRequest<{}>('POST', `investmentwithkyc`, requestPayload);
-  return response;
+  const response = await apiRequest<AxiosResponse>('POST', `investmentwithkyc`, requestPayload);
+
 
 };

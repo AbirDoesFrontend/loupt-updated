@@ -51,29 +51,31 @@ const CompanyDetailPage = () => {
   const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
   const [company, setCompany] = useState({} as Company);
+  const [currentUserId, setUserId] = useState("");
+  const [partners, setPartners] = useState([]);
 
   const params = useParams();
-  // console.log(params);
   const id = params.id;
-  console.log(id);
 
   useEffect(() => {
-    getUser()
-      .then((response) => {
-        if (response) {
-          console.log("User:");
-          console.log(response);
-          setUser(response);
+    getUser().then((response) => {
+      if (response) {
+        console.log("User:");
+        console.log(response);
+        setUser(response);
+        // Extracting the user ID and setting it to the state variable
+        if (response.userId) {
+          setUserId(response.userId);
+          console.log("User ID: ", response.userId);
         } else {
-          // handle the scenario when user is not returned
-          console.error("No user returned");
-          //setUser({} as User); this is default value anyways
+          console.error("No user ID found in the response");
         }
-      })
-      .catch((error) => {
-        console.error("Error fetching user:", error);
-        //setUser({}); this is default value anyways
-      });
+      } else {
+        // handle the scenario when user is not returned
+        console.error("No user returned");
+        //setUser({} as User); this is default value anyways
+      }
+    });
 
     getConnectedUsers().then((response) => {
       console.log("Connected Users:");
@@ -96,6 +98,8 @@ const CompanyDetailPage = () => {
     getCompany(id).then((response) => {
       console.log("Single Company : ", response);
       setCompany(response);
+      setPartners(response.partners);
+      console.log(response.partners);
     });
   }, [id]);
 
@@ -108,12 +112,16 @@ const CompanyDetailPage = () => {
     };
   });
 
+  const isPartner = partners.some((partnerId) => partnerId === currentUserId);
+
   return (
     <>
       <Container maxW={"7xl"} position={"relative"}>
-        <Link to={`/edit-company/${id}`}>
-          <Button sx={styles.editBtn}>Edit Company Profile</Button>
-        </Link>
+        {isPartner && (
+          <Link to={`/edit-company/${id}`}>
+            <Button sx={styles.editBtn}>Edit Company Profile</Button>
+          </Link>
+        )}
         <SimpleGrid sx={styles.grid}>
           {/* BANNER  */}
           <Flex>
@@ -236,10 +244,7 @@ const CompanyDetailPage = () => {
 
             {/* <Button sx={styles.button}>INVEST NOW</Button> */}
             {/* <InvestForm /> */}
-            <HStack maxW={"3xl"}>
-              <FundingRound></FundingRound>
-              <InvestForm></InvestForm>
-            </HStack>
+            <HStack>{isPartner ? <FundingRound /> : <InvestForm />}</HStack>
 
             {/* <Stack
               direction="row"

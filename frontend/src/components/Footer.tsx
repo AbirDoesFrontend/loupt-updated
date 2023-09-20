@@ -16,14 +16,14 @@ const Footer = () => {
         <Flex justifyContent={"space-between"}>
           <Text>© 2023 Loupt. All rights reserved</Text>
           <Stack direction={"row"} spacing={6}>
-            <Link to="/invest">
+            <Link to="/">
               <Text>Invest</Text>
             </Link>
             <Link to="/about">
               <Text>About</Text>
             </Link>
-            <Link to="/profile">
-              <Text>Profile</Text>
+            <Link to="/raise-capital">
+              <Text>Raise Capital</Text>
             </Link>
           </Stack>
         </Flex>

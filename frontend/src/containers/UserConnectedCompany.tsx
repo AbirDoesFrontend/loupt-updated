@@ -6,8 +6,10 @@ import { Container, SimpleGrid } from "@chakra-ui/react";
 
 const UserConnectedCompany = () => {
   const [user, setUser] = useState({} as User);
-  const [userConnectedCompanyID, setUserConnectedCompanyID] = useState([]);
-  const [userConnectedCompany, setUserConnectedCompany] = useState([]);
+  const [userConnectedCompanyID, setUserConnectedCompanyID] = useState<
+    string[]
+  >([]);
+  const [userConnectedCompany, setUserConnectedCompany] = useState<any[]>([]);
   const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
 
   useEffect(() => {
@@ -48,7 +50,7 @@ const UserConnectedCompany = () => {
 
   return (
     <>
-      <Container maxWidth={'7xl'} py={'10'}>
+      <Container maxWidth={"7xl"} py={"10"}>
         <SimpleGrid columns={[1, null, 3]} spacing="40px" mx={10} mt={0}>
           {userConnectedCompany.map((company, index) => (
             <Card

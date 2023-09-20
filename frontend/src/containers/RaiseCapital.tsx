@@ -37,8 +37,8 @@ import {
   createCompany,
   getUserToken,
 } from "../api";
-import { Link } from "react-router-dom";
-
+import { Link as ChakraLink } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
 interface FormData {
   name: string;
   logo: string;
@@ -144,7 +144,7 @@ const RaiseCapital = () => {
     const minimumInvestment = formData.minimumInvestment;
     const location = formData.location;
     const sharesOutstanding = formData.sharesOutstanding;
-    
+
     // const fundingGoal = formData.fundingGoal;
 
     const newCompany = {
@@ -159,7 +159,7 @@ const RaiseCapital = () => {
       sharePrice: parseInt(sharePrice),
       sharesOutstanding: parseInt(sharesOutstanding),
       location: location,
-     
+
       // fundingGoal: fundingGoal,
     };
 
@@ -168,7 +168,6 @@ const RaiseCapital = () => {
       console.log(response);
     });
   };
-
 
   const dataAsArray = Object.values(formData);
   console.log(dataAsArray);
@@ -261,9 +260,11 @@ const RaiseCapital = () => {
                 spacing={4}
                 alignItems={"start"}
               >
-                <Button px={10} py={6}>
-                  How It Works
-                </Button>
+                <ChakraLink as={RouterLink} to="/about">
+                  <Button px={10} py={6}>
+                    How It Works
+                  </Button>
+                </ChakraLink>
               </Stack>
             </Stack>
           </Flex>
@@ -373,9 +374,8 @@ const RaiseCapital = () => {
                   <FormControl mb={4}>
                     <FormLabel>Valuation Cap:</FormLabel>
                     <InputGroup>
-                      <InputLeftElement>
-                        <span>$</span>
-                      </InputLeftElement>
+                      <InputLeftAddon>$</InputLeftAddon>
+
                       <Input
                         placeholder="Valuation Cap"
                         value={formData.valuation}

@@ -65,13 +65,13 @@ const ProfilePage = () => {
   const [connectedConnection, setConnectedConnection] = useState(true);
   const [suggestedUser, setSuggestedUser] = useState<User[]>([]);
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
-  // const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
+  const [userId, setUserId] = useState("");
   const [showEditButton, setShowEditButton] = useState(false);
   const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
 
+  // FOR USER PROFILE ROUTE
   const params = useParams();
-  // console.log(params);
   const id = params.id;
 
   const navigate = useNavigate();
@@ -87,7 +87,9 @@ const ProfilePage = () => {
         if (result.isAuthenticated) {
           console.log("authenticated!");
           getUser().then((response: any) => {
-            console.log("User:", response);
+            console.log("User:");
+            // console.log(response?.userId);
+            // console.log(response?._id);
             if (response) {
               setUser(response);
               setListOfUsersConnection(response.connections);
@@ -103,8 +105,8 @@ const ProfilePage = () => {
           // });
 
           getConnectedUsers().then((response) => {
-            console.log("Connected Users : ");
-            console.log(response);
+            // console.log("Connected Users : ");
+            // console.log(response);
             setConnectedUsers(response);
           });
         } else {
@@ -117,12 +119,14 @@ const ProfilePage = () => {
   // Suggested Users
   useEffect(() => {
     getSuggestedUsers().then((response: User[]) => {
-      console.log("Suggested Users:", response);
+      // console.log("Suggested Users:", response);
       response.filter((user) => {
         if (user.userId == id) {
           setUser(user);
           setShowEditButton(false);
           // console.log("filter users:", user);
+          // console.log("Suggested User Id:", user.userId);
+          // console.log("Suggested User Id:", user._id);
         }
       });
     });
@@ -314,7 +318,7 @@ const ProfilePage = () => {
                     columns={{ base: 1, md: 2 }}
                     spacing={8}
                   >
-                    <FeatureCard
+                    {/* <FeatureCard
                       logo={bannerImg}
                       name={"Investment 1"}
                       companyId={""}
@@ -333,7 +337,7 @@ const ProfilePage = () => {
                       logo={bannerImg}
                       name={"Investment 4"}
                       companyId={""}
-                    />
+                    /> */}
                   </SimpleGrid>
                 </Box>
 

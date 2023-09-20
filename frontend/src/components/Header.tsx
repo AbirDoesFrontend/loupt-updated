@@ -34,7 +34,7 @@ import {
 } from "@chakra-ui/react";
 import { SearchIcon, HamburgerIcon } from "@chakra-ui/icons";
 import logo from "../assets/Loupt app logo 4.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate as navigate, useNavigate } from "react-router-dom";
 
 // import avatar from '../assets/avatar.png';
 
@@ -50,12 +50,14 @@ import {
 } from "./styles/HeaderStyles";
 
 const Header = () => {
+  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const breakpoint = useBreakpointValue({ base: "base", md: "md", lg: "lg" });
 
   //const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [userData, setUserData] = useState({} as User);
+  const [searchResults, setSearchResults] = useState([]);
   const [companyData, setCompanyData] = useState({} as Company[]);
   const [avatar, setAvatar] = useState("" as string);
   const {
@@ -108,7 +110,22 @@ const Header = () => {
   //   company.name.toLowerCase().includes(searchTerm.toLowerCase())
   // );
   // console.log(filteredCompanies)
-
+  const search = async () => {
+    try {
+      const response = await fetch(
+        `https://api.investloupt.com/search?q=${searchTerm}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      console.log(data);
+      // Navigate to results page with data
+      navigate("/results", { state: { data: data } });
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
+  };
   return (
     <Box bg={"brand.100"} maxWidth={"100%"}>
       <Flex sx={FlexStyle}>

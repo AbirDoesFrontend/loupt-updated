@@ -12,10 +12,13 @@ import SignupPage from "./containers/SignupPage";
 import CompanyDetailPage from "./containers/CompanyDetailPage";
 import RaiseCapital from "./containers/RaiseCapital";
 import UserConnectedCompany from "./containers/UserConnectedCompany";
+import ResultsPage from "./components/Results";
 
 function App() {
   return (
     <Routes>
+      <Route path="/results" element={<ResultsPage />} />
+
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/profile" element={<ProfilePage />} />

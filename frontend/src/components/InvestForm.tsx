@@ -17,12 +17,14 @@ import {
 import styles from "../containers/styles/CompanyStyles";
 import { submitInvestmentData } from "../api";
 import { Company, getCompany } from "../api";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+
 function InvestForm() {
   const [company, setCompany] = useState({} as Company);
   const [hasFundingRound, setHasFundingRound] = useState(false);
   const params = useParams();
   const id = params.id;
+  const navigate = useNavigate();
 
   useEffect(() => {
     getCompany(id).then((response) => {
@@ -72,14 +74,20 @@ function InvestForm() {
     try {
       const response = await submitInvestmentData(formData);
       console.log(formData);
-      if (response === 200) {
+      if (response.status === 200) {
         console.log("Data submitted successfully:", response);
+        navigate("/checkout", { state: { formData } });
       } else {
+        navigate("/checkout", { state: { formData } });
         console.error("Error in submission:", response);
       }
     } catch (error) {
       console.error("Error:", error);
     }
+
+    const handleCheckout = () => {
+      navigate("/checkout", { state: { formData } });
+    };
 
     // Logging data as a list
     console.log("Data as List:");

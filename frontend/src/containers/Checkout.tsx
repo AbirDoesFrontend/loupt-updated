@@ -17,8 +17,11 @@ import {
   Grid,
 } from "@chakra-ui/react";
 // import styles from "./styles/CheckoutStyles";
+import { useLocation } from "react-router-dom";
 
 function Checkout() {
+  const location = useLocation();
+  const receivedFormData = location.state?.formData;
   const [investAmount, setInvestAmount] = useState<number>(0);
 
   const totalCost = investAmount + investAmount * 0.1;
@@ -38,7 +41,7 @@ function Checkout() {
           <VStack spacing={6} align="stretch">
             <Box>
               <Text fontSize="2xl" fontWeight="bold" color={"gray.500"}>
-                Invest Amount
+                Invest {receivedFormData?.amount}
               </Text>
               <InputGroup size="md" mt={4}>
                 <InputLeftAddon children="$" />
@@ -56,11 +59,11 @@ function Checkout() {
               </Text>
               <Divider my={4}></Divider>
               <Text fontSize="lg" fontWeight="normal">
-                Full Name:
+                Full Name: {receivedFormData?.firstName}{" "}
               </Text>
               <Input placeholder="Name" my={4} />
               <Text fontSize="lg" fontWeight="normal">
-                Address:
+                Address: {receivedFormData?.primAddress1}
               </Text>
               <Input placeholder="Address" mt={4} my={4} />
               <Text fontSize="lg" fontWeight="normal">

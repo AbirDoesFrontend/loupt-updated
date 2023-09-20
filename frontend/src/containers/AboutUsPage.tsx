@@ -27,6 +27,9 @@ import {
   Company,
   User,
 } from "../api";
+import { Link as ChakraLink } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
+import Link from "react-router-dom";
 import image from "../assets/image 2.png";
 import heroBg from "../assets/bg-hero.png";
 import heroMan from "../assets/hero-man-img.png";
@@ -96,7 +99,9 @@ const AboutUsPage = () => {
               vitae commodo augue. Lorem ipsum dolor sit amet, consectetur
               adipiscing elit. Nunc vitae commodo augue. Lorem ipsum dolor sit
             </Text>
-            <Button sx={styles.button}>Get Started</Button>
+            <ChakraLink as={RouterLink} to="/raise-capital">
+              <Button sx={styles.button}>Get Started</Button>
+            </ChakraLink>
           </Box>
 
           <Box
