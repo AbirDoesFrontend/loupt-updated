@@ -8,7 +8,7 @@ import {
   addConnection,
 } from "../api";
 
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { FcAssistant, FcDonate, FcInTransit } from "react-icons/fc";
 import {
   Box,
@@ -59,6 +59,7 @@ import { getCompany } from "../api";
 
 const ProfilePage = () => {
   const [user, setUser] = useState({} as User);
+  const [listOfUsersConnection, setListOfUsersConnection] = useState([]);
   const [userConnectedCompanyID, setUserConnectedCompanyID] = useState([]);
   const [userConnectedCompany, setUserConnectedCompany] = useState([]);
   const [connectedConnection, setConnectedConnection] = useState(true);
@@ -72,7 +73,8 @@ const ProfilePage = () => {
   const params = useParams();
   // console.log(params);
   const id = params.id;
-  console.log(id);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     //wait for auth0 to be done loading and make sure we have our user data
@@ -86,9 +88,9 @@ const ProfilePage = () => {
           console.log("authenticated!");
           getUser().then((response: any) => {
             console.log("User:", response);
-            console.log(response);
             if (response) {
               setUser(response);
+              setListOfUsersConnection(response.connections);
               // Getting Id of an individual connected companies from user
               setUserConnectedCompanyID(response.companies);
             }
@@ -117,11 +119,10 @@ const ProfilePage = () => {
     getSuggestedUsers().then((response: User[]) => {
       console.log("Suggested Users:", response);
       response.filter((user) => {
-        if (user.userId === id) {
+        if (user.userId == id) {
           setUser(user);
           setShowEditButton(false);
-          console.log(user);
-          // setConnectedUsers(user);
+          // console.log("filter users:", user);
         }
       });
     });
@@ -137,7 +138,6 @@ const ProfilePage = () => {
       setUserConnectedCompany(filteredCompanies);
     });
   }, [user]);
-  
 
   // Add User Connection (only for Accept Connection Btn)
   const addConnectionButton = (id: any) => {
@@ -145,6 +145,8 @@ const ProfilePage = () => {
       if (response) {
         console.log("Connection Added", id);
         setConnectedConnection(false);
+        navigate("/profile");
+        navigate(0);
       }
     });
   };
@@ -218,11 +220,12 @@ const ProfilePage = () => {
                       />
                     ))}
                   </HStack>
-                  {connectedConnection ? (
-                    <Button mt={4}>Accept Connection + </Button>
-                  ) : (
-                    <Button mt={4} bg={"purple.100"}>
-                      Connected{" "}
+                  {!showEditButton && (
+                    <Button
+                      mt={4}
+                      onClick={() => addConnectionButton(user.userId)}
+                    >
+                      Accept Connection +{" "}
                     </Button>
                   )}
                 </Box>
@@ -249,7 +252,7 @@ const ProfilePage = () => {
 
               <Grid
                 sx={styles.profileContainer}
-                templateColumns={["1fr", "1fr", "1fr 2fr"]}
+                templateColumns={["1fr", "1fr", "2fr 1fr"]}
               >
                 {/* ABOUT / BIO */}
                 <Box sx={styles.aboutBio}>

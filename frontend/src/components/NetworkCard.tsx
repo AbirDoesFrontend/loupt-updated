@@ -159,7 +159,7 @@ const NetworkCard = () => {
                     />
                   </Link>
                   <Text fontSize={"14px"}>
-                    {suggestedUser.legalName.slice(0, 10)}..
+                    {suggestedUser.legalName.slice(0, 9)}..
                   </Text>
                   <Button
                     h={"24px"}
