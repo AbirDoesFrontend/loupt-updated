@@ -24,6 +24,7 @@ import {
   Flex,
   IconButton,
   Container,
+  ScaleFade,
 } from "@chakra-ui/react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -51,12 +52,8 @@ interface FormData {
   sharePrice: any;
   sharesOutstanding: any;
   location: string;
-  // fundingGoal: number;
-  // corporateAddress: string;
   lastDate: string;
-  // highlights: string[];
   documents: any;
-  // corporateState: string;
 }
 
 const RaiseCapital = () => {
@@ -67,21 +64,8 @@ const RaiseCapital = () => {
 
   const [highlights, setHighlights] = useState<string[]>([""]);
   const [formData, setFormData] = useState<FormData>({
-    // companyName: "",
-    // corporateZipCode: "",
-    // numberOfShares: "",
-    // legalPartners: "",
-    // aboutCompany: "",
-    // valuationCap: "",
-    // corporateCountry: "",
-    // corporateAddress: "",
-    // minInvestment: "",
-    // corporateState: "",
-    // maxInvestment: "",
-    // // fundingGoal: ""
     lastDate: "",
     documents: "",
-    // highlights: [""],
     name: "",
     logo: "",
     bio: "",
@@ -225,49 +209,51 @@ const RaiseCapital = () => {
           mx={"auto"}
         >
           {/* HERO CONTENT  */}
-          <Flex p={8} flex={1} align={"center"} justify={"start"}>
-            <Stack spacing={6} w={"full"} maxW={"lg"}>
-              <Heading fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}>
-                <Text as={"span"} color={"white"} position={"relative"}>
-                  Why{" "}
-                  <Text
-                    as={"span"}
-                    _after={{
-                      content: "''",
-                      width: "70%",
-                      height: useBreakpointValue({ base: "20%", md: "30%" }),
-                      position: "absolute",
-                      bottom: 1,
-                      right: 0,
-                      bg: "brand.100",
-                      zIndex: -1,
-                    }}
-                  >
-                    Raise Funds
+          <ScaleFade initialScale={0.9} in={true}>
+            <Flex p={8} flex={1} align={"center"} justify={"start"}>
+              <Stack spacing={6} w={"full"} maxW={"lg"}>
+                <Heading fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}>
+                  <Text as={"span"} color={"white"} position={"relative"}>
+                    Why{" "}
+                    <Text
+                      as={"span"}
+                      _after={{
+                        content: "''",
+                        width: "70%",
+                        height: useBreakpointValue({ base: "20%", md: "30%" }),
+                        position: "absolute",
+                        bottom: 1,
+                        right: 0,
+                        bg: "brand.100",
+                        zIndex: -1,
+                      }}
+                    >
+                      Raise Funds
+                    </Text>
                   </Text>
+                  <br />{" "}
+                  <Text color={"white"} as={"span"}>
+                    With Loupt?
+                  </Text>{" "}
+                </Heading>
+                <Text fontSize={{ base: "lg", lg: "xl" }} color={"gray.100"}>
+                  Loupt gives companies access to investors who are deeply
+                  engaged with their investments
                 </Text>
-                <br />{" "}
-                <Text color={"white"} as={"span"}>
-                  With Loupt?
-                </Text>{" "}
-              </Heading>
-              <Text fontSize={{ base: "lg", lg: "xl" }} color={"gray.100"}>
-                Loupt gives companies access to investors who are deeply engaged
-                with their investments
-              </Text>
-              <Stack
-                direction={{ base: "column", md: "row" }}
-                spacing={4}
-                alignItems={"start"}
-              >
-                <ChakraLink as={RouterLink} to="/about">
-                  <Button px={10} py={6}>
-                    How It Works
-                  </Button>
-                </ChakraLink>
+                <Stack
+                  direction={{ base: "column", md: "row" }}
+                  spacing={4}
+                  alignItems={"start"}
+                >
+                  <ChakraLink as={RouterLink} to="/about">
+                    <Button px={10} py={6}>
+                      How It Works
+                    </Button>
+                  </ChakraLink>
+                </Stack>
               </Stack>
-            </Stack>
-          </Flex>
+            </Flex>
+          </ScaleFade>
           {/* HERO IMAGE  */}
           <Flex flex={1} alignItems={"center"} justifyContent={"center"}>
             <Image
@@ -375,7 +361,6 @@ const RaiseCapital = () => {
                     <FormLabel>Valuation Cap:</FormLabel>
                     <InputGroup>
                       <InputLeftAddon>$</InputLeftAddon>
-
                       <Input
                         placeholder="Valuation Cap"
                         value={formData.valuation}

@@ -7,6 +7,7 @@ import {
   Spacer,
   Center,
   VStack,
+  Heading,
   Flex,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
@@ -113,7 +114,7 @@ const NetworkCard = () => {
         gap={["10px", "10px", "4px"]}
       >
         {/* FOR PROFILE PAGE*/}
-        {suggestedUsers.length !== 0 &&
+        {suggestedUsers.length !== 0 ? (
           suggestedUsers.slice(0, 5).map((suggestedUser, index) => (
             <Box
               key={index} // Don't forget to include a key when mapping in React
@@ -175,7 +176,20 @@ const NetworkCard = () => {
                 </VStack>
               </Center>
             </Box>
-          ))}
+          ))
+        ) : (
+          <Box>
+            <Text
+              fontSize={20}
+              color={"gray.500"}
+              bg={"gray.100"}
+              p={5}
+              borderRadius={6}
+            >
+              No suggestions found..{" "}
+            </Text>
+          </Box>
+        )}
       </Flex>
     </>
   );

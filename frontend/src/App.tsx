@@ -13,12 +13,13 @@ import CompanyDetailPage from "./containers/CompanyDetailPage";
 import RaiseCapital from "./containers/RaiseCapital";
 import UserConnectedCompany from "./containers/UserConnectedCompany";
 import ResultsPage from "./components/Results";
+import Checkout from "./containers/Checkout";
 
 function App() {
   return (
     <Routes>
       <Route path="/results" element={<ResultsPage />} />
-
+      <Route path="/checkout/:id" element={<Checkout />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/profile" element={<ProfilePage />} />

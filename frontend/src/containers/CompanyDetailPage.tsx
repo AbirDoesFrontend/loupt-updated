@@ -45,6 +45,7 @@ import CompanyProfileCard from "../components/CompanyProfileCard";
 import InvestForm from "../components/InvestForm";
 import FundingRound from "../components/FundingRound";
 
+
 const CompanyDetailPage = () => {
   const [user, setUser] = useState({} as User);
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
@@ -52,7 +53,7 @@ const CompanyDetailPage = () => {
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
   const [company, setCompany] = useState({} as Company);
   const [currentUserId, setUserId] = useState("");
-  const [partners, setPartners] = useState([]);
+  const [partners, setPartners] = useState<string[]>([]);
 
   const params = useParams();
   const id = params.id;

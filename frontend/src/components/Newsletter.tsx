@@ -90,7 +90,7 @@ export default function Newsletter() {
             </Button>
           </FormControl>
         </Stack>
-        <Text
+        {/* <Text
           mt={2}
           textAlign={"center"}
           color={error ? "red.500" : "gray.500"}
@@ -98,7 +98,7 @@ export default function Newsletter() {
           {error
             ? "Oh no an error occured! 😢 Please try again later."
             : "You won't receive any spam! ✌️"}
-        </Text>
+        </Text> */}
       </Container>
     </Flex>
   );

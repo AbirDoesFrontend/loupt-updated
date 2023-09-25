@@ -21,6 +21,9 @@ import {
   Image,
   Center,
   Link,
+  ScaleFade,
+  Grid,
+  Spinner,
 } from "@chakra-ui/react";
 import {
   FcAbout,
@@ -39,7 +42,8 @@ import {
   getUserToken,
 } from "../api";
 import { useAuth0, Auth0Context } from "@auth0/auth0-react";
-
+import { Link as ChakraLink } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
 import heroBg from "../assets/bg-hero.png";
 import heroMan from "../assets/hero-man-img.png";
 import styles from "./styles/HomeStyles";
@@ -50,7 +54,7 @@ import TestimonialSection from "../components/TestimonialSection";
 import Newsletter from "../components/Newsletter";
 
 const HomePage = () => {
-  const [activeSection, setActiveSection] = useState("");
+  const [activeSection, setActiveSection] = useState("explore");
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
@@ -421,9 +425,21 @@ const HomePage = () => {
                 }}
                 mb={10}
               >
-                Popular Companies
+                Currently Raising
               </Heading>
             </Center>
+            {isLoading && (
+              <Center>
+                {" "}
+                <Spinner
+                  thickness="4px"
+                  speed="0.65s"
+                  emptyColor="gray.200"
+                  color="blue.500"
+                  size="xl"
+                />
+              </Center>
+            )}
             <CardGrid></CardGrid>
           </Box>
         </div>

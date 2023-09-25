@@ -126,6 +126,7 @@ const Header = () => {
       console.error("There was a problem with the fetch operation:", error);
     }
   };
+
   return (
     <Box bg={"brand.100"} maxWidth={"100%"}>
       <Flex sx={FlexStyle}>
@@ -146,15 +147,20 @@ const Header = () => {
           <>
             <Flex alignItems="center">
               <InputGroup>
-                <InputLeftElement
-                  pointerEvents="none"
-                  children={<SearchIcon color="white" />}
-                />
+                <Button color={"transparent"} onClick={() => search()}>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<SearchIcon color="#8764FF" />}
+                  />
+                </Button>
                 <Input
                   color="white"
                   placeholder="Search"
                   width={{ base: "200px", md: "200px", lg: "250px" }}
-                  // onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyUp={(e) => {
+                    if (e.key === "Enter") search();
+                  }}
                 />
               </InputGroup>
             </Flex>

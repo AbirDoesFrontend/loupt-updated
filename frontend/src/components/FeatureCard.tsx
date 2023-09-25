@@ -3,13 +3,15 @@ import { Box, Button, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 const FeatureCard = ({
+  
   logo,
   name,
   companyId,
 }: {
-  logo: any;
-  name: any;
-  companyId: any;
+  
+  logo: string;
+  name: string;
+  companyId: string;
 }) => {
   // console.log(companyId);
   return (

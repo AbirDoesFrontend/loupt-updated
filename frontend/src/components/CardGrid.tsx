@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { SimpleGrid } from "@chakra-ui/react";
+import { ScaleFade, SimpleGrid } from "@chakra-ui/react";
 import Card from "./Card";
 // import CompanyImg1 from "../assets/companyImg.png";
 // import CompanyImg2 from "../assets/companyImg2.png";
@@ -26,7 +26,9 @@ const CardGrid = () => {
   return (
     <SimpleGrid columns={[1, null, 3]} spacing="40px" mx={10} mt={0}>
       {allCompanies.slice(0, 6).map((company, index) => (
-        <Card key={index} userName={""} {...company} /> //add userName="" to fix error
+        <ScaleFade initialScale={0.9} in={true}>
+          <Card key={index} userName={""} {...company} />
+        </ScaleFade>
       ))}
     </SimpleGrid>
   );

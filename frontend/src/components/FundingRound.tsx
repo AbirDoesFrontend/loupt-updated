@@ -57,7 +57,7 @@ function FundingRound() {
     console.log(`${key}: ${value}`);
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: { preventDefault: () => void; target: any; }) => {
     event.preventDefault();
 
     const form = event.target;

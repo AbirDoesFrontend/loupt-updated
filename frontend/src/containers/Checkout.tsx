@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -16,20 +16,104 @@ import {
   Text,
   Grid,
 } from "@chakra-ui/react";
+import {
+  getUser,
+  getConnectedUsers,
+  getAllCompanies,
+  getConnectedCompanies,
+  Company,
+  User,
+  getCompany,
+  getPaymentMethod,
+  executeTrade,
+} from "../api";
 // import styles from "./styles/CheckoutStyles";
 import { useLocation } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+import { useAuth0, Auth0Context } from "@auth0/auth0-react";
+import { PaymentMethod } from "../api";
+
+
 
 function Checkout() {
   const location = useLocation();
   const receivedFormData = location.state?.formData;
   const [investAmount, setInvestAmount] = useState<number>(0);
+  const [user, setUser] = useState({} as User);
+  const [currentUserId, setUserId] = useState("");
+  const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
+  const [ stripeUrl, setStripeUrl ] = useState<string>("");
+
+
+  const [ cardType, setCardType ] = useState<string>("");
+  const [ cardNumber, setCardNumber ] = useState<string>("");
+
 
   const totalCost = investAmount + investAmount * 0.1;
 
+  const params = useParams();
+  const id = params.id;
+
+  useEffect(() => {
+    if (!isLoading && auth0User) {
+    getUser().then((response) => {
+      if (response) {
+        console.log("User:");
+        console.log(response);
+        setUser(response);
+        // Extracting the user ID and setting it to the state variable
+        if (response.userId) {
+          setUserId(response.userId);
+          console.log("User ID: ", response.userId);
+
+          getPaymentMethod().then((response) => {
+            if (response) {
+              console.log("Payment Method:");
+              console.log(response); // Log the data of the response
+
+              const payment = response as PaymentMethod; // Cast the data as PaymentMethod
+          
+              if (payment.stripeURL) {
+                console.log("Stripe URL: ", payment.stripeURL);
+                setStripeUrl(payment.stripeURL);
+              } else if (payment.details) {
+                setCardNumber(payment.details.creditCardNumber);
+                setCardType(payment.details.cardType);
+              }
+            }
+          });
+
+/*           getInvestment().then((response) => {
+
+          } */
+          
+
+        } else {
+          console.error("No user ID found in the response");
+        }
+      } else {
+        // handle the scenario when user is not returned
+        console.error("No user returned");
+        //setUser({} as User); this is default value anyways
+      }
+    });
+  }},[isLoading]);
+
+const handleButtonClick = () => {
+  if(!id){
+    console.log("Button clicked, but no company ID")
+  }
+  else{
+    executeTrade(id).then((response) => {
+      console.log(response)
+  })
+}
+}
+
   return (
-    <Box p={10} maxW={"7xl"} mx={"auto"} height={"90vh"}>
+    <Box p={10} maxW={"7xl"} mx={"auto"} height={"100vh"}>
       <Heading mb={6} textTransform={"uppercase"}>
-        Invest in Company
+        CHECKOUT
       </Heading>
       <Grid templateColumns={{ base: "1fr", md: "2fr 1fr" }} gap={10}>
         <Box
@@ -39,62 +123,26 @@ function Checkout() {
           borderRadius={8}
         >
           <VStack spacing={6} align="stretch">
-            <Box>
-              <Text fontSize="2xl" fontWeight="bold" color={"gray.500"}>
-                Invest {receivedFormData?.amount}
-              </Text>
-              <InputGroup size="md" mt={4}>
-                <InputLeftAddon children="$" />
-                <Input
-                  type="number"
-                  placeholder="Amount"
-                  onChange={(e) => setInvestAmount(parseFloat(e.target.value))}
-                />
-              </InputGroup>
-            </Box>
 
+          {stripeUrl ? (
+    // If there is a stripeUrl, display the iframe
+            <iframe
+              src={stripeUrl}
+              hidden={false}
+              style={{ width: '100%', height: '50vh', border: 'none' }}
+            ></iframe>
+          ) : (
+            // If there's no stripeUrl, display card details
             <Box>
-              <Text fontSize="2xl" fontWeight="bold" color={"gray.500"}>
-                Investor Info
-              </Text>
-              <Divider my={4}></Divider>
-              <Text fontSize="lg" fontWeight="normal">
-                Full Name: {receivedFormData?.firstName}{" "}
-              </Text>
-              <Input placeholder="Name" my={4} />
-              <Text fontSize="lg" fontWeight="normal">
-                Address: {receivedFormData?.primAddress1}
-              </Text>
-              <Input placeholder="Address" mt={4} my={4} />
-              <Text fontSize="lg" fontWeight="normal">
-                Investing As:
-              </Text>
-              <Select placeholder="Myself" mt={4}>
-                <option value="me">Myself</option>
-              </Select>
-            </Box>
-
-            <Box
-              border={"1px solid"}
-              p={4}
-              borderColor={"gray.200"}
-              borderRadius={8}
-            >
               <Text fontSize="lg" fontWeight="bold">
-                2. Payment
+                Card Details:
               </Text>
-              <HStack mt={4} spacing={4}>
-                <Button bg={"black"} color="white">
-                  Apple Pay
-                </Button>
-                <Button bg={"black"} color="white">
-                  Google Pay
-                </Button>
-                <Button bg={"black"} color="white">
-                  Paypal{" "}
-                </Button>
-              </HStack>
+              <VStack align="start" spacing={3}>
+                <Text>Card Type: {cardType}</Text>
+                <Text>Card Number: {cardNumber}</Text>
+              </VStack>
             </Box>
+          )}
 
             <Box
               border={"1px solid"}
@@ -119,8 +167,10 @@ function Checkout() {
                 refrain from using the Platform.
               </Text>
             </Box>
-            <Button background={"brand.100"} color={"white"} size="lg" mt={4}>
-              Place Order
+            <Button background={"brand.100"} color={"white"} size="lg" mt={4} onClick={
+              handleButtonClick
+            }>
+              Confirm investment
             </Button>
           </VStack>
         </Box>
@@ -132,72 +182,6 @@ function Checkout() {
           borderColor={"brand.200"}
         >
           <VStack spacing={4} align="stretch">
-            <Heading size="lg">Investment Summary</Heading>
-            <Divider />
-            <Box>
-              <Text>Total Investment:</Text>
-              <Text fontWeight="bold">${investAmount}</Text>
-            </Box>
-            <Box>
-              <Text>Fees: </Text>
-              <Text fontWeight="bold">${investAmount * 0.1}</Text>
-            </Box>
-            <Divider />
-            <Box>
-              <Text fontSize={24} fontWeight={"bold"}>
-                Total Cost: ${totalCost}
-              </Text>
-            </Box>
-
-            <Box
-              border={"1px solid"}
-              p={8}
-              borderRadius={8}
-              background={"gray.100"}
-              borderColor={"brand.200"}
-            >
-              <Text fontSize="xl" fontWeight="bold">
-                FAQ
-              </Text>
-              <VStack align="start" spacing={2} mt={4}>
-                <Text>1. Question 1?</Text>
-                <Text>2. Question 2?</Text>
-                <Text>3. Question 3?</Text>
-                <Text>4. Question 4?</Text>
-                <Text>5. Question 5?</Text>
-              </VStack>
-            </Box>
-
-            <Box
-              border={"1px solid"}
-              p={8}
-              borderRadius={8}
-              background={"gray.100"}
-              borderColor={"brand.200"}
-            >
-              <Text fontSize="xl" fontWeight="bold">
-                Deal Terms
-              </Text>
-              <VStack align="start" spacing={2} mt={4}>
-                <Text>Deal Amount: $1,000,000</Text>
-                <Text>Deadline: 31st December 2023</Text>
-              </VStack>
-            </Box>
-
-            <Box
-              border={"1px solid"}
-              p={8}
-              borderRadius={8}
-              background={"gray.100"}
-              borderColor={"brand.200"}
-            >
-              <Text fontSize="xl" fontWeight="bold">
-                Contract PDF
-              </Text>
-              <Button background="black" color={"white"} mt={4}>
-                Download
-              </Button>
-            </Box>
           </VStack>
         </Box>
       </Grid>

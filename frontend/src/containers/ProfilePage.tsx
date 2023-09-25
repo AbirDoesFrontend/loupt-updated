@@ -57,10 +57,20 @@ import NetworkCard from "../components/NetworkCard";
 import FeatureCard from "../components/FeatureCard";
 import { getCompany } from "../api";
 
+type Investment = {
+  investmentId: string;
+  userId: string;
+  companyId: string;
+  amount: number;
+  shareCount: number;
+  _id: string
+};
+
 const ProfilePage = () => {
   const [user, setUser] = useState({} as User);
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [listOfUsersConnection, setListOfUsersConnection] = useState([]);
-  const [userConnectedCompanyID, setUserConnectedCompanyID] = useState([]);
+  const [userConnectedCompanyID, setUserConnectedCompanyID] = useState<string[]>([]);
   const [userConnectedCompany, setUserConnectedCompany] = useState([]);
   const [connectedConnection, setConnectedConnection] = useState(true);
   const [suggestedUser, setSuggestedUser] = useState<User[]>([]);
@@ -69,6 +79,9 @@ const ProfilePage = () => {
   const [userId, setUserId] = useState("");
   const [showEditButton, setShowEditButton] = useState(false);
   const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
+  const [userInvestmentCompanyIds, setUserInvestmentCompanyIds] = useState<User[]>([]);
+  const [userInvestmentArray, setUserInvestmentArray] = useState<Company[]>([]);
+
 
   // FOR USER PROFILE ROUTE
   const params = useParams();
@@ -88,11 +101,17 @@ const ProfilePage = () => {
           console.log("authenticated!");
           getUser().then((response: any) => {
             console.log("User:");
+            console.log(response);
             // console.log(response?.userId);
             // console.log(response?._id);
             if (response) {
               setUser(response);
               setListOfUsersConnection(response.connections);
+              console.log("User Connections:", response.connections);
+              const companyIds = response.investments.map((investment: { companyId: any; }) => investment.companyId);
+              setUserInvestmentCompanyIds(companyIds);
+              console.log("All Company Ids:", companyIds);
+
               // Getting Id of an individual connected companies from user
               setUserConnectedCompanyID(response.companies);
             }
@@ -116,6 +135,14 @@ const ProfilePage = () => {
     }
   }, [isLoading]);
 
+  //   useEffect(() => {
+  //   getCompany(userInvestment).then((response) => {
+  //     console.log("Single Company : ", response);
+
+  //     console.log(response);
+  //   });
+  // });
+
   // Suggested Users
   useEffect(() => {
     getSuggestedUsers().then((response: User[]) => {
@@ -136,10 +163,14 @@ const ProfilePage = () => {
   useEffect(() => {
     getAllCompanies().then((response: any) => {
       const allCompanies = response;
+      console.log(response);
+      setCompanies(allCompanies);
+
       const filteredCompanies = allCompanies.filter((company: any) =>
         userConnectedCompanyID.includes(company.companyId)
       );
       setUserConnectedCompany(filteredCompanies);
+      console.log("User Connected Companies:", filteredCompanies);
     });
   }, [user]);
 
@@ -154,6 +185,25 @@ const ProfilePage = () => {
       }
     });
   };
+
+  useEffect(() => {
+    if (userInvestmentCompanyIds && userInvestmentCompanyIds.length > 0) {
+      const fetchCompanies = async () => {
+        try {
+          const companyPromises = userInvestmentCompanyIds.map(id => getCompany(id));
+          const companies = await Promise.all(companyPromises);
+          setUserInvestmentArray(companies);
+          console.log("User Investment Array:", userInvestmentArray)
+          console.log("All Companies:", companies);
+        } catch (error) {
+          console.error("Error fetching companies:", error);
+        }
+      };
+
+      fetchCompanies();
+    }
+  }, [userInvestmentCompanyIds]);
+
 
   return (
     <>
@@ -216,7 +266,7 @@ const ProfilePage = () => {
                     <Text fontWeight={"semibold"}>
                       {user.connections?.length}+ Connections
                     </Text>
-                    {user.connections?.slice(0, 6).map((_, index) => (
+                    {user.connections?.map((_, index) => (
                       <Image
                         key={index}
                         src={bannerImg}
@@ -312,34 +362,28 @@ const ProfilePage = () => {
 
                 {/* MY INVESTMENT  */}
                 <Box sx={styles.investmentContainer}>
-                  <Heading mb={10}>My Investments</Heading>
+                  {showEditButton ? (
+                    <Heading mb={10}>My Investments</Heading>
+                  ) : (
+                    <Heading mb={10}>{user.legalName}'s Investments</Heading>
+                  )}
                   <SimpleGrid
                     sx={styles.investmentGridCard}
                     columns={{ base: 1, md: 2 }}
                     spacing={8}
                   >
-                    {/* <FeatureCard
-                      logo={bannerImg}
-                      name={"Investment 1"}
-                      companyId={""}
-                    />
-                    <FeatureCard
-                      logo={bannerImg}
-                      name={"Investment 2"}
-                      companyId={""}
-                    />
-                    <FeatureCard
-                      logo={bannerImg}
-                      name={"Investment 3"}
-                      companyId={""}
-                    />
-                    <FeatureCard
-                      logo={bannerImg}
-                      name={"Investment 4"}
-                      companyId={""}
-                    /> */}
+                    {userInvestmentArray.map((investment) => (
+                      <FeatureCard
+                        // Using the array index as a key, but preferably use a unique identifier if available
+                        logo={investment.logo}  // Using the company's logo for the card
+                        name={investment.name}  // Using the company's name for the card
+                        companyId={investment.companyId}  // Using the company's companyId or any other info you want to display
+                      />
+                    ))}
                   </SimpleGrid>
                 </Box>
+
+
 
                 {/* ABOUT COMPANY  */}
                 <Box sx={styles.aboutCompany}>

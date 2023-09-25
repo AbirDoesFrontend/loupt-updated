@@ -38,6 +38,17 @@ export interface InvestmentData {
   phone: string;
 }
 
+export interface PaymentMethod {
+  hasCard: boolean;
+  stripeURL?: string;
+  details?: {
+    accountId: string;
+    creditCardNumber: string;
+    cardType: string;
+    createdDate: string;
+  }
+}
+
 export interface Company {
   companyId: string;
   name: string;
@@ -349,8 +360,21 @@ const makeInvestment = async (requestPayload: InvestmentCreationRequest) => {
 }
 
 export const submitInvestmentData = async (requestPayload: InvestmentData) => {
-
-  const response = await apiRequest<AxiosResponse>('POST', `investmentwithkyc`, requestPayload);
-
-
+  const response = await apiRequest<any>('POST', `investmentwithkyc`, requestPayload);
+  return response;
 };
+
+
+export const getPaymentMethod = async (/* requestPayload: PaymentMethod */):Promise<PaymentMethod> => {
+  const response = await apiRequest<PaymentMethod>('GET', `paymentmethods`);
+  return response;
+}
+
+export const executeTrade = async (investmentId: string) => {
+  const response = await apiRequest<{}>('POST', `executeTrade`, 
+  {
+    investmentId: investmentId
+  }
+  );
+  return response;
+}

@@ -74,11 +74,10 @@ function InvestForm() {
     try {
       const response = await submitInvestmentData(formData);
       console.log(formData);
-      if (response.status === 200) {
+      if (response) {
         console.log("Data submitted successfully:", response);
-        navigate("/checkout", { state: { formData } });
+        navigate("/checkout" + response.investmentId , { state: { formData } });
       } else {
-        navigate("/checkout", { state: { formData } });
         console.error("Error in submission:", response);
       }
     } catch (error) {
