@@ -81,6 +81,7 @@ const ProfilePage = () => {
   const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
   const [userInvestmentCompanyIds, setUserInvestmentCompanyIds] = useState<User[]>([]);
   const [userInvestmentArray, setUserInvestmentArray] = useState<Company[]>([]);
+  const [userProfileImg, setUserProfileImg] = useState({} as User)
 
 
   // FOR USER PROFILE ROUTE
@@ -204,6 +205,15 @@ const ProfilePage = () => {
     }
   }, [userInvestmentCompanyIds]);
 
+  useEffect(() => {
+    user.connections?.map((id : any) => {
+      getUser(id).then(profile => {
+        setUserProfileImg(profile)
+      })
+    })
+  }, [user.connections])
+  
+
 
   return (
     <>
@@ -269,7 +279,7 @@ const ProfilePage = () => {
                     {user.connections?.map((_, index) => (
                       <Image
                         key={index}
-                        src={bannerImg}
+                        src={userProfileImg.profilePic}
                         sx={styles.connectionImg}
                       />
                     ))}
