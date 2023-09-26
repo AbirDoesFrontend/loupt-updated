@@ -18,6 +18,7 @@ const styles = {
     backgroundPosition: "center",
     backgroundSize: "cover",
     height: "300px",
+    objectFit: "cover",
     position: "relative",
     backgroundColor: "purple.100",
     borderRadius: "10px",
@@ -29,6 +30,7 @@ const styles = {
     h: "100%",
     borderRadius: 8,
     opacity: 0.6,
+    objectFit: "cover",
   },
 
   editButton: {

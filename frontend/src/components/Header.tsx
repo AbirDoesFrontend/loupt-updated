@@ -190,11 +190,11 @@ const Header = () => {
                 </Text>
                 <Text sx={NavItem}>
                   {user && (
-                    <a href="/profile">
+                    <Link to="/profile">
                       <Text _hover={NavItemHover} sx={NavLink}>
                         Profile
                       </Text>
-                    </a>
+                    </Link>
                   )}
                 </Text>
               </Stack>
@@ -272,9 +272,9 @@ const Header = () => {
               </DrawerHeader>
               <DrawerBody>
                 <Stack spacing={4}>
-                  <Link to="/invest">Invest</Link>
+                  <Link to="/">Invest</Link>
                   <Link to="/about">About</Link>
-                  <Link to="/">Setting</Link>
+                  <Link to="/profile">Profile</Link>
                 </Stack>
               </DrawerBody>
             </DrawerContent>

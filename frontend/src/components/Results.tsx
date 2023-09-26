@@ -5,10 +5,9 @@ import {
   CardBody,
   Heading,
   Text,
-  Link as ChakraLink,
   Button,
 } from "@chakra-ui/react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 interface SearchResult {
   title: string;
@@ -45,9 +44,9 @@ function ResultsPage() {
               {result.title}
             </Heading>
             <Text>Type: {result.type}</Text>
-            <ChakraLink href={result.url} isExternal>
+            <Link to={result.url}>
               Go to URL
-            </ChakraLink>
+            </Link>
           </CardBody>
         </Card>
       ))}

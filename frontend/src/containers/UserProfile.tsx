@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import {
   getUser,
   Company,
@@ -66,7 +69,7 @@ type Investment = {
   _id: string;
 };
 
-const ProfilePage = () => {
+const UserProfile = () => {
   const [user, setUser] = useState({} as User);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [listOfUsersConnection, setListOfUsersConnection] = useState([]);
@@ -79,7 +82,6 @@ const ProfilePage = () => {
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
   const [userId, setUserId] = useState("");
-  const [showEditButton, setShowEditButton] = useState(false);
   const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
   const [userInvestmentCompanyIds, setUserInvestmentCompanyIds] = useState<
     User[]
@@ -87,85 +89,27 @@ const ProfilePage = () => {
   const [userInvestmentArray, setUserInvestmentArray] = useState<Company[]>([]);
   const [userDetails, setUserDetails] = useState<(User | undefined)[]>([]);
 
-  // // FOR USER PROFILE ROUTE
-  // const params = useParams();
-  // const id = params.id;
-
-  // const navigate = useNavigate();
-
-  useEffect(() => {
-    //wait for auth0 to be done loading and make sure we have our user data
-    if (!isLoading && auth0User) {
-      setShowEditButton(true);
-
-      //get the auth0 sub and the JWT from auth0. this will be verified by our backend
-      getUserToken(auth0User, getAccessTokenSilently).then((result) => {
-        //is we get a success (we are authenticated), execute this logic
-        if (result.isAuthenticated) {
-          console.log("authenticated!");
-          getUser().then((response: any) => {
-            console.log("User:");
-            console.log(response);
-            // console.log(response?.userId);
-            // console.log(response?._id);
-            if (response) {
-              setUser(response);
-              setListOfUsersConnection(response.connections);
-              console.log("User Connections:", response.connections);
-              const companyIds = response.investments.map(
-                (investment: { companyId: any }) => investment.companyId
-              );
-              setUserInvestmentCompanyIds(companyIds);
-              console.log("All Company Ids:", companyIds);
-
-              // Getting Id of an individual connected companies from user
-              setUserConnectedCompanyID(response.companies);
-            }
-          });
-
-          // getConnectedCompanies().then((response) => {
-          //   console.log("Connected Companies:");
-          //   console.log(response);
-          //   setConnectedCompanies(response);
-          // });
-
-          getConnectedUsers().then((response) => {
-            // console.log("Connected Users : ");
-            // console.log(response);
-            setConnectedUsers(response);
-          });
-        } else {
-          console.log("Homepage: not authenticated..");
-        }
-      });
-    }
-  }, [isLoading]);
-
-  //   useEffect(() => {
-  //   getCompany(userInvestment).then((response) => {
-  //     console.log("Single Company : ", response);
-
-  //     console.log(response);
-  //   });
-  // });
+  // FOR USER PROFILE ROUTE
+  const params = useParams();
+  const id = params.id;
+  const navigate = useNavigate();
 
   // Suggested Users
-  // useEffect(() => {
-  //   getSuggestedUsers().then((response: User[]) => {
-  //     // console.log("Suggested Users:", response);
-  //     response.filter((user) => {
-  //       if (user.userId == id) {
-  //         setUser(user);
-  //         setShowEditButton(false);
-  //         console.log("userId:", user.userId);
-  //         console.log("id:", id);
-  //         // console.log("filter users:", user);
-  //         // console.log("Suggested User Id:", user.userId);
-  //         // console.log("Suggested User Id:", user._id);
-  //       }
-  //     });
-  //   });
-  // }, [id]);
+  useEffect(() => {
+    getSuggestedUsers().then((response: User[]) => {
+      // console.log("Suggested Users:", response);
+      response.filter((user) => {
+        if (user.userId == id) {
+          setUser(user);
+          console.log("userId:", user.userId);
+          console.log("id:", id);
+          // console.log("filter users:", user);
+          // console.log("Suggested User Id:", user.userId);
+          // console.log("Suggested User Id:", user._id);
+        }
+      });
+    });
+  }, [id]);
 
   //User Connected Companies
   useEffect(() => {
@@ -183,16 +127,26 @@ const ProfilePage = () => {
   }, [user]);
 
   // Add User Connection (only for Accept Connection Btn)
-  // const addConnectionButton = (id: any) => {
-  //   addConnection(id).then((response) => {
-  //     if (response) {
-  //       console.log("Connection Added", id);
-  //       setConnectedConnection(false);
-  //       navigate("/profile");
-  //       navigate(0);
-  //     }
-  //   });
-  // };
+  const addConnectionButton = (id: any) => {
+    addConnection(id).then((response) => {
+      if (response) {
+        console.log("Connection Added", id);
+        toast.success("Company has been updated!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setConnectedConnection(false);
+        // navigate("/profile");
+        // navigate(0);
+      }
+    });
+  };
 
   useEffect(() => {
     if (userInvestmentCompanyIds && userInvestmentCompanyIds.length > 0) {
@@ -264,13 +218,6 @@ const ProfilePage = () => {
                   sx={styles.bannerImg}
                 />
               )}
-              {showEditButton && (
-                <Link to="/edit-profile">
-                  <Button sx={styles.editButton} leftIcon={<FaEdit />}>
-                    Edit Profile
-                  </Button>
-                </Link>
-              )}
             </Box>
 
             {/* PROFILE DETAILS */}
@@ -315,6 +262,15 @@ const ProfilePage = () => {
                         />
                       ))}
                   </HStack>
+
+                  <Button
+                    mt={4}
+                    bg={"brand.100"}
+                    color={"white"}
+                    onClick={() => addConnectionButton(user.userId)}
+                  >
+                    {connectedConnection ? "Add Connection +" : "Connected"}
+                  </Button>
                 </Box>
 
                 {/* DIVIDER  */}
@@ -404,7 +360,7 @@ const ProfilePage = () => {
                 {/* MY INVESTMENT  */}
                 <Box sx={styles.investmentContainer}>
                   <Heading mb={10} fontSize={24} textTransform={"capitalize"}>
-                    My Investments
+                    {user.legalName ? user.legalName : ""} Investments
                   </Heading>
 
                   {userInvestmentArray.length ? (
@@ -489,8 +445,21 @@ const ProfilePage = () => {
           </Box>
         </ScaleFade>
       )}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <ToastContainer />
     </>
   );
 };
 
-export default ProfilePage;
+export default UserProfile;
