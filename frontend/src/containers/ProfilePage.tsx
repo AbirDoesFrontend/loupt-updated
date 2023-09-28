@@ -88,14 +88,33 @@ const ProfilePage = () => {
   const [userDetails, setUserDetails] = useState<(User | undefined)[]>([]);
 
   // // FOR USER PROFILE ROUTE
-  // const params = useParams();
-  // const id = params.id;
-
-  // const navigate = useNavigate();
+  const params = useParams();
+  let id = params.id;
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (id) {
+      getUser(encodeURIComponent(id)).then((response: any) => {
+        console.log("User:");
+        console.log(response);
+        if (response) {
+          setUser(response);
+          setListOfUsersConnection(response.connections);
+          console.log("User Connections:", response.connections);
+          const companyIds = response.investments.map(
+            (investment: { companyId: any }) => investment.companyId
+          );
+          setUserInvestmentCompanyIds(companyIds);
+          console.log("All Company Ids:", companyIds);
+
+          // Getting Id of an individual connected companies from user
+          setUserConnectedCompanyID(response.companies);
+        }
+      });
+    }
+
     //wait for auth0 to be done loading and make sure we have our user data
-    if (!isLoading && auth0User) {
+    else if (!isLoading && auth0User) {
       setShowEditButton(true);
 
       //get the auth0 sub and the JWT from auth0. this will be verified by our backend
@@ -103,11 +122,10 @@ const ProfilePage = () => {
         //is we get a success (we are authenticated), execute this logic
         if (result.isAuthenticated) {
           console.log("authenticated!");
+          console.log("id: " + id);
           getUser().then((response: any) => {
             console.log("User:");
             console.log(response);
-            // console.log(response?.userId);
-            // console.log(response?._id);
             if (response) {
               setUser(response);
               setListOfUsersConnection(response.connections);
@@ -135,37 +153,26 @@ const ProfilePage = () => {
             setConnectedUsers(response);
           });
         } else {
-          console.log("Homepage: not authenticated..");
+          console.log("Profile: not authenticated..");
         }
       });
     }
-  }, [isLoading]);
-
-  //   useEffect(() => {
-  //   getCompany(userInvestment).then((response) => {
-  //     console.log("Single Company : ", response);
-
-  //     console.log(response);
-  //   });
-  // });
+    //if we are not authenticated
+  }, [isLoading, id]);
 
   // Suggested Users
-  // useEffect(() => {
-  //   getSuggestedUsers().then((response: User[]) => {
-  //     // console.log("Suggested Users:", response);
-  //     response.filter((user) => {
-  //       if (user.userId == id) {
-  //         setUser(user);
-  //         setShowEditButton(false);
-  //         console.log("userId:", user.userId);
-  //         console.log("id:", id);
-  //         // console.log("filter users:", user);
-  //         // console.log("Suggested User Id:", user.userId);
-  //         // console.log("Suggested User Id:", user._id);
-  //       }
-  //     });
-  //   });
-  // }, [id]);
+  useEffect(() => {
+    getSuggestedUsers().then((response: User[]) => {
+      // console.log("Suggested Users:", response);
+      response.filter((user) => {
+        if (user.userId == id) {
+          setShowEditButton(false);
+          console.log("userId:", user.userId);
+          console.log("id:", id);
+        }
+      });
+    });
+  }, [id]);
 
   //User Connected Companies
   useEffect(() => {
@@ -180,19 +187,19 @@ const ProfilePage = () => {
       setUserConnectedCompany(filteredCompanies);
       console.log("User Connected Companies:", filteredCompanies);
     });
-  }, [user]);
+  }, [user, id]);
 
   // Add User Connection (only for Accept Connection Btn)
-  // const addConnectionButton = (id: any) => {
-  //   addConnection(id).then((response) => {
-  //     if (response) {
-  //       console.log("Connection Added", id);
-  //       setConnectedConnection(false);
-  //       navigate("/profile");
-  //       navigate(0);
-  //     }
-  //   });
-  // };
+  const addConnectionButton = (id: any) => {
+    addConnection(id).then((response) => {
+      if (response) {
+        console.log("Connection Added", id);
+        setConnectedConnection(false);
+        navigate("/profile");
+        navigate(0);
+      }
+    });
+  };
 
   useEffect(() => {
     if (userInvestmentCompanyIds && userInvestmentCompanyIds.length > 0) {
@@ -212,7 +219,7 @@ const ProfilePage = () => {
 
       fetchCompanies();
     }
-  }, [userInvestmentCompanyIds]);
+  }, [userInvestmentCompanyIds, id]);
 
   useEffect(() => {
     if (user.connections && user.connections.length > 0) {
@@ -229,7 +236,7 @@ const ProfilePage = () => {
           console.error("Error fetching user connections:", error);
         });
     }
-  }, [user.connections]);
+  }, [user.connections, id]);
 
   return (
     <>
@@ -315,6 +322,14 @@ const ProfilePage = () => {
                         />
                       ))}
                   </HStack>
+                  {!showEditButton && (
+                    <Button
+                      mt={4}
+                      onClick={() => addConnectionButton(user.userId)}
+                    >
+                      Accept Connection +{" "}
+                    </Button>
+                  )}
                 </Box>
 
                 {/* DIVIDER  */}
@@ -448,18 +463,12 @@ const ProfilePage = () => {
                     justifyContent={"space-between"}
                     alignItems={"flex-start"}
                   >
-                    <Heading mb={10} fontSize={30}>
-                      Connected Company
-                    </Heading>
-                    {userConnectedCompany.length ? (
-                      <Link to={"/connected-companies"}>
-                        <Button bg={"brand.100"} color={"white"}>
-                          View All
-                        </Button>
-                      </Link>
-                    ) : (
-                      ""
-                    )}
+                    <Heading mb={10}>Connected Companies</Heading>
+                    <Link to={"/connected-companies"}>
+                      <Button bg={"brand.100"} color={"white"}>
+                        View All
+                      </Button>
+                    </Link>
                   </HStack>
                   {userConnectedCompany.length ? (
                     <SimpleGrid

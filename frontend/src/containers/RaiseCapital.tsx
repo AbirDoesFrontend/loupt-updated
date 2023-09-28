@@ -209,51 +209,49 @@ const RaiseCapital = () => {
           mx={"auto"}
         >
           {/* HERO CONTENT  */}
-          <ScaleFade initialScale={0.9} in={true}>
-            <Flex p={8} flex={1} align={"center"} justify={"start"}>
-              <Stack spacing={6} w={"full"} maxW={"lg"}>
-                <Heading fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}>
-                  <Text as={"span"} color={"white"} position={"relative"}>
-                    Why{" "}
-                    <Text
-                      as={"span"}
-                      _after={{
-                        content: "''",
-                        width: "70%",
-                        height: useBreakpointValue({ base: "20%", md: "30%" }),
-                        position: "absolute",
-                        bottom: 1,
-                        right: 0,
-                        bg: "brand.100",
-                        zIndex: -1,
-                      }}
-                    >
-                      Raise Funds
-                    </Text>
+          <Flex p={8} flex={1} align={"center"} justify={"start"}>
+            <Stack spacing={6} w={"full"} maxW={"lg"}>
+              <Heading fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}>
+                <Text as={"span"} color={"white"} position={"relative"}>
+                  Why{" "}
+                  <Text
+                    as={"span"}
+                    _after={{
+                      content: "''",
+                      width: "70%",
+                      height: useBreakpointValue({ base: "20%", md: "30%" }),
+                      position: "absolute",
+                      bottom: 1,
+                      right: 0,
+                      bg: "brand.100",
+                      zIndex: -1,
+                    }}
+                  >
+                    Raise Funds
                   </Text>
-                  <br />{" "}
-                  <Text color={"white"} as={"span"}>
-                    With Loupt?
-                  </Text>{" "}
-                </Heading>
-                <Text fontSize={{ base: "lg", lg: "xl" }} color={"gray.100"}>
-                  Loupt gives companies access to investors who are deeply
-                  engaged with their investments
                 </Text>
-                <Stack
-                  direction={{ base: "column", md: "row" }}
-                  spacing={4}
-                  alignItems={"start"}
-                >
-                  <ChakraLink as={RouterLink} to="/about">
-                    <Button px={10} py={6}>
-                      How It Works
-                    </Button>
-                  </ChakraLink>
-                </Stack>
+                <br />{" "}
+                <Text color={"white"} as={"span"}>
+                  With Loupt?
+                </Text>{" "}
+              </Heading>
+              <Text fontSize={{ base: "lg", lg: "xl" }} color={"gray.100"}>
+                Loupt gives companies access to investors who are deeply engaged
+                with their investments
+              </Text>
+              <Stack
+                direction={{ base: "column", md: "row" }}
+                spacing={4}
+                alignItems={"start"}
+              >
+                <ChakraLink as={RouterLink} to="/about">
+                  <Button px={10} py={6}>
+                    How It Works
+                  </Button>
+                </ChakraLink>
               </Stack>
-            </Flex>
-          </ScaleFade>
+            </Stack>
+          </Flex>
           {/* HERO IMAGE  */}
           <Flex flex={1} alignItems={"center"} justifyContent={"center"}>
             <Image

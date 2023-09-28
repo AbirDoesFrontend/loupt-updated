@@ -59,6 +59,7 @@ import { MdBorderColor } from "react-icons/md";
 import NetworkCard from "../components/NetworkCard";
 import FeatureCard from "../components/FeatureCard";
 import { getCompany } from "../api";
+import FollowerCard from "../components/FollowerCard";
 
 type Investment = {
   investmentId: string;
@@ -71,6 +72,7 @@ type Investment = {
 
 const UserProfile = () => {
   const [user, setUser] = useState({} as User);
+  const [userFollower, setUserFollower] = useState<User[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [listOfUsersConnection, setListOfUsersConnection] = useState([]);
   const [userConnectedCompanyID, setUserConnectedCompanyID] = useState<
@@ -97,32 +99,38 @@ const UserProfile = () => {
   // Suggested Users
   useEffect(() => {
     getSuggestedUsers().then((response: User[]) => {
-      // console.log("Suggested Users:", response);
+      console.log("Suggested Users:", response);
       response.filter((user) => {
         if (user.userId == id) {
           setUser(user);
-          console.log("userId:", user.userId);
-          console.log("id:", id);
-          // console.log("filter users:", user);
-          // console.log("Suggested User Id:", user.userId);
-          // console.log("Suggested User Id:", user._id);
+          console.log("User", user);
+        } else {
+          console.log("nothing found!");
         }
+      });
+
+      response.filter((data) => {
+        user.followers.includes(data.userId)
+          ? setUserFollower((prevUsers) => [...prevUsers, data])
+          : 0;
       });
     });
   }, [id]);
+
+  console.log("user follower: ", userFollower);
 
   //User Connected Companies
   useEffect(() => {
     getAllCompanies().then((response: any) => {
       const allCompanies = response;
-      console.log(response);
+      // console.log(response);
       setCompanies(allCompanies);
 
       const filteredCompanies = allCompanies.filter((company: any) =>
         userConnectedCompanyID.includes(company.companyId)
       );
       setUserConnectedCompany(filteredCompanies);
-      console.log("User Connected Companies:", filteredCompanies);
+      // console.log("User Connected Companies:", filteredCompanies);
     });
   }, [user]);
 
@@ -130,8 +138,8 @@ const UserProfile = () => {
   const addConnectionButton = (id: any) => {
     addConnection(id).then((response) => {
       if (response) {
-        console.log("Connection Added", id);
-        toast.success("Company has been updated!", {
+        // console.log("Connection Added", id);
+        toast.success("Congrats! You are connected!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -157,8 +165,8 @@ const UserProfile = () => {
           );
           const companies = await Promise.all(companyPromises);
           setUserInvestmentArray(companies);
-          console.log("User Investment Array:", userInvestmentArray);
-          console.log("All Companies:", companies);
+          // console.log("User Investment Array:", userInvestmentArray);
+          // console.log("All Companies:", companies);
         } catch (error) {
           console.error("Error fetching companies:", error);
         }
@@ -177,7 +185,7 @@ const UserProfile = () => {
       Promise.all(promises)
         .then((responses) => {
           setUserDetails(responses);
-          console.log("User Details:", userDetails);
+          // console.log("User Details:", userDetails);
         })
         .catch((error) => {
           console.error("Error fetching user connections:", error);
@@ -269,7 +277,7 @@ const UserProfile = () => {
                     color={"white"}
                     onClick={() => addConnectionButton(user.userId)}
                   >
-                    {connectedConnection ? "Add Connection +" : "Connected"}
+                    {connectedConnection ? "Follow" : "Connected"}
                   </Button>
                 </Box>
 
@@ -326,12 +334,38 @@ const UserProfile = () => {
                   </Flex>
                 </Box>
 
-                {/* NETWORK SUGGESTIONS  */}
+                {/* Follow requests  */}
                 <Box sx={styles.networkSuggestions}>
                   <Heading mb={10} fontSize={30}>
-                    Network Suggestions
+                    Follow requests
                   </Heading>
-                  <NetworkCard></NetworkCard>
+                  <>
+                    <Flex
+                      wrap={["wrap", "wrap", "nowrap"]}
+                      justifyContent={"center"}
+                      gap={["10px", "10px", "4px"]}
+                    >
+                      {userFollower.length ? (
+                        userFollower
+                          .slice(0, 5)
+                          .map((user, index) => (
+                            <FollowerCard user={user} key={index} />
+                          ))
+                      ) : (
+                        <Box>
+                          <Text
+                            fontSize={20}
+                            color={"gray.500"}
+                            bg={"gray.100"}
+                            p={5}
+                            borderRadius={6}
+                          >
+                            No suggestions found..{" "}
+                          </Text>
+                        </Box>
+                      )}
+                    </Flex>
+                  </>
                 </Box>
 
                 {/* CONTACT INFORMATION */}

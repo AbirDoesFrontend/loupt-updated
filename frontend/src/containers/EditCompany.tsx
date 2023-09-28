@@ -185,23 +185,6 @@ const EditCompanyPage = () => {
         //setUser({}); this is default value anyways
       });
 
-    // getConnectedUsers().then((response) => {
-    //   console.log("Connected Users:");
-    //   console.log(response);
-    //   setConnectedUsers(response);
-    // });
-
-    // getAllCompanies().then((response) => {
-    //   console.log("All Companies:");
-    //   console.log(response);
-    //   setAllCompanies(response);
-    // });
-
-    // getConnectedCompanies().then((response) => {
-    //   console.log("Connected Companies:");
-    //   console.log(response);
-    //   setConnectedCompanies(response);
-    // });
 
     getCompany(id).then((response) => {
       console.log("Single Company : ", response);
@@ -335,12 +318,6 @@ const EditCompanyPage = () => {
                     <InputGroup>
                       <Input
                         defaultValue={"United States"}
-                        // onChange={(e) =>
-                        //   setFormData({
-                        //     ...formData,
-                        //     industries: e.target.value,
-                        //   })
-                        // }
                       />
                     </InputGroup>
                   </FormControl>

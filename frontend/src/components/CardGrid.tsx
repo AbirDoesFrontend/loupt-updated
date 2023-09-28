@@ -6,7 +6,7 @@ import Card from "./Card";
 // import CompanyImg3 from "../assets/companyImg3.png";
 import userImg from "../assets/user.png";
 
-import { getAllCompanies, Company } from "../api";
+import { getAllCompanies, Company, getConnectedCompanies } from "../api";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const CardGrid = () => {

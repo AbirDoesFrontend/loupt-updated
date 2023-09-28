@@ -168,6 +168,10 @@ export interface ConnectResponse {
   success: boolean;
 }
 
+interface presignedUrlResponse {
+  presignedUrl: string;
+  url: string;
+}
 
 const API_BASE_URL = 'https://api.investloupt.com/';
 
@@ -183,7 +187,13 @@ const apiRequest = async<T>(
     //TODO: add stricter typing to response
     console.log("fetching " + endpoint + " ...")
     console.log("jwt:" + localStorage.getItem("jwt"))
-    console.log("sub:" + localStorage.getItem('auth0Sub'))
+    let auth0Sub = localStorage.getItem('auth0Sub');
+    if(auth0Sub) {
+      auth0Sub = decodeURIComponent(auth0Sub);
+      console.log("sub: " + auth0Sub);
+    } else {
+      console.log("sub: item not found in localStorage");
+    }
 
 
     const response: AxiosResponse<T> = await axios({
@@ -192,7 +202,7 @@ const apiRequest = async<T>(
       data,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        'X-Auth0-Sub': `${localStorage.getItem('auth0Sub')}`
+        'X-Auth0-Sub': `${auth0Sub}`
       }
     });
     return response.data;
@@ -346,30 +356,34 @@ const updateFundingRound = async (companyId: string, requestPayload: FundingRoun
   return response
 }
 
-//incomplete, but funcitonal
+//incomplete, but functional
 //expects companyId in both the URL an the body of the request.
+//TODO: add typing
 export const getFundingRound = async (companyId: string) => {
   const response = await apiRequest<{}>('GET', `fundinground/${companyId}`)
   return response
 }
 
 //non-functional
+//TODO: add typing
 const makeInvestment = async (requestPayload: InvestmentCreationRequest) => {
   const response = await apiRequest<{}>('POST', `investment`, requestPayload)
   return response
 }
 
+//TODO: add typing
 export const submitInvestmentData = async (requestPayload: InvestmentData) => {
   const response = await apiRequest<any>('POST', `investmentwithkyc`, requestPayload);
   return response;
 };
 
 
-export const getPaymentMethod = async (/* requestPayload: PaymentMethod */):Promise<PaymentMethod> => {
+export const getPaymentMethod = async (/* requestPayload: PaymentMethod */): Promise<PaymentMethod> => {
   const response = await apiRequest<PaymentMethod>('GET', `paymentmethods`);
   return response;
 }
 
+//TODO: add typing
 export const executeTrade = async (investmentId: string) => {
   const response = await apiRequest<{}>('POST', `executeTrade`, 
   {
@@ -377,4 +391,45 @@ export const executeTrade = async (investmentId: string) => {
   }
   );
   return response;
+}
+
+function getFileTypeFromExtension(filename: string): string {
+  const extension = filename.split('.').pop()?.toLowerCase();
+
+  switch (extension) {
+    case 'jpg':
+    case 'jpeg':
+      return 'image/jpeg';
+    case 'png':
+      return 'image/png';
+    case 'gif':
+      return 'image/gif';
+    case 'bmp':
+      return 'image/bmp';
+    case 'webp':
+      return 'image/webp';
+    default:
+      throw new Error('Unsupported file extension.');
+  }
+}
+
+export const uploadImage = async (file: File | Blob, fileName: string, fileType?: string) : Promise<string | undefined> => {
+  try{
+    if (!fileType) {
+      fileType = getFileTypeFromExtension(fileName);
+    }
+    
+    const urlResponse = await apiRequest<presignedUrlResponse>('GET', `generate-presigned-url?filetype=${fileType}`);
+    
+    await axios.put(urlResponse.presignedUrl, file, {
+      headers: {
+        'Content-Type': fileType,
+      },
+    });
+    
+    return urlResponse.url;
+  } catch (e) {
+    console.error(e);
+    return undefined
+  }
 }

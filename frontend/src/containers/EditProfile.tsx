@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { getUser, User, updateUser } from "../api";
+import { useEffect, useState, useRef } from "react";
+import { getUser, User, updateUser, uploadImage } from "../api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -21,6 +21,9 @@ import { useNavigate } from "react-router-dom";
 const EditProfilePage = () => {
   const [user, setUser] = useState({} as User);
   const navigate = useNavigate();
+  const profPicRef = useRef<HTMLInputElement>(null);
+  const bannerRef = useRef<HTMLInputElement>(null);
+
 
   useEffect(() => {
     getUser()
@@ -41,21 +44,36 @@ const EditProfilePage = () => {
       });
   }, []);
 
-  const handleUpdateUser = (event: any) => {
+  const handleUpdateUser = async (event: any) => {
     event.preventDefault();
-    //   legalName?: string;
-    // bio?: string;
-    // email?: string;
-    // profilePic?: string;
-    // phoneNumber?: number;
-    // companies?: string[];
-    // connections?: string[];
-    // investments?: string[];
-    // banner?: string;
-    // education?: string;
-    // location?: string;
-    // occupation?: string;
-    // followers?: string[];
+
+    let profilePicUrl = undefined;
+    let bannerUrl = undefined;
+
+    const uploads: Promise<string | undefined>[] = [];
+    //check if user has uploaded a new profile pic
+    if (profPicRef.current && profPicRef.current.files && profPicRef.current.files[0]) {
+      console.log("uploading profile pic");
+      const uploadedFile = profPicRef.current.files[0];
+      uploads.push(uploadImage(uploadedFile, uploadedFile.name));
+    }
+    //check if user has uploaded a new banner
+    if(bannerRef.current && bannerRef.current.files && bannerRef.current.files[0]){
+      const uploadedFile = bannerRef.current.files[0];
+      uploads.push(uploadImage(uploadedFile, uploadedFile.name));
+    }
+
+    //upload images in parallel
+    const results = await Promise.all(uploads);
+    
+    if (profPicRef.current?.files?.[0]) {
+      profilePicUrl = results[0];
+      console.log("profile pic url: " + profilePicUrl)
+    }
+
+    if (bannerRef.current?.files?.[0]) {
+      bannerUrl = profilePicUrl ? results[1] : results[0];
+    }
 
     const form = event.target;
     const legalName = form.name.value;
@@ -69,12 +87,13 @@ const EditProfilePage = () => {
       legalName: legalName,
       phoneNumber: phoneNumber,
       bio: bio,
+      profilePic: profilePicUrl,
+      banner: bannerUrl,
       occupation: occupation,
       education: education,
       location: location,
     }).then((response) => {
       console.log("User has been updated:");
-      // console.log(response);
       setUser(response);
       if (response) {
         toast.success("User has been updated!", {
@@ -149,24 +168,6 @@ const EditProfilePage = () => {
               />
             </Box>
 
-            {/* <Box sx={styles.formGroup}>
-              <FormLabel sx={styles.label}>Company Bio</FormLabel>
-              <Textarea
-                sx={styles.input}
-                placeholder="Tell something about your company"
-                name="companyBio"
-              />
-            </Box>
-
-            <Box sx={styles.formGroup}>
-              <FormLabel sx={styles.label}>Gender</FormLabel>
-              <Select sx={styles.input}>
-                <option>Male</option>
-                <option>Female</option>
-                <option>Other</option>
-              </Select>
-            </Box> */}
-
             <Box sx={styles.formGroup}>
               <FormLabel sx={styles.label}>Working At</FormLabel>
               <Input
@@ -213,12 +214,12 @@ const EditProfilePage = () => {
 
             <Box sx={styles.formGroup}>
               <FormLabel sx={styles.label}>Change Profile Pic</FormLabel>
-              <Input type="file" sx={styles.input} />
+              <Input type="file" sx={styles.input} ref={profPicRef} />
             </Box>
 
             <Box sx={styles.formGroup}>
               <FormLabel sx={styles.label}>Change Banner</FormLabel>
-              <Input type="file" sx={styles.input} />
+              <Input type="file" sx={styles.input} ref={bannerRef}/>
             </Box>
 
             <Box sx={styles.formGroup}>

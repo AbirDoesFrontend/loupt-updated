@@ -49,16 +49,21 @@ import heroMan from "../assets/hero-man-img.png";
 import styles from "./styles/HomeStyles";
 import NetworkCard from "../components/NetworkCard";
 import CardGrid from "../components/CardGrid";
+import MyCardGrid from "../components/MyCardGrid";
+import MyNetworkCard from "../components/MyNetworkCards";
 import { color } from "framer-motion";
 import TestimonialSection from "../components/TestimonialSection";
 import Newsletter from "../components/Newsletter";
 
 const HomePage = () => {
-  const [activeSection, setActiveSection] = useState("explore");
+  const [primarySection, setPrimarySection] = useState("");
+  const [secondarySection, setSecondarySection] = useState("");
+  const [connectedSection, setConnectedSection] = useState("");
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
-  const { user, getAccessTokenSilently, isLoading } = useAuth0();
+  const { user, getAccessTokenSilently, isLoading, loginWithRedirect } = useAuth0();
+  const isLoggedIn = Boolean(user);
 
   useEffect(() => {
     //wait for auth0 to be done loading and make sure we have our user data
@@ -79,7 +84,16 @@ const HomePage = () => {
             console.log(response);
             setConnectedCompanies(response);
           });
+
+          getConnectedUsers().then((response) => {
+            console.log("Connected Users:");
+            console.log(response);
+            setConnectedUsers(response);
+          });
+
         } else console.log("Homepage: not authenticated..");
+
+
       });
     }
   }, [isLoading]);
@@ -340,41 +354,174 @@ const HomePage = () => {
       {/* <Container maxWidth={"100%"} bg={"brand.200"} my={100} py={20}>
         <TestimonialSection></TestimonialSection>
       </Container> */}
+      {/* DUAL BUTTONS  */}
 
-      {/* COMPANY CARDS */}
 
       {/* DUAL BUTTONS  */}
-      <HStack spacing={4} justify="center" py={10}>
-        <Button
-          sx={styles.buttonLarge}
-          color={"brand.100"}
-          onClick={() => setActiveSection("network")}
-        >
-          My Network
-        </Button>
-        <Button
-          sx={styles.buttonLarge}
-          color="white"
-          bg="brand.100"
-          onClick={() => setActiveSection("explore")}
-        >
-          Explore
-        </Button>
-      </HStack>
 
-      {/* NETWORK SUGGESTIONS  */}
-      {activeSection === "network" && (
-        <div>
-          {/* Content for My Network */}
-          {/* NETWORK SUGGESTIONS  */}
-          <VStack spacing={20} mt={5}>
-            <Box>
-              <Flex
-                direction="column"
-                alignItems="center"
-                justifyContent="center"
-                gap={10}
-              >
+      {/* DUAL BUTTONS (My Network & Explore) */}
+
+      {/* Main Buttons: My Network & Explore */}
+      <div>
+        {/* Main Buttons: My Network & Explore */}
+        <HStack spacing={4} justify="center" py={10}>
+          <Button
+            sx={styles.buttonLarge}
+            {...(secondarySection === "network" ? styles.selected : styles.unselected)}
+            onClick={() => setSecondarySection("network")}
+          >
+            My Network
+          </Button>
+
+          <Button
+            sx={styles.buttonLarge}
+            {...(secondarySection === "explore" ? styles.selected : styles.unselected)}
+            onClick={() => setSecondarySection("explore")}
+          >
+            Explore
+          </Button>
+        </HStack>
+
+        {/* If "My Network" is clicked */}
+        {secondarySection === "network" && (
+          <>
+            {isLoggedIn ? (
+              <HStack spacing={4} justify="center" py={10}>
+                <Button
+                  sx={styles.buttonLarge}
+                  {...(primarySection === "connectedUsers" ? styles.selected : styles.unselected)}
+                  onClick={() => setPrimarySection("connectedUsers")}
+                >
+                  Users
+                </Button>
+                <Button
+                  sx={styles.buttonLarge}
+                  {...(primarySection === "connectedCompanies" ? styles.selected : styles.unselected)}
+                  onClick={() => setPrimarySection("connectedCompanies")}
+                >
+                  Companies
+                </Button>
+              </HStack>
+            ) : (
+              <HStack spacing={4} justify="center" py={10}>
+                <Button
+                  sx={styles.buttonLarge}
+                  color={"brand.100"}
+                  onClick={() => loginWithRedirect({})}
+                >
+                  Login to View
+                </Button>
+              </HStack>
+            )}
+
+            {/* Content when "My Connections" is clicked */}
+            {primarySection === "connectedUsers" && (
+              <div>
+                <VStack spacing={20} mt={5}>
+                  <Box>
+                    <Flex
+                      direction="column"
+                      alignItems="center"
+                      justifyContent="center"
+                      gap={10}
+                    >
+                      <Heading
+                        fontSize={{ base: "2xl", sm: "4xl", lg: "5xl" }}
+                        fontWeight={"bold"}
+                        position={"relative"}
+                        _after={{
+                          content: "''",
+                          width: "300px",
+                          height: "20%",
+                          position: "absolute",
+                          bottom: 1,
+                          left: ["10px", "20px", "95px"],
+                          bg: "brand.300",
+                          zIndex: -1,
+                        }}
+                        mb={8}
+                      >
+                        Users in my network:
+                      </Heading>
+                      <HStack>
+                        <MyNetworkCard></MyNetworkCard>
+                      </HStack>
+                    </Flex>
+                  </Box>
+                  <Divider sx={styles.divider} />
+
+                  {/* Network Suggestions */}
+                  <Box>
+                    <Flex
+                      direction="column"
+                      alignItems="center"
+                      justifyContent="center"
+                      gap={10}
+                    >
+                      <Heading
+                        fontSize={{ base: "2xl", sm: "4xl", lg: "5xl" }}
+                        fontWeight={"bold"}
+                        position={"relative"}
+                        _after={{
+                          content: "''",
+                          width: "300px",
+                          height: "20%",
+                          position: "absolute",
+                          bottom: 1,
+                          left: ["10px", "20px", "95px"],
+                          bg: "brand.300",
+                          zIndex: -1,
+                        }}
+                        mb={8}
+                      >
+                        Network Suggestions
+                      </Heading>
+                      <HStack>
+                        <NetworkCard></NetworkCard>
+                      </HStack>
+                      <div></div>
+                    </Flex>
+                  </Box>
+                </VStack>
+              </div>
+            )}
+
+            {/* Content when "My Companies" is clicked */}
+            {primarySection === "connectedCompanies" && (
+              <div>
+                <Box m={10} maxW="7xl" mx={"auto"}>
+                  <Center>
+                    <Heading
+                      fontSize={{ base: "2xl", sm: "4xl", lg: "5xl" }}
+                      fontWeight={"bold"}
+                      position={"relative"}
+                      _after={{
+                        content: "''",
+                        width: "300px",
+                        height: "20%",
+                        position: "absolute",
+                        bottom: 1,
+                        left: ["10px", "20px", "95px"],
+                        bg: "brand.300",
+                        zIndex: -1,
+                      }}
+                      mb={10}
+                    >
+                      Companies in my network:
+                    </Heading>
+                  </Center>
+                  <MyCardGrid></MyCardGrid>
+                </Box>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* If "Explore" is clicked */}
+        {secondarySection === "explore" && (
+          <div>
+            <Box m={10} maxW="7xl" mx={"auto"}>
+              <Center>
                 <Heading
                   fontSize={{ base: "2xl", sm: "4xl", lg: "5xl" }}
                   fontWeight={"bold"}
@@ -389,61 +536,18 @@ const HomePage = () => {
                     bg: "brand.300",
                     zIndex: -1,
                   }}
-                  mb={8}
+                  mb={10}
                 >
-                  Network Suggestions
+                  Currently Raising
                 </Heading>
-                <HStack>
-                  <NetworkCard></NetworkCard>
-                </HStack>
-              </Flex>
-            </Box>
-            <Divider sx={styles.divider} />
-          </VStack>
-        </div>
-      )}
-
-      {activeSection === "explore" && (
-        <div>
-          {/* Content for Explore */}
-          {/* COMPANY CARDS */}
-          <Box m={10} maxW="7xl" mx={"auto"}>
-            <Center>
-              <Heading
-                fontSize={{ base: "2xl", sm: "4xl", lg: "5xl" }}
-                fontWeight={"bold"}
-                position={"relative"}
-                _after={{
-                  content: "''",
-                  width: "300px",
-                  height: "20%",
-                  position: "absolute",
-                  bottom: 1,
-                  left: ["10px", "20px", "95px"],
-                  bg: "brand.300",
-                  zIndex: -1,
-                }}
-                mb={10}
-              >
-                Currently Raising
-              </Heading>
-            </Center>
-            {isLoading && (
-              <Center>
-                {" "}
-                <Spinner
-                  thickness="4px"
-                  speed="0.65s"
-                  emptyColor="gray.200"
-                  color="blue.500"
-                  size="xl"
-                />
               </Center>
-            )}
-            <CardGrid></CardGrid>
-          </Box>
-        </div>
-      )}
+              <CardGrid></CardGrid>
+            </Box>
+          </div>
+        )}
+      </div>
+
+
 
       {/* NEWSLETTER SECTION  */}
       <Newsletter></Newsletter>
