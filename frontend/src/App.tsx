@@ -15,6 +15,7 @@ import UserConnectedCompany from "./containers/UserConnectedCompany";
 import ResultsPage from "./components/Results";
 import Checkout from "./containers/Checkout";
 import UserProfile from "./containers/UserProfile";
+import TeaserPage from "./containers/TeaserPage";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
       <Route path="/edit-company/:id" element={<EditCompanyPage />} />
       <Route path="/company/:id" element={<CompanyDetailPage />} />
       <Route path="/signup-modal" element={<SignUpModal />} />
+      <Route path="/teaser-page" element={<TeaserPage />} />
       <Route path="/" element={<HomePage />} />
       <Route path="*" element={<Route404 />} />
     </Routes>

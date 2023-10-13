@@ -2,12 +2,9 @@ import {
   Box,
   Text,
   Image,
-  HStack,
   Button,
-  Spacer,
   Center,
   VStack,
-  Heading,
   Flex,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
@@ -26,6 +23,7 @@ const NetworkCard = () => {
       }
     });
   }, []);
+
 
   const addConnectionButton = (id: any) => {
     addConnection(id).then((response) => {
