@@ -20,6 +20,7 @@ import PreviewImg from "../assets/preview.png";
 const TeaserPage = () => {
   return (
     <>
+      <Divider />
       <Stack background={"brand.100"}>
         <Stack
           minH={"600px"}

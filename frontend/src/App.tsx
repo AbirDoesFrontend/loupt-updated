@@ -16,6 +16,7 @@ import ResultsPage from "./components/Results";
 import Checkout from "./containers/Checkout";
 import UserProfile from "./containers/UserProfile";
 import TeaserPage from "./containers/TeaserPage";
+import FaqPage from "./containers/FaqPage";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
       <Route path="/company/:id" element={<CompanyDetailPage />} />
       <Route path="/signup-modal" element={<SignUpModal />} />
       <Route path="/teaser-page" element={<TeaserPage />} />
+      <Route path="/faq" element={<FaqPage />} />
       <Route path="/" element={<HomePage />} />
       <Route path="*" element={<Route404 />} />
     </Routes>
