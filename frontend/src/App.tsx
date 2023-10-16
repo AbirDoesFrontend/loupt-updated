@@ -15,12 +15,12 @@ import UserConnectedCompany from "./containers/UserConnectedCompany";
 import ResultsPage from "./components/Results";
 import Checkout from "./containers/Checkout";
 import UserProfile from "./containers/UserProfile";
-import TeaserPage from "./containers/TeaserPage";
-import FaqPage from "./containers/FaqPage";
+import Investments from "./containers/Investments";
 
 function App() {
   return (
     <Routes>
+      <Route path="/my-investments" element={<Investments />} />
       <Route path="/results" element={<ResultsPage />} />
       <Route path="/checkout/:id" element={<Checkout />} />
       <Route path="/signup" element={<SignupPage />} />
@@ -35,8 +35,6 @@ function App() {
       <Route path="/edit-company/:id" element={<EditCompanyPage />} />
       <Route path="/company/:id" element={<CompanyDetailPage />} />
       <Route path="/signup-modal" element={<SignUpModal />} />
-      <Route path="/teaser-page" element={<TeaserPage />} />
-      <Route path="/faq" element={<FaqPage />} />
       <Route path="/" element={<HomePage />} />
       <Route path="*" element={<Route404 />} />
     </Routes>

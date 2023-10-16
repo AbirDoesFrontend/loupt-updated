@@ -134,6 +134,7 @@ export type CreateCompanyRequest = {
     name: string, 
     logo: string, 
     bio: string, 
+    banner? : string,
     partners: string[], 
     industry: string[], 
     website: string, 

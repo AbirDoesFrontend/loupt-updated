@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.linkFundingRoundToOffering = exports.addInvestment = exports.createFundingRound = exports.updateFundingRound = exports.getFundingRound = void 0;
+exports.linkDocToFundingRound = exports.linkFundingRoundToOffering = exports.addInvestment = exports.createFundingRound = exports.updateFundingRound = exports.getFundingRound = void 0;
 const investment_schema_1 = require("../models/investment.schema");
 const fundingRound_schema_1 = require("../models/fundingRound.schema");
 const user_schema_1 = require("../models/user.schema");
@@ -72,6 +72,7 @@ const addInvestment = (roundId, userId, amount, shareCount) => __awaiter(void 0,
     const investmentId = (0, idUtils_1.generateInvestmentId)();
     const investment = new investment_schema_1.Investment({
         investmentId: investmentId,
+        roundId: roundId,
         userId: userId,
         companyId: round.companyId,
         amount: amount,
@@ -102,3 +103,15 @@ const linkFundingRoundToOffering = (roundId, tapiOfferingId) => __awaiter(void 0
     }
 });
 exports.linkFundingRoundToOffering = linkFundingRoundToOffering;
+/* export const
+ */
+const linkDocToFundingRound = (roundId, docref) => __awaiter(void 0, void 0, void 0, function* () {
+    const round = yield fundingRound_schema_1.FundingRound.findOne({ roundId: roundId }).exec();
+    if (!round) {
+        return null;
+    }
+    round.tapiDocumentIds.push(docref);
+    yield round.save();
+    return round;
+});
+exports.linkDocToFundingRound = linkDocToFundingRound;

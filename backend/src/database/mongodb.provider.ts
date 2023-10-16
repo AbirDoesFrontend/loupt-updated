@@ -7,7 +7,7 @@ const mongoOptions: ConnectOptions = {
 
 const MongoConnection = async ()=> {
     try {
-        const mongo = await mongoose.connect('mongodb+srv://investloupt:InvestLoupt123@loupt.ceqpoc4.mongodb.net/loupt?retryWrites=true&w=majority', mongoOptions)
+        const mongo = await mongoose.connect(Config.MONGODB_URI, mongoOptions)
         console.log(`mongodb connected successfully: ${mongo.connection.host}`)
         return mongo
     } catch (e) {

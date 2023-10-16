@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fileUploadRoute = exports.getPaymentMethodsRoute = exports.addInvestmentRouteWithKYC = exports.addInvestmentRoute = exports.updateFundingRoundRoute = exports.getFundingRoundRoute = exports.createFundingRoundRoute = void 0;
+exports.executeInvestmentRoute = exports.fileUploadRoute = exports.getPaymentMethodsRoute = exports.addInvestmentRouteWithKYC = exports.addInvestmentRoute = exports.updateFundingRoundRoute = exports.getFundingRoundRoute = exports.createFundingRoundRoute = void 0;
 const fundingRound_schema_1 = require("../models/fundingRound.schema");
 const investment_service_1 = require("../services/investment.service");
 const user_service_1 = require("../services/user.service");
@@ -56,7 +56,26 @@ function getFundingRoundRoute(req, res) {
         try {
             const roundId = req.params.roundId;
             const round = yield (0, investment_service_1.getFundingRound)(roundId);
-            return res.status(200).send(round);
+            if (!round) {
+                return res.status(404).send("Funding round not found");
+            }
+            const documents = yield (0, transactapi_service_1.getOfferingDocuments)((round === null || round === void 0 ? void 0 : round.tapiOfferingId) || "none");
+            const response = {
+                roundId: round === null || round === void 0 ? void 0 : round.roundId,
+                displayName: round === null || round === void 0 ? void 0 : round.displayName,
+                companyId: round === null || round === void 0 ? void 0 : round.companyId,
+                amountRaised: round === null || round === void 0 ? void 0 : round.amountRaised,
+                minimumInvestmentAmount: round === null || round === void 0 ? void 0 : round.minimumInvestmentAmount,
+                maximumInvestmentAmount: round === null || round === void 0 ? void 0 : round.maximumInvestmentAmount,
+                fundingGoal: round === null || round === void 0 ? void 0 : round.fundingGoal,
+                deadline: round === null || round === void 0 ? void 0 : round.deadline,
+                discountPercentage: round === null || round === void 0 ? void 0 : round.discountPercentage,
+                investments: round === null || round === void 0 ? void 0 : round.investments,
+                tapiOfferingId: round === null || round === void 0 ? void 0 : round.tapiOfferingId,
+                tapiDocumentIds: ["currently not in use- refer below for information on documents."],
+                tapiDocuments: documents.document_details
+            };
+            return res.status(200).send(response);
         }
         catch (e) {
             console.error(`Unable to complete getFundingRound request.\n ${e}`);
@@ -133,7 +152,9 @@ function addInvestmentRouteWithKYC(req, res) {
             if (!userId) {
                 return res.status(401).send("Unauthorized request");
             }
+            console.log(req.body);
             if (!req.body || !req.body.roundId || !req.body.amount || !req.body.shareCount || !req.body.domicile || !req.body.firstName || !req.body.lastName || !req.body.dob || !req.body.primCountry || !req.body.primAddress1 || !req.body.primCity || !req.body.primState || !req.body.primZip || !req.body.ssn || !req.body.phone) {
+                console.log("missing param!!");
                 return res.status(400).send("Expected: { roundId: string, amount: number, shareCount: number, domicile: boolean, firstName: string, lastName: string, dob: string, primCountry: string, primAddress1: string, primCity: string, primState: string, primZip: string, ssn: string, phone: string }");
             }
             const { roundId, //TODO: create a new interface for this
@@ -151,24 +172,21 @@ function addInvestmentRouteWithKYC(req, res) {
             if (user.kycStatus == "none") {
                 user.domicile = domicile;
                 user.legalName = firstName + " " + lastName;
-                user.dob = /* new Date(dob) */ new Date(dob);
+                user.dob = new Date(dob);
                 user.primCountry = primCountry;
                 user.primAddress1 = primAddress1;
                 user.primCity = primCity;
                 user.primState = primState;
                 user.primZip = primZip;
-                //user.ssn = "not stored" //TODO: how do we manage this?
-                //user.kycStatus = "pending"
-                //user.amlStatus = "pending"
                 const result = yield (0, user_service_1.updateUserKycInfo)(user /* , ssn */);
                 if (!result) {
                     console.log("did not find user");
                 }
-                const isProvisioned = yield (0, transactapi_service_1.ensureInvestorProvisioned)(userId);
+                const isProvisioned = yield (0, transactapi_service_1.ensureInvestorProvisioned)(userId, ssn);
                 if (!isProvisioned) {
                     return res.status(400).send("Unable to provision investor through transactAPI");
                 }
-                const kycHasStarted = yield (0, transactapi_service_1.beginUserKYC)(userId);
+                const kycHasStarted = yield (0, transactapi_service_1.beginUserKYC)(userId, ssn);
                 if (!kycHasStarted) {
                     return res.status(400).send("Unable to begin KYC through transactAPI");
                 }
@@ -183,9 +201,9 @@ function addInvestmentRouteWithKYC(req, res) {
             else if (user.kycStatus == "passed")
                 console.log("KYC already passed");
             const investment = yield (0, investment_service_1.addInvestment)(roundId, userId, amount, shareCount);
+            return res.status(200).send(investment);
         }
         catch (e) {
-            //console.error(`Unable to complete addInvestmentWithKYC request.\n ${e}`);
             return res.status(500).send("Internal server error");
         }
     });
@@ -246,3 +264,47 @@ function fileUploadRoute(req, res) {
     });
 }
 exports.fileUploadRoute = fileUploadRoute;
+function executeInvestmentRoute(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            //find all investments for the user
+            const userId = yield (0, routeUtils_1.authenticatedUserId)(req);
+            if (!userId) {
+                return res.status(401).send("Unauthorized request");
+            }
+            const user = yield (0, user_service_1.getUserById)(userId);
+            if (!user) {
+                return res.status(404).send("User not found");
+            }
+            const investments = user.investments;
+            const investmentId = req.body.investmentId;
+            if (!investmentId) {
+                return res.status(400).send("Expected: { investmentId: string }");
+            }
+            const investment = investments.find(investment => investment.investmentId == investmentId);
+            if (!investment) {
+                return res.status(404).send("Investment not found");
+            }
+            //create trade in transactAPI
+            const tradeId = yield (0, transactapi_service_1.createTapiTrade)(user.userId, investment.roundId, investment.amount);
+            if (!tradeId) {
+                return res.status(400).send("Unable to create trade");
+            }
+            //update investment with tradeId
+            investment.tapiTradeId = tradeId;
+            const round = yield fundingRound_schema_1.FundingRound.findOne({ roundId: investment.roundId }).exec();
+            if (!round) {
+                return res.status(404).send("Round not found");
+            }
+            const result = (0, transactapi_service_1.externalFundMove)(user.userId, round.tapiOfferingId, tradeId, investment.amount);
+            if (!result) {
+                return res.status(400).send("Unable to execute trade");
+            }
+        }
+        catch (e) {
+            console.error(`Unable to complete executeInvestmentRoute request.\n ${e}`);
+            return res.status(500).send("Internal server error");
+        }
+    });
+}
+exports.executeInvestmentRoute = executeInvestmentRoute;

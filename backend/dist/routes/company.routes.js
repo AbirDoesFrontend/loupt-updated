@@ -56,7 +56,7 @@ function updateCompanyRoute(req, res) {
             return res.status(401).send("Unauthorized request");
         }
         const { companyId } = req.params;
-        const { name, logo, bio, partners, industry, website, valuation, minimumInvestment, sharePrice, sharesOutstanding, location, banner, shortBio } = req.body;
+        const { name, logo, bio, banner, partners, industry, website, valuation, minimumInvestment, sharePrice, sharesOutstanding, location, shortBio } = req.body;
         const existingUser = yield (0, user_service_1.getUserById)(userId);
         if (!(existingUser === null || existingUser === void 0 ? void 0 : existingUser.companies.includes(companyId))) {
             return res.status(401).send("User doesn't have permission to edit this company");
@@ -67,6 +67,7 @@ function updateCompanyRoute(req, res) {
             name: name || (existingCompany === null || existingCompany === void 0 ? void 0 : existingCompany.name),
             bio: bio || (existingCompany === null || existingCompany === void 0 ? void 0 : existingCompany.bio),
             logo: logo || (existingCompany === null || existingCompany === void 0 ? void 0 : existingCompany.logo),
+            banner: banner || (existingCompany === null || existingCompany === void 0 ? void 0 : existingCompany.banner),
             partners: partners || (existingCompany === null || existingCompany === void 0 ? void 0 : existingCompany.partners),
             industry: industry || (existingCompany === null || existingCompany === void 0 ? void 0 : existingCompany.industry),
             website: website || (existingCompany === null || existingCompany === void 0 ? void 0 : existingCompany.website),
@@ -75,7 +76,6 @@ function updateCompanyRoute(req, res) {
             sharePrice: sharePrice || (existingCompany === null || existingCompany === void 0 ? void 0 : existingCompany.sharePrice),
             sharesOutstanding: sharesOutstanding || (existingCompany === null || existingCompany === void 0 ? void 0 : existingCompany.sharesOutstanding),
             location: location || (existingCompany === null || existingCompany === void 0 ? void 0 : existingCompany.location),
-            banner: banner || (existingCompany === null || existingCompany === void 0 ? void 0 : existingCompany.banner),
             shortBio: shortBio || (existingCompany === null || existingCompany === void 0 ? void 0 : existingCompany.shortBio)
         });
         const success = yield (0, company_service_1.updateCompany)(updatedCompany);
@@ -133,10 +133,6 @@ function createCompanyRoute(req, res) {
         if (!existingUser) {
             return res.status(404).send("User does not exist");
         }
-        /*     if(existingUser.domicile == null || existingUser.dob.getFullYear() === 1900 || existingUser.primCountry == '' || existingUser.primAddress1 == '' || existingUser.primCity == '' || existingUser.primState == '' || existingUser.primZip == "none") {
-                return res.status(422).send("User must complete full details before creating a company")
-            }
-            createCompany */
         const company = yield (0, company_service_1.createCompany)(createCompanyRequest, loggedInUserId);
         if (!company) {
             return res.status(500).send("Error while creating company");

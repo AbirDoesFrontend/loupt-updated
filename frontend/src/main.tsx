@@ -8,6 +8,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import auth0config from "./auth0config.json"; // Adjust the path based on your directory structure
+import { LouptAuthProvider } from "./contexts/LouptAuthProvider";
 
 // 1. Import `extendTheme for Chakra Custom Theme Styles`
 import { extendTheme } from "@chakra-ui/react";
@@ -35,11 +36,13 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           scope: auth0config.scope,
         }}
       >
-        <BrowserRouter>
-          <Header />
-          <App />
-          <Footer />
-        </BrowserRouter>
+        <LouptAuthProvider>
+          <BrowserRouter>
+            <Header />
+            <App />
+            <Footer />
+          </BrowserRouter>
+        </LouptAuthProvider>
       </Auth0Provider>
     </ChakraProvider>
   </React.StrictMode>

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { User, getAllCompanies, getUser, getUserToken } from "../api";
+import { User, getAllCompanies, getUser } from "../api";
 import { useAuth0 } from "@auth0/auth0-react";
 import Card from "../components/Card";
 import { Container, SimpleGrid } from "@chakra-ui/react";
+import { useLouptAuth } from "../contexts/LouptAuthProvider";
 
 const UserConnectedCompany = () => {
   const [user, setUser] = useState({} as User);
@@ -10,15 +11,25 @@ const UserConnectedCompany = () => {
     string[]
   >([]);
   const [userConnectedCompany, setUserConnectedCompany] = useState<any[]>([]);
-  const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
+/*   const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
+ */
+const {
+  isAuthenticated,
+  isLoading,
+  authenticate,
+  showLogin,
+  logout,
+  getUserJwt,
+  getUserSub,
+} = useLouptAuth();
 
   useEffect(() => {
     //wait for auth0 to be done loading and make sure we have our user data
-    if (!isLoading && auth0User) {
+    if (!isLoading) {
       //get the auth0 sub and the JWT from auth0. this will be verified by our backend
-      getUserToken(auth0User, getAccessTokenSilently).then((result) => {
+      authenticate().then((authenticated) => {
         //is we get a success (we are authenticated), execute this logic
-        if (result.isAuthenticated) {
+        if (authenticated) {
           console.log("authenticated!");
           getUser().then((response: any) => {
             console.log("User:", response);

@@ -29,8 +29,8 @@ const styles = {
     w: "100%",
     h: "100%",
     borderRadius: 8,
-    opacity: 0.6,
-    objectFit: "cover",
+    //opacity: 0.6,
+    //objectFit: "cover",
   },
 
   editButton: {

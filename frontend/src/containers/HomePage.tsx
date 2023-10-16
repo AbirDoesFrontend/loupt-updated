@@ -39,10 +39,9 @@ import {
   getConnectedCompanies,
   Company,
   User,
-  getUserToken,
 } from "../api";
-import { useAuth0, Auth0Context } from "@auth0/auth0-react";
-import { Link as ChakraLink } from "@chakra-ui/react";
+/* import { useAuth0, Auth0Context } from "@auth0/auth0-react";
+ */import { Link as ChakraLink } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import heroBg from "../assets/bg-hero.png";
 import heroMan from "../assets/hero-man-img.png";
@@ -54,6 +53,7 @@ import MyNetworkCard from "../components/MyNetworkCards";
 import { color } from "framer-motion";
 import TestimonialSection from "../components/TestimonialSection";
 import Newsletter from "../components/Newsletter";
+import { useLouptAuth } from "../contexts/LouptAuthProvider";
 
 const HomePage = () => {
   const [primarySection, setPrimarySection] = useState("");
@@ -62,39 +62,48 @@ const HomePage = () => {
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   const [allCompanies, setAllCompanies] = useState([] as Company[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
-  const { user, getAccessTokenSilently, isLoading, loginWithRedirect } = useAuth0();
-  const isLoggedIn = Boolean(user);
+
+  const {
+    isAuthenticated,
+    isLoading,
+    authenticate,
+    showLogin,
+    logout,
+    getUserJwt,
+    getUserSub,
+  } = useLouptAuth();
 
   useEffect(() => {
-    //wait for auth0 to be done loading and make sure we have our user data
-    if (!isLoading && user) {
-      //get the auth0 sub and the JWT from auth0. this will be verified by our backend
-      getUserToken(user, getAccessTokenSilently).then((result) => {
-        //is we get a success (we are authenticated), execute this logic
+    if (!isLoading) {
+      authenticate().then(() => {
+        if(isAuthenticated)
+          console.log("authenticated!")
+      });
+/*       getUserToken(auth0User, getAccessTokenSilently).then((result) => {
         if (result.isAuthenticated) {
           console.log("authenticated!");
+          setIsAuthenticated(true);
 
           getUser().then((response) => {
-            console.log("User:");
-            console.log(response);
+            if (response) {
+              setUserData(response);
+              //setCompanyData({});
+              if (userData.companies && userData.companies.length > 0) {
+                //set the profile image
+                setAvatar(userData.profilePic);
+
+                //if the user is authenticated, show companies they are connected to
+                getConnectedCompanies().then((response) => {
+                  setCompanyData(response);
+                });
+              }
+            }
           });
-
-          getConnectedCompanies().then((response) => {
-            console.log("Connected Companies:");
-            console.log(response);
-            setConnectedCompanies(response);
-          });
-
-          getConnectedUsers().then((response) => {
-            console.log("Connected Users:");
-            console.log(response);
-            setConnectedUsers(response);
-          });
-
-        } else console.log("Homepage: not authenticated..");
-
-
-      });
+        } else console.log("Header: not authenticated..");
+        getAllCompanies().then((response) => {
+          setCompanyData(response);
+        });
+      }); */
     }
   }, [isLoading]);
 
@@ -385,7 +394,7 @@ const HomePage = () => {
         {/* If "My Network" is clicked */}
         {secondarySection === "network" && (
           <>
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <HStack spacing={4} justify="center" py={10}>
                 <Button
                   sx={styles.buttonLarge}
@@ -407,7 +416,7 @@ const HomePage = () => {
                 <Button
                   sx={styles.buttonLarge}
                   color={"brand.100"}
-                  onClick={() => loginWithRedirect({})}
+                  onClick={() => showLogin()}
                 >
                   Login to View
                 </Button>

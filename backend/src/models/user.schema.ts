@@ -22,6 +22,7 @@ const userSchema = new Schema<IUser>({
     connections: {type : [String], default : [] },
     followers: {type : [String], default : [] },
     investments: {type : [InvestmentSchema], default : [] },
+    following: {type : [String], default : [] },
     visibility: {type : String, default : 'public' },
     tapiIssuerId: {type : String, default : 'none' }, //transact API issuer ID (none if user has not created any funding rounds)
     tapiPartyId: {type : String, default : 'none' }, //transact API party ID (none if user has not invested in any companies)

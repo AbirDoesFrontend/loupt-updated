@@ -1,6 +1,7 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import { useAsyncError } from 'react-router-dom';
 import auth0config from './auth0config.json';
+import { useAuth0, User as auth0UserType } from "@auth0/auth0-react";
 
 
 export interface FundingRoundCreationRequest {
@@ -50,6 +51,8 @@ export interface PaymentMethod {
 }
 
 export interface Company {
+  shareCount: number;
+  amount: number;
   companyId: string;
   name: string;
   logo: string;
@@ -123,6 +126,7 @@ export interface UserUpdateRequest {
 }
 
 export interface User {
+  following: string[];
   userId: string;
   legalName: string;
   bio: string;
@@ -175,7 +179,6 @@ interface presignedUrlResponse {
 
 const API_BASE_URL = 'https://api.investloupt.com/';
 
-
 //DONE
 const apiRequest = async<T>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
@@ -187,6 +190,7 @@ const apiRequest = async<T>(
     //TODO: add stricter typing to response
     console.log("fetching " + endpoint + " ...")
     console.log("jwt:" + localStorage.getItem("jwt"))
+    
     let auth0Sub = localStorage.getItem('auth0Sub');
     if(auth0Sub) {
       auth0Sub = decodeURIComponent(auth0Sub);
@@ -216,35 +220,6 @@ const apiRequest = async<T>(
     } else {
       throw new Error('An error occurred during the API request.');
     }
-  }
-};
-
-
-export const getUserToken = async (user: any, getAccessTokenSilently: Function) => {
-
-  const domain = auth0config.domain;
-
-  try {
-    const accessToken = await getAccessTokenSilently({
-      timeoutInSeconds: 5,
-      authorizationParams: {
-        audience: `https://${domain}/api/v2/`,
-        scope: "read:current_user",
-      },
-    });
-    //console.log("Got user token from Auth0: " + accessToken);
-
-    localStorage.setItem('jwt', accessToken)
-    localStorage.setItem('auth0Sub', encodeURIComponent(user?.sub ?? ''));
-
-    return ({ isAuthenticated: true })
-
-  } catch (e) {
-    console.log("error in getUserMetadata: ")
-    if (e instanceof Error) {
-      console.log(e.message);
-    }
-    return ({ isAuthenticated: false })
   }
 };
 

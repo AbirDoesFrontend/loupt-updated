@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { User } from '../models/user.schema';
 import { addFollower, getConnectedUsers, getSuggestedUsers, getUserById, updateUser } from '../services/user.service';
 import { authenticatedUserId } from '../utils/routeUtils';
+import { deleteS3ItemByKey } from '../services/aws.service';
 
 export async function getLoggedInUserRoute(req: Request, res: Response): Promise<void|Response> {
     const userId = await authenticatedUserId(req)
@@ -17,7 +18,7 @@ export async function getLoggedInUserRoute(req: Request, res: Response): Promise
 
 export async function getUserRoute(req: Request, res: Response): Promise<void|Response> {
     const {userId} = req.params
-    const user = await getUserById(userId)
+    const user = await getUserById(encodeURIComponent(userId))
     if (!user) {
         return res.status(404).send("User does not exist")
     }
@@ -76,7 +77,7 @@ export async function updateUserRoute(req: Request, res: Response): Promise<void
         followers: followers || existingUser?.followers,
         //new params for listing user as party
         domicile: domicile || existingUser?.domicile,
-        dob: dob || existingUser?.dob,
+        dob: new Date(dob) || existingUser?.dob,
         primCountry: primCountry || existingUser?.primCountry,
         primAddress1: primAddress1 || existingUser?.primAddress1,
         primCity: primCity || existingUser?.primCity,
@@ -84,6 +85,15 @@ export async function updateUserRoute(req: Request, res: Response): Promise<void
         primZip: primZip || existingUser?.primZip
         
     })
+    if(banner != undefined && existingUser?.banner) {
+        deleteS3ItemByKey(existingUser.banner)
+        //delete old images when updated
+    }
+    if(profilePic != undefined && existingUser?.profilePic) {
+        deleteS3ItemByKey(existingUser.profilePic)
+        //delete old images when updated
+    }
+
     const success = await updateUser(updatedUser)
     if (!success) {
         return res.status(500).send("Error while updating user data")

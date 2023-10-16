@@ -67,6 +67,7 @@ export const addInvestment = async (roundId: string, userId: string, amount: num
     const investmentId = generateInvestmentId()
     const investment = new Investment({
         investmentId: investmentId,
+        roundId: roundId,
         userId: userId,
         companyId: round.companyId,
         amount: amount,
@@ -95,4 +96,16 @@ export const linkFundingRoundToOffering = async (roundId: string, tapiOfferingId
         //user already has an issuerId and we will not create a new one
         return round
     }
+}
+
+/* export const 
+ */
+export const linkDocToFundingRound = async (roundId: string, docref: string) : Promise<IFundingRound | null> => {
+    const round = await FundingRound.findOne({roundId: roundId}).exec()
+    if (!round) {
+        return null
+    }
+    round.tapiDocumentIds.push(docref)
+    await round.save()
+    return round
 }

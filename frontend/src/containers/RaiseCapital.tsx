@@ -36,10 +36,12 @@ import {
   Company,
   User,
   createCompany,
-  getUserToken,
+/*   getUserToken, */
 } from "../api";
 import { Link as ChakraLink } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
+import { useLouptAuth } from "../contexts/LouptAuthProvider";
+
 interface FormData {
   name: string;
   logo: string;
@@ -79,16 +81,25 @@ const RaiseCapital = () => {
     location: "",
   });
 
-  const { user, getAccessTokenSilently, isLoading, loginWithRedirect } =
-    useAuth0();
+/*   const { user, getAccessTokenSilently, isLoading, loginWithRedirect } =
+    useAuth0(); */
+    const {
+      isAuthenticated,
+      isLoading,
+      authenticate,
+      showLogin,
+      logout,
+      getUserJwt,
+      getUserSub,
+    } = useLouptAuth();
 
   useEffect(() => {
     //wait for auth0 to be done loading and make sure we have our user data
-    if (!isLoading && user) {
+    if (!isLoading) {
       //get the auth0 sub and the JWT from auth0. this will be verified by our backend
-      getUserToken(user, getAccessTokenSilently).then((result) => {
+      authenticate().then((authenticated) => {
         //is we get a success (we are authenticated), execute this logic
-        if (result.isAuthenticated) {
+        if (authenticated) {
           console.log("authenticated!");
 
           getUser().then((response) => {
@@ -550,7 +561,7 @@ const RaiseCapital = () => {
                 </Stack>
               </FormControl>
               <Center>
-                {user ? (
+                {isAuthenticated ? (
                   <Button
                     padding={"30px 32px"}
                     bg="brand.100"
@@ -566,7 +577,7 @@ const RaiseCapital = () => {
                     bg="brand.100"
                     color={"white"}
                     mt={10}
-                    onClick={() => loginWithRedirect({})}
+                    onClick={() => showLogin()}
                   >
                     Login / Register to Raise Funding
                   </Button>

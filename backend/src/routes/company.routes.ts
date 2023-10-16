@@ -38,7 +38,7 @@ export async function updateCompanyRoute(req: Request, res: Response): Promise<v
         return res.status(401).send("Unauthorized request")
     }
     const {companyId} = req.params
-    const {name, logo, bio, partners, industry, website, valuation, minimumInvestment, sharePrice, sharesOutstanding, location, banner, shortBio} = req.body
+    const {name, logo, bio, banner, partners, industry, website, valuation, minimumInvestment, sharePrice, sharesOutstanding, location, shortBio} = req.body
     const existingUser = await getUserById(userId)
     if (!existingUser?.companies.includes(companyId)) {
         return res.status(401).send("User doesn't have permission to edit this company")
@@ -50,6 +50,7 @@ export async function updateCompanyRoute(req: Request, res: Response): Promise<v
         name: name || existingCompany?.name,
         bio: bio || existingCompany?.bio,
         logo: logo || existingCompany?.logo,
+        banner: banner || existingCompany?.banner,
         partners: partners || existingCompany?.partners,
         industry: industry || existingCompany?.industry,
         website: website || existingCompany?.website,
@@ -58,7 +59,6 @@ export async function updateCompanyRoute(req: Request, res: Response): Promise<v
         sharePrice: sharePrice || existingCompany?.sharePrice,
         sharesOutstanding: sharesOutstanding || existingCompany?.sharesOutstanding,
         location: location || existingCompany?.location,
-        banner: banner || existingCompany?.banner,
         shortBio: shortBio || existingCompany?.shortBio
     })
     const success = await updateCompany(updatedCompany)
@@ -112,10 +112,6 @@ export async function createCompanyRoute(req: Request, res: Response): Promise<v
     if(!existingUser) {
         return res.status(404).send("User does not exist")
     }
-/*     if(existingUser.domicile == null || existingUser.dob.getFullYear() === 1900 || existingUser.primCountry == '' || existingUser.primAddress1 == '' || existingUser.primCity == '' || existingUser.primState == '' || existingUser.primZip == "none") {
-        return res.status(422).send("User must complete full details before creating a company")
-    }
-    createCompany */
 
     const company = await createCompany(createCompanyRequest, loggedInUserId)
     if (!company) {

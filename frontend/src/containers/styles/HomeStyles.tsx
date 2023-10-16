@@ -57,6 +57,14 @@ const styles = {
     fontSize: "20px",
     padding: "24px",
   },
+  selected: {
+    color: "white",
+    bg: "brand.100",
+  },
+  unselected: {
+    color: "brand.100",
+    bg: "gray.300",
+  },
 };
 
 export default styles;
