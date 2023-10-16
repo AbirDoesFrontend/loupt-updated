@@ -1,3 +1,2 @@
-PORT = 24100;
-MONGODB_URI = "mongodb://localhost:27017/loupt-db";
-TRANSACTAPI_DEVKEY = "jWDeyNhI5c6FsU9hCZrgnEqiebKDjPitNRe";
+PORT=
+MONGODB_URI=

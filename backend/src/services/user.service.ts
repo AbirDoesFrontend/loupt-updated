@@ -2,13 +2,13 @@ import { IUser } from "../models/user.interface";
 import { User } from "../models/user.schema";
 
 export const getUserById = async (userId : string): Promise<IUser | null> => {
-    return await User.findOne({userId: (userId)}).exec()
+    return await User.findOne({userId: userId}).exec()
 }
 
 export const getConnectedUsers = async ( userId: string): Promise<IUser[]> => {
     // return friends and friends of friends
 
-    const user = await User.findOne({userId: (userId)}).exec()
+    const user = await User.findOne({userId: userId}).exec()
     //if there is no user, return null (invalid credentials)
     if (!user) {
         return []
@@ -56,27 +56,43 @@ export const getSuggestedUsers = async (userCount: number, excludedUserIds?: str
     return users
 }
 
-// user1 gets added in user2's followers. User 2 gets added in user1's connections
-export const addFollower = async (userId1 : string, userId2 : string) : Promise<boolean> => {
-    const user1 = await User.findOne({userId: (userId1)}).exec()
-    const user2 = await User.findOne({userId: (userId2)}).exec()
+export const addFollower = async (userId1: string, userId2: string): Promise<boolean> => {
+    const user1 = await User.findOne({userId: userId1}).exec();
+    const user2 = await User.findOne({userId: userId2}).exec();
+
     if (user1 != null && user2 != null) {
-        if (!user1.connections.includes(userId2)) {
-            user1.connections.push(userId2)
-            await user1.save()
+        // Connection logic
+        if (user1.followers.includes(userId2)) {
+            user1.followers = user1.followers.filter(userId => userId !== userId2);
+            user1.following = user1.following.filter(userId => userId !== userId2);
+            user1.connections.push(userId2);
+            await user1.save();
+
+            user2.followers = user2.followers.filter(userId => userId !== userId1);
+            user2.following = user2.following.filter(userId => userId !== userId1);
+            user2.connections.push(userId1);
+            await user2.save();
+        } else {
+            // New Following and Followers logic
+            if (!user1.following.includes(userId2)) {
+                user1.following.push(userId2);
+                await user1.save();
+            }
+
+            if (!user2.followers.includes(userId1)) {
+                user2.followers.push(userId1);
+                await user2.save();
+            }
         }
-        if (!user2.followers.includes(userId1)) {
-            user2.followers.push(userId1)
-            await user2.save()
-        }
-        return true
+        return true;
     } else {
-        return false
+        return false;
     }
 }
 
+
 export const updateUser = async (user : IUser) : Promise<boolean> => {
-    const existing = await User.findOne({userId: (user.userId)}).exec()
+    const existing = await User.findOne({userId: user.userId}).exec()
     if (existing != null) {
         existing.legalName = user.legalName
         existing.bio = user.bio
@@ -86,8 +102,15 @@ export const updateUser = async (user : IUser) : Promise<boolean> => {
         existing.companies = user.companies
         existing.connections = user.connections
         existing.investments = user.investments
+        //new
+        existing.occupation = user.occupation
+        existing.location = user.location
+        existing.education = user.location
+        existing.dob = user.dob
+        existing.banner = user.banner
+        
         //transactAPI specific internal fields
-/*         existing.kycStatus = user.kycStatus
+/*      existing.kycStatus = user.kycStatus
         existing.amlStatus = user.amlStatus
         existing.tapiAccountId = user.tapiAccountId
         existing.tapiIssuerId = user.tapiIssuerId */

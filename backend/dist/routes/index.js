@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const company_routes_1 = require("./company.routes");
 const investment_routes_1 = require("./investment.routes");
 const user_routes_1 = require("./user.routes");
+const misc_routes_1 = require("./misc.routes");
 const webhook_routes_1 = require("./webhook.routes");
 const multer_1 = __importDefault(require("multer"));
 const router = express_1.default.Router();
@@ -47,8 +48,12 @@ router.post('/investment', investment_routes_1.addInvestmentRoute);
 router.post('/investmentwithkyc', investment_routes_1.addInvestmentRouteWithKYC);
 router.get('/paymentmethods', investment_routes_1.getPaymentMethodsRoute);
 router.post('/documents/:roundId', upload.single('document'), investment_routes_1.fileUploadRoute);
+router.get('/search', misc_routes_1.handleSearchRoute);
+router.post('/executeInvestment', investment_routes_1.executeInvestmentRoute);
+//AWS:
+router.get('/generate-presigned-url', misc_routes_1.generatePresignedUrlRoute);
 // webhooks for transactAPI
-router.post("/usercreated", webhook_routes_1.callbackTest);
-router.post("/kycstatuschanged", webhook_routes_1.callbackTest);
+//router.post("/usercreated", callbackTest)
+router.post("/kycstatus", webhook_routes_1.updateKycStatus);
 //TODO: add routes for uploading documents
 exports.default = router;

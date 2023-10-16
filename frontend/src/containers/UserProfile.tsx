@@ -48,7 +48,7 @@ import {
 import {
   getConnectedUsers,
   getAllCompanies,
-  getUserToken,
+/*   getUserToken, */
   getSuggestedUsers,
 } from "../api";
 
@@ -60,6 +60,7 @@ import NetworkCard from "../components/NetworkCard";
 import FeatureCard from "../components/FeatureCard";
 import { getCompany } from "../api";
 import FollowerCard from "../components/FollowerCard";
+import { useLouptAuth } from "../contexts/LouptAuthProvider";
 
 type Investment = {
   investmentId: string;
@@ -72,6 +73,9 @@ type Investment = {
 
 const UserProfile = () => {
   const [user, setUser] = useState({} as User);
+
+  const [loggedInUser, setLoggedInUser] = useState({} as User);
+  const [loggedInUserId, setLoggedInUserId] = useState("");
   const [userFollower, setUserFollower] = useState<User[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [listOfUsersConnection, setListOfUsersConnection] = useState([]);
@@ -84,62 +88,102 @@ const UserProfile = () => {
   const [connectedUsers, setConnectedUsers] = useState([] as User[]);
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
   const [userId, setUserId] = useState("");
-  const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
-  const [userInvestmentCompanyIds, setUserInvestmentCompanyIds] = useState<
+/*   const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
+ */  const [userInvestmentCompanyIds, setUserInvestmentCompanyIds] = useState<
     User[]
   >([]);
   const [userInvestmentArray, setUserInvestmentArray] = useState<Company[]>([]);
   const [userDetails, setUserDetails] = useState<(User | undefined)[]>([]);
-
+  const [userFollowersArray, setUserFollowersArray] = useState(true);
+  const [loggedInUserFollowersArray, setLoggedInUserFollowersArray] = useState(Boolean);
+  const [userConnectedConnection, setUserConnectedConnection] = useState(Boolean);
   // FOR USER PROFILE ROUTE
   const params = useParams();
   const id = params.id;
-  const navigate = useNavigate();
 
-  // Suggested Users
+  const {
+    isAuthenticated,
+    isLoading,
+    authenticate,
+    showLogin,
+    logout,
+    getUserJwt,
+    getUserSub,
+  } = useLouptAuth();
+
+
+  
   useEffect(() => {
-    getSuggestedUsers().then((response: User[]) => {
-      console.log("Suggested Users:", response);
-      response.filter((user) => {
-        if (user.userId == id) {
-          setUser(user);
-          console.log("User", user);
-        } else {
-          console.log("nothing found!");
+    if (!isLoading) {
+      //get the auth0 sub and the JWT from auth0. this will be verified by our backend
+     authenticate().then((authenticated) => {
+        //is we get a success (we are authenticated), execute this logic
+        if (authenticated) {
+          getUser().then((response: any) => {
+            setLoggedInUserId(response.userId);
+          }
+          );
         }
-      });
-
-      response.filter((data) => {
-        user.followers.includes(data.userId)
-          ? setUserFollower((prevUsers) => [...prevUsers, data])
-          : 0;
-      });
-    });
-  }, [id]);
-
-  console.log("user follower: ", userFollower);
-
-  //User Connected Companies
-  useEffect(() => {
-    getAllCompanies().then((response: any) => {
-      const allCompanies = response;
-      // console.log(response);
-      setCompanies(allCompanies);
-
-      const filteredCompanies = allCompanies.filter((company: any) =>
-        userConnectedCompanyID.includes(company.companyId)
+      }
       );
-      setUserConnectedCompany(filteredCompanies);
-      // console.log("User Connected Companies:", filteredCompanies);
-    });
-  }, [user]);
+    }
 
-  // Add User Connection (only for Accept Connection Btn)
+  
+      if(id){
+        console.log("get profile user: " + id)
+        getUser(id).then((response: User | undefined) => {
+          if(response){
+            setUser(response);
+            console.log("currentUserFollowers", response.followers);
+          }
+        });
+      }
+
+    // Fetching all companies and filtering based on user connection
+    getAllCompanies().then((response: any) => {
+      setCompanies(response);
+      const filteredCompanies = response.filter((company: any) => userConnectedCompanyID.includes(company.companyId));
+      setUserConnectedCompany(filteredCompanies);
+    });
+
+    // Fetching companies based on user investments
+    if (userInvestmentCompanyIds && userInvestmentCompanyIds.length > 0) {
+      const fetchCompanies = async () => {
+        const companyPromises = userInvestmentCompanyIds.map((id) => getCompany(id));
+        const companies = await Promise.all(companyPromises);
+        setUserInvestmentArray(companies);
+      };
+      fetchCompanies();
+    }
+
+    // Fetching user connections
+    if (user.connections && user.connections.length > 0) {
+      const promises = user.connections.map((connectionId) => getUser(connectionId));
+      Promise.all(promises).then(setUserDetails).catch(console.error);
+    }
+
+  }, [/* id */]);
+
+
+  useEffect(() => {
+    // Checking if logged-in user is a follower of the user
+    const isFollower = user.followers && Array.isArray(user.followers) && user.followers.includes(loggedInUserId);
+    setUserFollowersArray(isFollower);
+
+    // Checking if user is followed by logged-in user
+    const isFollowed = loggedInUser.followers && Array.isArray(loggedInUser.followers) && loggedInUser.followers.includes(user.userId);
+    setLoggedInUserFollowersArray(isFollowed);
+
+    // Checking if user is connected to logged-in user
+    const isConnected = user.connections && Array.isArray(user.connections) && user.connections.includes(loggedInUserId);
+    setUserConnectedConnection(isConnected);
+
+  }, [loggedInUser, user, loggedInUserId]);
+  
   const addConnectionButton = (id: any) => {
     addConnection(id).then((response) => {
       if (response) {
-        // console.log("Connection Added", id);
-        toast.success("Congrats! You are connected!", {
+        toast.success(`You now follow: ${user.legalName}!`, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -150,48 +194,20 @@ const UserProfile = () => {
           theme: "light",
         });
         setConnectedConnection(false);
-        // navigate("/profile");
-        // navigate(0);
+/*         navigate(0); */
+
+        //update user
+        if(id){
+          getUser(id).then((response: User | undefined) => {
+            if(response){
+              setUser(response);
+              console.log("currentUserFollowers", response.followers);
+            }
+          });
+        }
       }
     });
   };
-
-  useEffect(() => {
-    if (userInvestmentCompanyIds && userInvestmentCompanyIds.length > 0) {
-      const fetchCompanies = async () => {
-        try {
-          const companyPromises = userInvestmentCompanyIds.map((id) =>
-            getCompany(id)
-          );
-          const companies = await Promise.all(companyPromises);
-          setUserInvestmentArray(companies);
-          // console.log("User Investment Array:", userInvestmentArray);
-          // console.log("All Companies:", companies);
-        } catch (error) {
-          console.error("Error fetching companies:", error);
-        }
-      };
-
-      fetchCompanies();
-    }
-  }, [userInvestmentCompanyIds]);
-
-  useEffect(() => {
-    if (user.connections && user.connections.length > 0) {
-      const promises = user.connections.map((connectionId) =>
-        getUser(connectionId)
-      );
-
-      Promise.all(promises)
-        .then((responses) => {
-          setUserDetails(responses);
-          // console.log("User Details:", userDetails);
-        })
-        .catch((error) => {
-          console.error("Error fetching user connections:", error);
-        });
-    }
-  }, [user.connections]);
 
   return (
     <>
@@ -270,15 +286,37 @@ const UserProfile = () => {
                         />
                       ))}
                   </HStack>
+                  {
+                    userConnectedConnection ? (
+                      <Button mt={4} bg={"brand.100"} color={"white"}>
+                        Connected!
+                      </Button>
+                    ) : userFollowersArray ? (
+                      <Button mt={4} bg={"brand.100"} color={"white"}>
+                        Following
+                      </Button>
+                    ) : loggedInUserFollowersArray ? (
+                      <Button
+                        mt={4}
+                        bg={"brand.100"}
+                        color={"white"}
+                        onClick={() => addConnectionButton(user.userId)}
+                      >
+                        Follow Back
+                      </Button>
+                    ) : (
+                      <Button
+                        mt={4}
+                        bg={"brand.100"}
+                        color={"white"}
+                        onClick={() => addConnectionButton(user.userId)}
+                        type="submit"
+                      >
+                        Follow
+                      </Button>
+                    )
+                  }
 
-                  <Button
-                    mt={4}
-                    bg={"brand.100"}
-                    color={"white"}
-                    onClick={() => addConnectionButton(user.userId)}
-                  >
-                    {connectedConnection ? "Follow" : "Connected"}
-                  </Button>
                 </Box>
 
                 {/* DIVIDER  */}
@@ -337,7 +375,7 @@ const UserProfile = () => {
                 {/* Follow requests  */}
                 <Box sx={styles.networkSuggestions}>
                   <Heading mb={10} fontSize={30}>
-                    Follow requests
+                    {user.legalName}'s Followers
                   </Heading>
                   <>
                     <Flex
@@ -360,7 +398,7 @@ const UserProfile = () => {
                             p={5}
                             borderRadius={6}
                           >
-                            No suggestions found..{" "}
+                            {user.legalName} Has no followers! {" "}
                           </Text>
                         </Box>
                       )}
@@ -394,7 +432,7 @@ const UserProfile = () => {
                 {/* MY INVESTMENT  */}
                 <Box sx={styles.investmentContainer}>
                   <Heading mb={10} fontSize={24} textTransform={"capitalize"}>
-                    {user.legalName ? user.legalName : ""} Investments
+                    {user.legalName ? user.legalName : ""}'s Investments
                   </Heading>
 
                   {userInvestmentArray.length ? (
@@ -439,7 +477,7 @@ const UserProfile = () => {
                     alignItems={"flex-start"}
                   >
                     <Heading mb={10} fontSize={30}>
-                      Connected Company
+                      {user.legalName}'s Companies
                     </Heading>
                     {userConnectedCompany.length ? (
                       <Link to={"/connected-companies"}>

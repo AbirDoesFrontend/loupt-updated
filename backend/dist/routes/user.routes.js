@@ -13,6 +13,7 @@ exports.followUserRoute = exports.updateUserRoute = exports.getSuggestedUsersRou
 const user_schema_1 = require("../models/user.schema");
 const user_service_1 = require("../services/user.service");
 const routeUtils_1 = require("../utils/routeUtils");
+const aws_service_1 = require("../services/aws.service");
 function getLoggedInUserRoute(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = yield (0, routeUtils_1.authenticatedUserId)(req);
@@ -30,7 +31,7 @@ exports.getLoggedInUserRoute = getLoggedInUserRoute;
 function getUserRoute(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { userId } = req.params;
-        const user = yield (0, user_service_1.getUserById)(userId);
+        const user = yield (0, user_service_1.getUserById)(encodeURIComponent(userId));
         if (!user) {
             return res.status(404).send("User does not exist");
         }
@@ -95,13 +96,21 @@ function updateUserRoute(req, res) {
             followers: followers || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.followers),
             //new params for listing user as party
             domicile: domicile || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.domicile),
-            dob: dob || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.dob),
+            dob: new Date(dob) || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.dob),
             primCountry: primCountry || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.primCountry),
             primAddress1: primAddress1 || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.primAddress1),
             primCity: primCity || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.primCity),
             primState: primState || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.primState),
             primZip: primZip || (existingUser === null || existingUser === void 0 ? void 0 : existingUser.primZip)
         });
+        if (banner != undefined && (existingUser === null || existingUser === void 0 ? void 0 : existingUser.banner)) {
+            (0, aws_service_1.deleteS3ItemByKey)(existingUser.banner);
+            //delete old images when updated
+        }
+        if (profilePic != undefined && (existingUser === null || existingUser === void 0 ? void 0 : existingUser.profilePic)) {
+            (0, aws_service_1.deleteS3ItemByKey)(existingUser.profilePic);
+            //delete old images when updated
+        }
         const success = yield (0, user_service_1.updateUser)(updatedUser);
         if (!success) {
             return res.status(500).send("Error while updating user data");

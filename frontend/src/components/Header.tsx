@@ -6,9 +6,7 @@ import {
   Company,
   getAllCompanies,
   getConnectedCompanies,
-  getUserToken,
 } from "../api";
-import { useAuth0, Auth0Context } from "@auth0/auth0-react";
 import {
   Flex,
   Text,
@@ -31,8 +29,12 @@ import {
   useDisclosure,
   Button,
   Spacer,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
-import { SearchIcon, HamburgerIcon } from "@chakra-ui/icons";
+import { SearchIcon, HamburgerIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import logo from "../assets/Loupt app logo 4.png";
 import { Link, useNavigate as navigate, useNavigate } from "react-router-dom";
 
@@ -48,6 +50,7 @@ import {
   NavLink,
   HambugerIconHover,
 } from "./styles/HeaderStyles";
+import { useLouptAuth } from "../contexts/LouptAuthProvider";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -60,56 +63,35 @@ const Header = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [companyData, setCompanyData] = useState({} as Company[]);
   const [avatar, setAvatar] = useState("" as string);
-  const {
-    user,
-    isAuthenticated,
-    loginWithRedirect,
-    logout,
-    getAccessTokenSilently,
-    isLoading,
-  } = useAuth0();
-  //const auth0 = useContext(Auth0Context);
 
-  const logoutWithRedirect = () =>
-    logout({
-      logoutParams: {
-        returnTo: window.location.origin,
-      },
-    });
+  const {
+    isAuthenticated,
+    isLoading,
+    authenticate,
+    showLogin,
+    logout,
+    getUserJwt,
+    getUserSub,
+  } = useLouptAuth();
 
   useEffect(() => {
-    if (!isLoading && user) {
-      getUserToken(user, getAccessTokenSilently).then((result) => {
-        if (result.isAuthenticated) {
-          console.log("authenticated!");
-
-          getUser().then((response) => {
+    if (!isLoading) {
+      authenticate().then((authenticated) => {
+        if (authenticated) {
+          //TODO: user state should be handles in auth0provider (instead of fetching on every page)
+          getUser().then((response: any) => {
             if (response) {
               setUserData(response);
-              //setCompanyData({});
-              if (userData.companies && userData.companies.length > 0) {
-                //set the profile image
-                setAvatar(userData.profilePic);
-
-                //if the user is authenticated, show companies they are connected to
-                getConnectedCompanies().then((response) => {
-                  setCompanyData(response);
-                });
-              }
+              console.log("User:", response);
+              console.log(userData.profilePic);
             }
-          });
-        } else console.log("Header: not authenticated..");
-        getAllCompanies().then((response) => {
-          setCompanyData(response);
-        });
+          })
+        }
       });
     }
   }, [isLoading]);
 
-  // const filteredCompanies = companyData.filter(company =>
-  //   company.name.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
-  // console.log(filteredCompanies)
+
   const search = async () => {
     try {
       const response = await fetch(
@@ -189,7 +171,7 @@ const Header = () => {
                   </Link>
                 </Text>
                 <Text sx={NavItem}>
-                  {user && (
+                  {userData && (
                     <Link to="/profile">
                       <Text _hover={NavItemHover} sx={NavLink}>
                         Profile
@@ -205,32 +187,45 @@ const Header = () => {
                 <Button
                   id="qsLoginBtn"
                   ml={8}
-                  onClick={() => loginWithRedirect({})}
+                  onClick={() => showLogin()}
                 >
-                  Log in / SignUp
+                  Log in / Sign up
                 </Button>
               )}
 
               {/* If User is Signed In / Logged In  */}
 
               {isAuthenticated && (
-                <HStack
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={3}
-                  pl={16}
-                >
-                  <Avatar
-                    borderRadius="9999px"
-                    bg="#A0AEC0"
-                    name="Avatar"
-                    src={userData.profilePic}
-                  />
+                <HStack justifyContent="center" alignItems="center" spacing={3} pl={16}>
+                  <Menu>
+                    {() => (
+                      <>
+                        <MenuButton
+                        as={Button}
+                        rightIcon={<ChevronDownIcon color="white" boxSize={6} />}
+                        variant="unstyled"
+                        size="lg"
+                        color="white"
+                      >
+                          <Avatar
+                            borderRadius="9999px"
+                            bg="#A0AEC0"
+                            name="Avatar"
+                            src={userData.profilePic}
+                          />
+                        </MenuButton>
+                        <MenuList>
+                        <MenuItem as={Link} to="/messaging">Messaging</MenuItem>
+                        <MenuItem as={Link} to="/my-investments">My Investments</MenuItem>
+                        <MenuItem as={Link} to="/settings">Settings</MenuItem>
+                        </MenuList>
+                      </>
+                    )}
+                  </Menu>
                   <Button
                     id="qsLoginBtn"
                     color="primary"
-                    //block
-                    onClick={() => logoutWithRedirect()}
+                    onClick={() => logout()}
                   >
                     Log Out
                   </Button>
@@ -254,7 +249,7 @@ const Header = () => {
               onClick={onOpen}
               variant="outline"
               color="white"
-              // _hover={HamburgerIcon}
+            // _hover={HamburgerIcon}
             />
           </>
         )}
@@ -263,18 +258,44 @@ const Header = () => {
             <DrawerContent>
               <DrawerCloseButton />
               <DrawerHeader>
-                <Avatar
-                  borderRadius="9999px"
-                  bg="#A0AEC0"
-                  name="Avatar"
-                  src={userData.profilePic}
-                />
+                <Menu>
+                  {() => (
+                    <>
+                      <MenuButton
+                        as={Button}
+                        rightIcon={<ChevronDownIcon color="black" boxSize={6} />}
+                        variant="unstyled"
+                        size="lg"
+                        color="white"
+                      >
+                        <Avatar
+                          borderRadius="9999px"
+                          bg="#A0AEC0"
+                          name="Avatar"
+                          src={userData.profilePic}
+                        />
+                      </MenuButton>
+                      <MenuList>
+                        <MenuItem as={Link} to="/messaging">Messaging</MenuItem>
+                        <MenuItem as={Link} to="/my-investments">My Investments</MenuItem>
+                        <MenuItem as={Link} to="/settings">Settings</MenuItem>
+                      </MenuList>
+                    </>
+                  )}
+                </Menu>
               </DrawerHeader>
               <DrawerBody>
                 <Stack spacing={4}>
                   <Link to="/">Invest</Link>
                   <Link to="/about">About</Link>
                   <Link to="/profile">Profile</Link>
+                  <Button
+                    id="qsLoginBtn"
+                    color="primary"
+                    onClick={() => logout()}
+                  >
+                    Log Out
+                  </Button>
                 </Stack>
               </DrawerBody>
             </DrawerContent>

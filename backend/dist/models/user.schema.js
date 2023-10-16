@@ -24,6 +24,7 @@ const userSchema = new mongoose_1.Schema({
     connections: { type: [String], default: [] },
     followers: { type: [String], default: [] },
     investments: { type: [investment_schema_1.InvestmentSchema], default: [] },
+    following: { type: [String], default: [] },
     visibility: { type: String, default: 'public' },
     tapiIssuerId: { type: String, default: 'none' },
     tapiPartyId: { type: String, default: 'none' },

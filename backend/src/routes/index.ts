@@ -1,12 +1,37 @@
 import express, { Request, Response } from 'express';
-import { createCompanyRoute, getCompanyRoute, getAllCompaniesRoute, getConnectedCompaniesRoute, updateCompanyRoute, deleteCompanyRoute } from './company.routes';
-import { addInvestmentRoute, addInvestmentRouteWithKYC, createFundingRoundRoute, getFundingRoundRoute, updateFundingRoundRoute, fileUploadRoute, getPaymentMethodsRoute } from './investment.routes';
-import { followUserRoute, getSuggestedUsersRoute, getUserConnectionsRoute, getUserRoute, getLoggedInUserRoute, updateUserRoute, /* addkycdetails */ } from './user.routes';
-import { callbackTest } from './webhook.routes';
+
+import { createCompanyRoute, 
+  getCompanyRoute, 
+  getAllCompaniesRoute, 
+  getConnectedCompaniesRoute, 
+  updateCompanyRoute, 
+  deleteCompanyRoute } from './company.routes';
+
+import { addInvestmentRoute, 
+  addInvestmentRouteWithKYC, 
+  createFundingRoundRoute, 
+  getFundingRoundRoute, 
+  updateFundingRoundRoute, 
+  fileUploadRoute, 
+  getPaymentMethodsRoute, 
+  executeInvestmentRoute, 
+  userTradeStatusRoute } from './investment.routes';
+
+import { followUserRoute, 
+  getSuggestedUsersRoute, 
+  getUserConnectionsRoute, 
+  getUserRoute, 
+  getLoggedInUserRoute, 
+  updateUserRoute, 
+  /* addkycdetails */ } from './user.routes';
+  
+import { handleSearchRoute, 
+  generatePresignedUrlRoute } from './misc.routes';
+
+import { updateKycStatus } from './webhook.routes';
+
 import multer from 'multer';
 const router = express.Router();
-
-
 
 // health check route
 router.get('/', (req: Request, res: Response) => {
@@ -48,14 +73,17 @@ router.put('/fundinground/:roundId', updateFundingRoundRoute)
 router.post('/fundinground', createFundingRoundRoute)
 router.post('/investment', addInvestmentRoute)
 //NEW:
-//router.post('/addkycdetails', addkycdetails)
 router.post('/investmentwithkyc', addInvestmentRouteWithKYC)
 router.get('/paymentmethods', getPaymentMethodsRoute)
 router.post('/documents/:roundId', upload.single('document'), fileUploadRoute);
+router.get('/search', handleSearchRoute);
+router.post('/executeInvestment', executeInvestmentRoute);
+router.get('/usertradestatus', userTradeStatusRoute);
 
+//AWS:
+router.get('/generate-presigned-url', generatePresignedUrlRoute);
 
-// webhooks for transactAPI
-router.post("/usercreated", callbackTest)
-router.post("/kycstatuschanged", callbackTest)
-//TODO: add routes for uploading documents
+//callback from transactAPI
+router.post("/kycstatus", updateKycStatus)
+
 export default router;

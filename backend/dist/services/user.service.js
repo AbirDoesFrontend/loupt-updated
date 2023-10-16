@@ -12,12 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateUserKycInfo = exports.updateUser = exports.addFollower = exports.getSuggestedUsers = exports.getConnectedUsers = exports.getUserById = void 0;
 const user_schema_1 = require("../models/user.schema");
 const getUserById = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield user_schema_1.User.findOne({ userId: (userId) }).exec();
+    return yield user_schema_1.User.findOne({ userId: userId }).exec();
 });
 exports.getUserById = getUserById;
 const getConnectedUsers = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     // return friends and friends of friends
-    const user = yield user_schema_1.User.findOne({ userId: (userId) }).exec();
+    const user = yield user_schema_1.User.findOne({ userId: userId }).exec();
     //if there is no user, return null (invalid credentials)
     if (!user) {
         return [];
@@ -62,18 +62,31 @@ const getSuggestedUsers = (userCount, excludedUserIds) => __awaiter(void 0, void
     return users;
 });
 exports.getSuggestedUsers = getSuggestedUsers;
-// user1 gets added in user2's followers. User 2 gets added in user1's connections
 const addFollower = (userId1, userId2) => __awaiter(void 0, void 0, void 0, function* () {
-    const user1 = yield user_schema_1.User.findOne({ userId: (userId1) }).exec();
-    const user2 = yield user_schema_1.User.findOne({ userId: (userId2) }).exec();
+    const user1 = yield user_schema_1.User.findOne({ userId: userId1 }).exec();
+    const user2 = yield user_schema_1.User.findOne({ userId: userId2 }).exec();
     if (user1 != null && user2 != null) {
-        if (!user1.connections.includes(userId2)) {
+        // Connection logic
+        if (user1.followers.includes(userId2)) {
+            user1.followers = user1.followers.filter(userId => userId !== userId2);
+            user1.following = user1.following.filter(userId => userId !== userId2);
             user1.connections.push(userId2);
             yield user1.save();
-        }
-        if (!user2.followers.includes(userId1)) {
-            user2.followers.push(userId1);
+            user2.followers = user2.followers.filter(userId => userId !== userId1);
+            user2.following = user2.following.filter(userId => userId !== userId1);
+            user2.connections.push(userId1);
             yield user2.save();
+        }
+        else {
+            // New Following and Followers logic
+            if (!user1.following.includes(userId2)) {
+                user1.following.push(userId2);
+                yield user1.save();
+            }
+            if (!user2.followers.includes(userId1)) {
+                user2.followers.push(userId1);
+                yield user2.save();
+            }
         }
         return true;
     }
@@ -83,7 +96,7 @@ const addFollower = (userId1, userId2) => __awaiter(void 0, void 0, void 0, func
 });
 exports.addFollower = addFollower;
 const updateUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
-    const existing = yield user_schema_1.User.findOne({ userId: (user.userId) }).exec();
+    const existing = yield user_schema_1.User.findOne({ userId: user.userId }).exec();
     if (existing != null) {
         existing.legalName = user.legalName;
         existing.bio = user.bio;
@@ -93,8 +106,14 @@ const updateUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
         existing.companies = user.companies;
         existing.connections = user.connections;
         existing.investments = user.investments;
+        //new
+        existing.occupation = user.occupation;
+        existing.location = user.location;
+        existing.education = user.location;
+        existing.dob = user.dob;
+        existing.banner = user.banner;
         //transactAPI specific internal fields
-        /*         existing.kycStatus = user.kycStatus
+        /*      existing.kycStatus = user.kycStatus
                 existing.amlStatus = user.amlStatus
                 existing.tapiAccountId = user.tapiAccountId
                 existing.tapiIssuerId = user.tapiIssuerId */

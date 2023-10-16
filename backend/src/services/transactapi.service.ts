@@ -6,6 +6,9 @@ import { User } from "../models/user.schema";
 import {IFundingRound} from "../models/fundingRound.interface";
 import FormData from 'form-data';
 import * as fs from 'fs';
+import { deleteFile } from '../utils/routeUtils';
+
+//TODO: every single request and response should be typed
 
 type UploadData = {
   offeringId: string;
@@ -41,16 +44,13 @@ const tapiApiFileUpload = async (
   formData.append('clientID', Config.TRANSACTAPI_CLIENTID);
   formData.append('developerAPIKey', Config.TRANSACTAPI_DEVKEY);
   formData.append('offeringId', data.offeringId);
-  formData.append('documentTitle', data.documentTitle);
-  formData.append('file_name', data.documentFileName);
+  formData.append('documentTitle', "documentTitle0=" + data.documentTitle);
+  formData.append('file_name', "filename0="+data.documentFileName);
   formData.append('documentFileReferenceCode', data.documentFileReferenceCode);
 
-
   Object.keys(data).forEach(key => {
-/*     //formData.append(key, data[key as keyof UploadData]);
- */    formData.append('userfile0', data['userfile0'], data['file_name']);
+    formData.append('userfile0', data['userfile0'], data['file_name']);
   });
-  
 
   try {
     const response: AxiosResponse<tApiUploadResponse> = await axios({
@@ -61,9 +61,13 @@ const tapiApiFileUpload = async (
         ...formData.getHeaders(),
       }
     });
+    console.log("response: " + response.data)
+    console.log(response.data)
     return response.data;
-  } catch (error: any) {
-    console.log("Error caught: ", error);
+  } 
+  catch (error: any) {
+    console.log("Error caught: ", error.response.data);
+    //DEBUG return error.response.data;
     throw error;
   }
 };
@@ -89,7 +93,7 @@ const tApiRequest = async<T>(
             ...data,
         },
       });
-      console.log(response.data)
+      console.log("response: " + JSON.stringify(response.data, null, 2));
       return response.data;
     }
     catch (error: any) {
@@ -153,7 +157,6 @@ export const createOffering = async(fundingRound: IFundingRound, userId: string)
     return undefined
   }
   
-
   const result = await tApiRequest<any>(
     'PUT',
     `/createOffering`,
@@ -175,56 +178,43 @@ export const createOffering = async(fundingRound: IFundingRound, userId: string)
   return result.offeringDetails[1][0].offeringId
 }
 
-/* export const uploadDocumentToOffering = async(fundingRound: IFundingRound, doctitle: string, file?: Express.Multer.File): Promise<boolean> => {
-  if(fundingRound.tapiOfferingId == 0){
-    console.log("funding round is not connected to an offering")
-    return false;
-  }
+export const uploadDocumentToOffering = async(fundingRound: IFundingRound, doctitle: string, file: Express.Multer.File): Promise<boolean | undefined>  => {
+  try{
+    //TODO: will keeping file in-memory improve performance?
+    const fileBuffer = fs.readFileSync(file.path);/*  file.buffer; */
 
-  //generate random alphanumeric ID for the document
-  const docId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    const docId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
-  return await tapiApiFileUpload<any>(
-    'POST',
-    `/addDocumentsforOffering`,
-    {
-      offeringId: fundingRound.tapiOfferingId.toString(),
-      documentTitle: doctitle,
-      documentFileReferenceCode: docId,
-      file_name: doctitle,
-      userfile0: file?.buffer,  // Pass the buffer from multer's file object
+    console.log("uploadDocumentToOffering: " + fundingRound.tapiOfferingId)
+
+    console.log("original name: " + file.originalname)
+
+    const data: UploadData = {
+        offeringId: fundingRound.tapiOfferingId.toString(),  // Adjust based on your fundingRound structure
+        documentTitle: doctitle.split(".")[0],
+        documentFileName: file.originalname,
+        documentFileReferenceCode: docId, // Add logic to generate/reference code
+        file_name: file.originalname.split(".")[0],
+        userfile0: fileBuffer
+    };
+
+    const result =  tapiApiFileUpload('/tapiv3/index.php/v3/addDocumentsforOffering', data);
+
+    if(!result){
+      console.log("unable to upload document to offering")
+      return false
     }
-  );
-} */
-
-export const uploadDocumentToOffering = async(fundingRound: IFundingRound, doctitle: string, file: Express.Multer.File)/* : Promise<boolean | undefined>  */ => {
-
-  //TODO: will keeping file in-memory improve performance?
-  const fileBuffer = fs.readFileSync(file.path);/*  file.buffer; */
-
-  const docId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-
-  console.log("uploadDocumentToOffering: " + fundingRound.tapiOfferingId)
-
-  console.log("original name: " + file.originalname)
-
-  const data: UploadData = {
-      offeringId: fundingRound.tapiOfferingId.toString(),  // Adjust based on your fundingRound structure
-      documentTitle: doctitle,
-      documentFileName: file.originalname,
-      documentFileReferenceCode: docId, // Add logic to generate/reference code
-      file_name: file.originalname, // Using the original name of the file
-      userfile0: fileBuffer
-  };
-
-  //console.log("uploadDocumentToOffering: " + fundingRound.offeringId)
-
-  const result =  tapiApiFileUpload('/tapiv3/index.php/v3/addDocumentsforOffering', data);
 
 
+    return true
+  }
+  catch(error){
+    console.log("error uploading document to offering")
+    return false
+  }
 }
 
-const createPartyIndividualIfNotExist = async(userId: string ): Promise<string | undefined> => {
+const createPartyIndividualIfNotExist = async(userId: string, ssn: string): Promise<string | undefined> => {
 
   const user = await User.findOne({userId: (userId)}).exec()
 
@@ -259,6 +249,7 @@ const createPartyIndividualIfNotExist = async(userId: string ): Promise<string |
       primState: user.primState,
       primZip: user.primZip,
       emailAddress: user.email,
+      socialSecurityNumber: ssn,
     }
   );
   return result.partyDetails[1][0].partyId
@@ -296,25 +287,7 @@ const getLinkedCreditCard = async(accountId: string): Promise<any> => {
   );
   return result
 }
-/* 
-const createTrade = async(accountId: string, offeringId: string, amount: number): Promise<any> => {
-  const response = await tApiRequest<any>(
-    'DELETE',
-    '/createTrade',
-    {
-      accountId: accountId,
-      offeringId: offeringId,
-      amount: amount,
-    }
-    //TODO: this is incorrect and needs proper implementation
-  )
-  //no-op TODO: implement
-}
 
-const executeTrade = async(accountId: string, offeringId: string, amount: number): Promise<any> => {
-  //no-op TODOD: implement
-}
- */
 const linkCreditCard = async(accountId: string/* , cardId: string */): Promise<string | undefined> => {
   const result = await tApiRequest<any>(
     'POST',
@@ -375,7 +348,7 @@ const createAccountIndividualIfNotExist = async(userId: string, partyId: string)
   return accountId
 }
 
-export const beginUserKYC = async(userId: string): Promise<boolean> => {
+export const beginUserKYC = async(userId: string, ssn: string): Promise<boolean> => {
   const user = await User.findOne({userId: (userId)}).exec()
   if(!user){
     console.log("user does not exist")
@@ -384,12 +357,14 @@ export const beginUserKYC = async(userId: string): Promise<boolean> => {
   console.log("beginUserKYC: " + user.tapiPartyId)
   const result = await tApiRequest<any>(
     'POST',
-    '/performKycAml',
+    '/performKycAmlBasic',
     {
       partyId: user.tapiPartyId,
     }
   )
+  if(result.statusDesc == "Ok")
   return true
+  return false
 }
 
 export const checkPaymentMethods = async(userId: string): Promise<any> => {
@@ -430,11 +405,11 @@ export const checkPaymentMethods = async(userId: string): Promise<any> => {
   }
 }
 
-export const ensureInvestorProvisioned = async(userId: string): Promise<boolean> => {
+export const ensureInvestorProvisioned = async(userId: string, ssn: string): Promise<boolean> => {
   const user = await User.findOne({userId: (userId)}).exec()
   if(!user)
   return false
-  const partyId = await createPartyIndividualIfNotExist(userId)
+  const partyId = await createPartyIndividualIfNotExist(userId, ssn)
   if(!partyId){
     console.log("ensureInvestorProvisioned: unable to create party")
     return false
@@ -449,4 +424,114 @@ export const ensureInvestorProvisioned = async(userId: string): Promise<boolean>
   user.tapiAccountId = accountId
   await user.save()
   return true
+}
+
+export const getOfferingDocuments = async(offeringId: string): Promise<any> => {
+  const result = await tApiRequest<any>(
+    'POST',
+    '/getDocumentsforOffering',
+    {
+      offeringId: offeringId,
+    }
+  )
+  return result
+}
+
+export const createTapiTrade = async(userId: string, offeringId: string, amount: number): Promise<string | undefined> => {
+  try {
+    const user = await User.findOne({userId: (userId)}).exec();
+    if (!user) {
+      throw new Error("user does not exist");
+    }
+    const response = await tApiRequest<any>(
+      'POST',
+      '/createTrade',
+      {
+        offeringId: offeringId,
+        transactionUnits: amount,
+        accountId: user.tapiAccountId,
+        transactionType: "CREDITCARD", // need support for "ACH"
+        createdIpAddress: "10.0.0.9" // TODO: does this need to be the user's IP?
+      }
+    );
+
+    if (response.statusCode === "101" && response.statusDesc === "Ok") {
+
+      const tradeDetails = response.purchaseDetails[1];
+      if (tradeDetails && tradeDetails.length > 0) {
+        const tradeId = tradeDetails[0].tradeId;
+        return tradeId;
+      } else {
+        throw new Error("No trade details found in the response");
+      }
+    } else {
+      throw new Error("API response was not OK");
+    }
+
+  } catch (error) {
+    console.error("Error creating TAPI trade:", error);
+    return undefined;
+  }
+};
+
+export const externalFundMove = async(userId: string, offeringId: string, tapiTradeId: string, amount: number): Promise<any | undefined> => {
+
+  const user = await User.findOne({userId: (userId)}).exec()
+  if(!user){
+    console.log("user does not exist")
+    return false
+  }
+
+  const result = await tApiRequest<any>(
+    'POST',
+    '/externalFundMove',
+    {
+      accountId: user.tapiAccountId,
+      offeringId: offeringId,
+      tradeId: tapiTradeId,
+      nickname: user.legalName + " externalFundMove on Loupt",
+      amount: amount,
+      description: "Investment in " + offeringId,
+      checkNumber: "1234567890",
+    }
+  )
+
+  if(result.statusCode == "101" && result.statusDesc == "Ok")
+    return result.TradeFinancialDetails[0]
+  return undefined
+}
+
+export const getTradesStatus = async(/* userId: string, */ tapiTradeIds: string[]): Promise<any | undefined> => {
+/*   const user = await User.findOne({userId: (userId)}).exec();
+  if(!user){
+    console.log("user does not exist");
+    return false;
+  } */
+  const results = [];
+  for (let id in tapiTradeIds){
+    const result = await tApiRequest<any>(
+      'POST',
+      '/getTradeStatus',
+      {
+        tradeId: tapiTradeIds[id],
+      }
+    );
+    const tradeDetails = result.tradeDetails[0];
+    const dataToAppend = {
+      id: tradeDetails.id,
+      offeringId: tradeDetails.offeringId,
+      accountId: tradeDetails.accountId,
+      partyId: tradeDetails.partyId,
+      party_type: tradeDetails.party_type,
+      escrowId: tradeDetails.escrowId,
+      orderId: tradeDetails.orderId,
+      transactionType: tradeDetails.transactionType,
+      totalAmount: tradeDetails.totalAmount,
+      totalShares: tradeDetails.totalShares,
+      orderStatus: tradeDetails.orderStatus,
+      createdDate: tradeDetails.createdDate
+    };
+    results.push(dataToAppend);
+  }
+  return JSON.stringify(results);
 }

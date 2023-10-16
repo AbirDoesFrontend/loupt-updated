@@ -2,9 +2,12 @@ import {
   Box,
   Text,
   Image,
+  HStack,
   Button,
+  Spacer,
   Center,
   VStack,
+  Heading,
   Flex,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
@@ -20,21 +23,27 @@ const NetworkCard = () => {
     getSuggestedUsers().then((response) => {
       if (response) {
         setSuggestedUsers(response);
+        console.log("suggestedUsers", suggestedUsers);
       }
     });
   }, []);
-
+  const handleRemoveCard = (indexToRemove: number) => {
+    const newSuggestedUsers = [...suggestedUsers];
+    newSuggestedUsers.splice(indexToRemove, 1);
+    setSuggestedUsers(newSuggestedUsers);
+  };
 
   const addConnectionButton = (id: any) => {
     addConnection(id).then((response) => {
       if (response) {
         console.log("Connection Added", id);
+        navigate(`/user-profile/${id}`);
         navigate(0);
-        localStorage.setItem(id, id);
       }
     });
   };
 
+  
   return (
     <>
       <Flex
@@ -54,27 +63,38 @@ const NetworkCard = () => {
               boxShadow={"0px 4px 15px 0px rgba(0, 0, 0, 0.07)"}
               position="relative"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="28"
-                height="28"
-                viewBox="0 0 28 28"
-                fill="#ffff"
-                color="brand.100"
+              <Button
                 style={{
+                  background: "none",
+                  border: "none",
                   position: "absolute",
                   top: "3px",
                   right: "3px",
+                  cursor: "pointer",
                 }}
+                onClick={() => handleRemoveCard(index)}
               >
-                <path
-                  d="M9.72266 17.8458L17.8466 9.72412M9.72266 9.72412L17.8466 17.8458"
-                  stroke="purple"
-                  strokeWidth="1.72312"
-                  strokeLinecap="round"
-                />
-              </svg>
-
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="28"
+                  height="28"
+                  viewBox="0 0 28 28"
+                  fill="#ffff"
+                  color="brand.100"
+                  style={{
+                    position: "absolute",
+                    top: "3px",
+                    right: "3px",
+                  }}
+                >
+                  <path
+                    d="M9.72266 17.8458L17.8466 9.72412M9.72266 9.72412L17.8466 17.8458"
+                    stroke="purple"
+                    strokeWidth="1.72312"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </Button>
               <Center h="full">
                 <VStack>
                   <Link to={`/user-profile/${suggestedUser.userId}`}>

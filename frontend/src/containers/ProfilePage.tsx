@@ -45,8 +45,8 @@ import {
 import {
   getConnectedUsers,
   getAllCompanies,
-  getUserToken,
-  getSuggestedUsers,
+/*   getUserToken,
+ */  getSuggestedUsers,
 } from "../api";
 
 import bannerImg from "../../src/assets/bannerImg.png";
@@ -56,6 +56,8 @@ import { MdBorderColor } from "react-icons/md";
 import NetworkCard from "../components/NetworkCard";
 import FeatureCard from "../components/FeatureCard";
 import { getCompany } from "../api";
+import FollowBackCard from "../components/FollowBackCard";
+import { useLouptAuth } from "../contexts/LouptAuthProvider";
 
 type Investment = {
   investmentId: string;
@@ -80,17 +82,30 @@ const ProfilePage = () => {
   const [connectedCompanies, setConnectedCompanies] = useState([] as Company[]);
   const [userId, setUserId] = useState("");
   const [showEditButton, setShowEditButton] = useState(false);
-  const { getAccessTokenSilently, isLoading, user: auth0User } = useAuth0();
   const [userInvestmentCompanyIds, setUserInvestmentCompanyIds] = useState<
     User[]
   >([]);
   const [userInvestmentArray, setUserInvestmentArray] = useState<Company[]>([]);
   const [userDetails, setUserDetails] = useState<(User | undefined)[]>([]);
-
+  const [userFollowers, setUserFollowers] = useState<User[]>([]);
+  const [followerDetails, setFollowerDetails] = useState<User[]>([]);
   // // FOR USER PROFILE ROUTE
   const params = useParams();
-  let id = params.id;
+  const id = params.id;
   const navigate = useNavigate();
+  
+  const {
+    isAuthenticated,
+    isLoading,
+    authenticate,
+    showLogin,
+    logout,
+    getUserJwt,
+    getUserSub,
+  } = useLouptAuth();
+
+  //const 
+
 
   useEffect(() => {
     if (id) {
@@ -101,26 +116,26 @@ const ProfilePage = () => {
           setUser(response);
           setListOfUsersConnection(response.connections);
           console.log("User Connections:", response.connections);
+
+
           const companyIds = response.investments.map(
             (investment: { companyId: any }) => investment.companyId
           );
           setUserInvestmentCompanyIds(companyIds);
           console.log("All Company Ids:", companyIds);
 
-          // Getting Id of an individual connected companies from user
           setUserConnectedCompanyID(response.companies);
         }
       });
     }
 
     //wait for auth0 to be done loading and make sure we have our user data
-    else if (!isLoading && auth0User) {
+    else if (!isLoading) {
       setShowEditButton(true);
-
       //get the auth0 sub and the JWT from auth0. this will be verified by our backend
-      getUserToken(auth0User, getAccessTokenSilently).then((result) => {
+      authenticate().then((authenticated) => {
         //is we get a success (we are authenticated), execute this logic
-        if (result.isAuthenticated) {
+        if (authenticated) {
           console.log("authenticated!");
           console.log("id: " + id);
           getUser().then((response: any) => {
@@ -130,6 +145,9 @@ const ProfilePage = () => {
               setUser(response);
               setListOfUsersConnection(response.connections);
               console.log("User Connections:", response.connections);
+              console.log("User Followers:", response.followers);
+              setUserFollowers(response.followers);
+              console.log("User Following:", response.following);
               const companyIds = response.investments.map(
                 (investment: { companyId: any }) => investment.companyId
               );
@@ -140,19 +158,11 @@ const ProfilePage = () => {
               setUserConnectedCompanyID(response.companies);
             }
           });
-
-          // getConnectedCompanies().then((response) => {
-          //   console.log("Connected Companies:");
-          //   console.log(response);
-          //   setConnectedCompanies(response);
-          // });
-
           getConnectedUsers().then((response) => {
-            // console.log("Connected Users : ");
-            // console.log(response);
             setConnectedUsers(response);
           });
         } else {
+          showLogin();
           console.log("Profile: not authenticated..");
         }
       });
@@ -195,8 +205,6 @@ const ProfilePage = () => {
       if (response) {
         console.log("Connection Added", id);
         setConnectedConnection(false);
-        navigate("/profile");
-        navigate(0);
       }
     });
   };
@@ -238,6 +246,17 @@ const ProfilePage = () => {
     }
   }, [user.connections, id]);
 
+
+
+  useEffect(() => {
+    const fetchFollowerDetails = async () => {
+      const details = await Promise.all(user.followers.map(id => getUser(id)));
+      setFollowerDetails(details.filter((detail): detail is User => detail !== undefined) as User[]);
+    };
+
+    fetchFollowerDetails();
+  }, [user.followers]);
+
   return (
     <>
       {isLoading ? (
@@ -266,7 +285,7 @@ const ProfilePage = () => {
               ) : (
                 <Image
                   src={
-                    "https://louptimageassets.s3.amazonaws.com/2z76gexx9bc042jn27yzovr"
+                    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAA1BMVEVmaGeV0p8cAAAASElEQVR4nO3BgQAAAADDoPlTX+AIVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwDcaiAAFXD1ujAAAAAElFTkSuQmCC"
                   }
                   sx={styles.bannerImg}
                 />
@@ -386,13 +405,25 @@ const ProfilePage = () => {
                 </Box>
 
                 {/* NETWORK SUGGESTIONS  */}
-                <Box sx={styles.networkSuggestions}>
-                  <Heading mb={10} fontSize={30}>
-                    Network Suggestions
-                  </Heading>
-                  <NetworkCard></NetworkCard>
-                </Box>
-
+                {user.followers && user.followers.length > 0 ? (
+                  <Box sx={styles.networkSuggestions}>
+                    <Heading mb={10} fontSize={30}>
+                      Follow Requests
+                    </Heading>
+                    <Center>
+                    {followerDetails.slice(0, 5).map(follower =>
+                      <FollowBackCard key={follower.userId} user={follower} />
+                      )}
+                      </Center>
+                  </Box>
+                ) : (
+                  <Box sx={styles.networkSuggestions}>
+                    <Heading mb={10} fontSize={30}>
+                      Network Suggestions
+                    </Heading>
+                    <NetworkCard></NetworkCard>
+                  </Box>
+                )}
                 {/* CONTACT INFORMATION */}
                 <VStack sx={styles.contactInfo}>
                   <Heading fontSize={24}>Basic Information</Heading>
@@ -457,13 +488,13 @@ const ProfilePage = () => {
                   <Text>No Information found ...</Text>
                 </Box>
 
-                {/* CONNECTED COMPANY  */}
+                {/* TODO: Change from "connected company" to invested companies */}
                 <Box sx={styles.connectedCompany}>
                   <HStack
                     justifyContent={"space-between"}
                     alignItems={"flex-start"}
                   >
-                    <Heading mb={10}>Connected Companies</Heading>
+                    <Heading mb={10}>Companies invested</Heading>
                     <Link to={"/connected-companies"}>
                       <Button bg={"brand.100"} color={"white"}>
                         View All
