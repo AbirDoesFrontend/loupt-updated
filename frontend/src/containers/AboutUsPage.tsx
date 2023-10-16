@@ -11,6 +11,7 @@ import {
   Img,
   Heading,
   Avatar,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import {
   FaInstagram,
@@ -29,7 +30,6 @@ import {
 } from "../api";
 import { Link as ChakraLink } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-import Link from "react-router-dom";
 import image from "../assets/image 2.png";
 import heroBg from "../assets/bg-hero.png";
 import heroMan from "../assets/hero-man-img.png";
@@ -115,7 +115,7 @@ const AboutUsPage = () => {
         </Flex>
 
         <Box
-          h={300}
+          // h={300}
           w={"100%"}
           border={"solid"}
           borderRadius={10}
@@ -155,7 +155,7 @@ const AboutUsPage = () => {
         </Box>
 
         <Box
-          h={1180}
+          // h={1180}
           w={"100%"}
           border={"solid"}
           borderRadius={5}
@@ -282,7 +282,7 @@ const AboutUsPage = () => {
           </HStack>
         </Box>
         <Box
-          h={600}
+          // h={600}
           w={"100%"}
           border={"solid"}
           borderRadius={5}
@@ -296,147 +296,152 @@ const AboutUsPage = () => {
           </Heading>
           <VStack>
             <HStack p={10} spacing={10}>
-              <Box
-                border={"solid"}
-                borderRadius={5}
-                borderColor={mainPurple}
-                w={250}
-                h={450}
-                bg={"white"}
-              >
-                <VStack p={5} spacing={3}>
-                  <Avatar
-                    size={"2xl"}
-                    src={image}
-                    border={"solid"}
-                    color={mainPurple}
-                  ></Avatar>
-                  <Text fontSize={"2xl"} fontWeight={700}>
-                    Name Name
-                  </Text>
-                  <Text>
-                    Lorem ipsum dolor sit aLorem ipsum dolor sit amet,
-                    consectetur sit amet, adipiscing elit. Nunc vitae commodo
-                    sit amet, augue.Lorem ipsum
-                  </Text>
-                  <Text fontSize={"xl"} fontWeight={700}>
-                    Creative Leader
-                  </Text>
-                  <HStack>
-                    <FaInstagram color={mainPurple} />
-                    <FaTwitter color={mainPurple} />
-                    <FaFacebook color={mainPurple} />
-                    <FaLinkedin color={mainPurple} />
-                  </HStack>
-                </VStack>
-              </Box>
-              <Box
-                border={"solid"}
-                borderRadius={5}
-                borderColor={mainPurple}
-                w={250}
-                h={450}
-                bg={"white"}
-              >
-                <VStack p={5} spacing={3}>
-                  <Avatar
-                    size={"2xl"}
-                    src={image}
-                    border={"solid"}
-                    color={mainPurple}
-                  ></Avatar>
-                  <Text fontSize={"2xl"} fontWeight={700}>
-                    Name Name
-                  </Text>
-                  <Text>
-                    Lorem ipsum dolor sit aLorem ipsum dolor sit amet,
-                    consectetur sit amet, adipiscing elit. Nunc vitae commodo
-                    sit amet, augue.Lorem ipsum
-                  </Text>
-                  <Text fontSize={"xl"} fontWeight={700}>
-                    Creative Leader
-                  </Text>
-                  <HStack>
-                    <FaInstagram color={mainPurple} />
-                    <FaTwitter color={mainPurple} />
-                    <FaFacebook color={mainPurple} />
-                    <FaLinkedin color={mainPurple} />
-                  </HStack>
-                </VStack>
-              </Box>
-              <Box
-                border={"solid"}
-                borderRadius={5}
-                borderColor={mainPurple}
-                w={250}
-                h={450}
-                bg={"white"}
-              >
-                <VStack p={5} spacing={3}>
-                  <Avatar
-                    size={"2xl"}
-                    src={image}
-                    border={"solid"}
-                    color={mainPurple}
-                  ></Avatar>
-                  <Text fontSize={"2xl"} fontWeight={700}>
-                    Name Name
-                  </Text>
-                  <Text>
-                    Lorem ipsum dolor sit aLorem ipsum dolor sit amet,
-                    consectetur sit amet, adipiscing elit. Nunc vitae commodo
-                    sit amet, augue.Lorem ipsum
-                  </Text>
-                  <Text fontSize={"xl"} fontWeight={700}>
-                    Creative Leader
-                  </Text>
-                  <HStack>
-                    <FaInstagram color={mainPurple} />
-                    <FaTwitter color={mainPurple} />
-                    <FaFacebook color={mainPurple} />
-                    <FaLinkedin color={mainPurple} />
-                  </HStack>
-                </VStack>
-              </Box>
-              <Box
-                border={"solid"}
-                borderRadius={5}
-                borderColor={mainPurple}
-                w={250}
-                h={450}
-                bg={"white"}
-              >
-                <VStack p={5} spacing={3}>
-                  <Avatar
-                    size={"2xl"}
-                    src={image}
-                    border={"solid"}
-                    color={mainPurple}
-                  ></Avatar>
-                  <Text fontSize={"2xl"} fontWeight={700}>
-                    Name Name
-                  </Text>
-                  <Text>
-                    Lorem ipsum dolor sit aLorem ipsum dolor sit amet,
-                    consectetur sit amet, adipiscing elit. Nunc vitae commodo
-                    sit amet, augue.Lorem ipsum
-                  </Text>
-                  <Text fontSize={"xl"} fontWeight={700}>
-                    Creative Leader
-                  </Text>
-                  <HStack>
-                    <FaInstagram color={mainPurple} />
-                    <FaTwitter color={mainPurple} />
-                    <FaFacebook color={mainPurple} />
-                    <FaLinkedin color={mainPurple} />
-                  </HStack>
-                </VStack>
-              </Box>
+              <SimpleGrid columns={[1, null, 3]} spacing="40px" mx={10} mt={0}>
+                <Box
+                  border={"solid"}
+                  borderRadius={5}
+                  borderColor={mainPurple}
+                  w={250}
+                  h={450}
+                  bg={"white"}
+                >
+                  <VStack p={5} spacing={3}>
+                    <Avatar
+                      size={"2xl"}
+                      src={image}
+                      border={"solid"}
+                      color={mainPurple}
+                    ></Avatar>
+                    <Text fontSize={"2xl"} fontWeight={700}>
+                      Name Name
+                    </Text>
+                    <Text>
+                      Lorem ipsum dolor sit aLorem ipsum dolor sit amet,
+                      consectetur sit amet, adipiscing elit. Nunc vitae commodo
+                      sit amet, augue.Lorem ipsum
+                    </Text>
+                    <Text fontSize={"xl"} fontWeight={700}>
+                      Creative Leader
+                    </Text>
+                    <HStack>
+                      <FaInstagram color={mainPurple} />
+                      <FaTwitter color={mainPurple} />
+                      <FaFacebook color={mainPurple} />
+                      <FaLinkedin color={mainPurple} />
+                    </HStack>
+                  </VStack>
+                </Box>
+
+                <Box
+                  border={"solid"}
+                  borderRadius={5}
+                  borderColor={mainPurple}
+                  w={250}
+                  h={450}
+                  bg={"white"}
+                >
+                  <VStack p={5} spacing={3}>
+                    <Avatar
+                      size={"2xl"}
+                      src={image}
+                      border={"solid"}
+                      color={mainPurple}
+                    ></Avatar>
+                    <Text fontSize={"2xl"} fontWeight={700}>
+                      Name Name
+                    </Text>
+                    <Text>
+                      Lorem ipsum dolor sit aLorem ipsum dolor sit amet,
+                      consectetur sit amet, adipiscing elit. Nunc vitae commodo
+                      sit amet, augue.Lorem ipsum
+                    </Text>
+                    <Text fontSize={"xl"} fontWeight={700}>
+                      Creative Leader
+                    </Text>
+                    <HStack>
+                      <FaInstagram color={mainPurple} />
+                      <FaTwitter color={mainPurple} />
+                      <FaFacebook color={mainPurple} />
+                      <FaLinkedin color={mainPurple} />
+                    </HStack>
+                  </VStack>
+                </Box>
+
+                <Box
+                  border={"solid"}
+                  borderRadius={5}
+                  borderColor={mainPurple}
+                  w={250}
+                  h={450}
+                  bg={"white"}
+                >
+                  <VStack p={5} spacing={3}>
+                    <Avatar
+                      size={"2xl"}
+                      src={image}
+                      border={"solid"}
+                      color={mainPurple}
+                    ></Avatar>
+                    <Text fontSize={"2xl"} fontWeight={700}>
+                      Name Name
+                    </Text>
+                    <Text>
+                      Lorem ipsum dolor sit aLorem ipsum dolor sit amet,
+                      consectetur sit amet, adipiscing elit. Nunc vitae commodo
+                      sit amet, augue.Lorem ipsum
+                    </Text>
+                    <Text fontSize={"xl"} fontWeight={700}>
+                      Creative Leader
+                    </Text>
+                    <HStack>
+                      <FaInstagram color={mainPurple} />
+                      <FaTwitter color={mainPurple} />
+                      <FaFacebook color={mainPurple} />
+                      <FaLinkedin color={mainPurple} />
+                    </HStack>
+                  </VStack>
+                </Box>
+
+                <Box
+                  border={"solid"}
+                  borderRadius={5}
+                  borderColor={mainPurple}
+                  w={250}
+                  h={450}
+                  bg={"white"}
+                >
+                  <VStack p={5} spacing={3}>
+                    <Avatar
+                      size={"2xl"}
+                      src={image}
+                      border={"solid"}
+                      color={mainPurple}
+                    ></Avatar>
+                    <Text fontSize={"2xl"} fontWeight={700}>
+                      Name Name
+                    </Text>
+                    <Text>
+                      Lorem ipsum dolor sit aLorem ipsum dolor sit amet,
+                      consectetur sit amet, adipiscing elit. Nunc vitae commodo
+                      sit amet, augue.Lorem ipsum
+                    </Text>
+                    <Text fontSize={"xl"} fontWeight={700}>
+                      Creative Leader
+                    </Text>
+                    <HStack>
+                      <FaInstagram color={mainPurple} />
+                      <FaTwitter color={mainPurple} />
+                      <FaFacebook color={mainPurple} />
+                      <FaLinkedin color={mainPurple} />
+                    </HStack>
+                  </VStack>
+                </Box>
+              </SimpleGrid>
             </HStack>
           </VStack>
         </Box>
         <Box
-          h={220}
+          // h={220}
           w={"100%"}
           border={"solid"}
           borderRadius={5}
@@ -458,7 +463,7 @@ const AboutUsPage = () => {
           </VStack>
         </Box>
         <Box
-          h={420}
+          // h={420}
           w={"100%"}
           border={"solid"}
           borderRadius={5}
@@ -515,7 +520,7 @@ const AboutUsPage = () => {
           <Heading>Testimonials</Heading>
         </Box>
         <Box
-          h={440}
+          // h={440}
           w={"100%"}
           mb={10}
           bg={
@@ -529,7 +534,7 @@ const AboutUsPage = () => {
             <Text fontSize={25} fontWeight={700}>
               Loupt helped raise my compay $30,000
             </Text>
-            <Text px={40} fontSize={24} align={"center"}>
+            <Text px={10} fontSize={24} align={"center"}>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
               vitae commodo augue.Lorem ipsum dolor sit amet, consectetur
               adipiscing elit. Nunc vitae commodo augue.Lorem ipsum dolor sit
@@ -537,36 +542,38 @@ const AboutUsPage = () => {
               ipsum dolor sit amet, consectet
             </Text>
             <HStack spacing={10}>
-              <Avatar
-                size={"lg"}
-                src={image}
-                border={"solid"}
-                color={mainPurple}
-              ></Avatar>
-              <Avatar
-                size={"lg"}
-                src={image}
-                border={"solid"}
-                color={mainPurple}
-              ></Avatar>
-              <Avatar
-                size={"xl"}
-                src={image}
-                border={"solid"}
-                color={mainPurple}
-              ></Avatar>
-              <Avatar
-                size={"lg"}
-                src={image}
-                border={"solid"}
-                color={mainPurple}
-              ></Avatar>
-              <Avatar
-                size={"lg"}
-                src={image}
-                border={"solid"}
-                color={mainPurple}
-              ></Avatar>
+              <Flex gap={10} flexWrap={'wrap'} justifyContent={'center'}>
+                <Avatar
+                  size={"lg"}
+                  src={image}
+                  border={"solid"}
+                  color={mainPurple}
+                ></Avatar>
+                <Avatar
+                  size={"lg"}
+                  src={image}
+                  border={"solid"}
+                  color={mainPurple}
+                ></Avatar>
+                <Avatar
+                  size={"xl"}
+                  src={image}
+                  border={"solid"}
+                  color={mainPurple}
+                ></Avatar>
+                <Avatar
+                  size={"lg"}
+                  src={image}
+                  border={"solid"}
+                  color={mainPurple}
+                ></Avatar>
+                <Avatar
+                  size={"lg"}
+                  src={image}
+                  border={"solid"}
+                  color={mainPurple}
+                ></Avatar>
+              </Flex>
             </HStack>
             <Text fontSize={20} fontWeight={700}>
               Tom
