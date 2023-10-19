@@ -125,7 +125,7 @@ const AboutUsPage = () => {
           borderColor={mainPurple}
         >
           <VStack align="center" justify="center" height="100%">
-            <HStack spacing={20} wrap={"wrap"}>
+            <HStack spacing={20} wrap={"wrap"} py={10}>
               <VStack>
                 <Text color={mainPurple} fontSize={80} fontWeight={800}>
                   2.5M+
@@ -160,6 +160,7 @@ const AboutUsPage = () => {
           border={"solid"}
           borderRadius={5}
           borderColor={mainPurple}
+          py={10}
         >
           <Heading pl={10} pt={8} textAlign="center" fontSize={"48px"}>
             Our Mission
@@ -296,7 +297,7 @@ const AboutUsPage = () => {
           </Heading>
           <VStack>
             <HStack p={10} spacing={10}>
-              <SimpleGrid columns={[1, null, 3]} spacing="40px" mx={10} mt={0}>
+              <Flex gap={10} flexWrap={'wrap'} justifyContent={'center'}>
                 <Box
                   border={"solid"}
                   borderRadius={5}
@@ -436,7 +437,7 @@ const AboutUsPage = () => {
                     </HStack>
                   </VStack>
                 </Box>
-              </SimpleGrid>
+              </Flex>
             </HStack>
           </VStack>
         </Box>
@@ -447,7 +448,7 @@ const AboutUsPage = () => {
           borderRadius={5}
           borderColor={mainPurple}
         >
-          <VStack align={"start"} px={10} pt={5} spacing={7}>
+          <VStack align={"start"} px={10} py={10} spacing={7}>
             <Heading> How It All Started </Heading>
             <Text>
               {" "}
@@ -468,11 +469,12 @@ const AboutUsPage = () => {
           border={"solid"}
           borderRadius={5}
           borderColor={mainPurple}
+          py={10}
         >
           <Heading pl={10} pt={5} mb={5}>
             What Sets Us Apart
           </Heading>
-          <HStack px={10} spacing={5} my={5}>
+          <HStack px={10} spacing={5} my={10}>
             <FaArrowRight size={40} color={mainPurple} />
             <VStack align={"start"}>
               <Text fontSize={20} fontWeight={700} pt={-5}>
@@ -542,7 +544,7 @@ const AboutUsPage = () => {
               ipsum dolor sit amet, consectet
             </Text>
             <HStack spacing={10}>
-              <Flex gap={10} flexWrap={'wrap'} justifyContent={'center'}>
+              <Flex gap={10} flexWrap={"wrap"} justifyContent={"center"}>
                 <Avatar
                   size={"lg"}
                   src={image}
