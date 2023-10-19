@@ -17,6 +17,7 @@ import Checkout from "./containers/Checkout";
 import UserProfile from "./containers/UserProfile";
 import Investments from "./containers/Investments";
 import AnalyticsPage from "./containers/AnalyticsPage";
+import SettingsPage from "./containers/SettingsPage";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
       <Route path="/company/:id" element={<CompanyDetailPage />} />
       <Route path="/signup-modal" element={<SignUpModal />} />
       <Route path="/analytics" element={<AnalyticsPage />} />
+      <Route path="/settings" element={<SettingsPage />} />
       <Route path="/" element={<HomePage />} />
       <Route path="*" element={<Route404 />} />
     </Routes>
