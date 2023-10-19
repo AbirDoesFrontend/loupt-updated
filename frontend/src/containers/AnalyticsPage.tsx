@@ -16,7 +16,7 @@ const AnalyticsPage = () => {
       </Stack>
 
       {/* Company */}
-      <Stack maxW={"8xl"} mx={"auto"}>
+      <Stack maxW={"7xl"} mx={"auto"}>
         <Box sx={styles.aboutBio} my={20}>
           <Flex
             justifyContent={"space-between"}
@@ -40,7 +40,7 @@ const AnalyticsPage = () => {
                 borderRadius={50}
                 boxSize={95}
               />
-              <Box textAlign={{ base : 'center' , md : 'start' }}>
+              <Box textAlign={{ base: "center", md: "start" }}>
                 <Text as={"p"} fontSize={20}>
                   Your Company
                 </Text>
@@ -55,7 +55,7 @@ const AnalyticsPage = () => {
             </Box>
 
             {/* Found Round Detail */}
-            <Box textAlign={{ base : 'center' , sm : 'center' , md : 'end' }}>
+            <Box textAlign={{ base: "center", sm: "center", md: "end" }}>
               <Text fontSize={17}>Active Funding Round</Text>
               <Text fontSize={35} color={mainPurple}>
                 28 Days Left
@@ -63,6 +63,82 @@ const AnalyticsPage = () => {
             </Box>
           </Flex>
         </Box>
+      </Stack>
+
+      {/* Analytics Info */}
+      <Stack maxW={"7xl"} mx={"auto"}>
+        <Flex
+          my={10}
+          gap={10}
+          justifyContent={{ base: "center" }}
+          flexDirection={{ base: "column" , sm : 'column' , md : 'row' }}
+          alignItems={{ base : 'center' }}
+          flexWrap={'wrap'}
+        >
+          <Box
+            width={"400px"}
+            border={"solid"}
+            borderColor={"#12004E1F"}
+            borderWidth={"1px"}
+            borderBottomWidth={"8px"}
+            borderBottomColor={mainPurple}
+            borderRadius={10}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            py={10}
+          >
+            <Text fontSize={{ base : '30' , md : '50' }} fontWeight={"semibold"}>
+              1,521
+            </Text>
+            <Text fontSize={{ base : '20' , md : '30' }} color={mainPurple}>
+              Total Investors
+            </Text>
+          </Box>
+          <Box
+            width={"400px"}
+            border={"solid"}
+            borderColor={"#12004E1F"}
+            borderWidth={"1px"}
+            borderBottomWidth={"8px"}
+            borderBottomColor={mainPurple}
+            borderRadius={10}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            py={10}
+          >
+            <Text fontSize={{ base : '30' , md : '50' }} fontWeight={"semibold"}>
+              1,521
+            </Text>
+            <Text fontSize={{ base : '20' , md : '30' }} color={mainPurple}>
+              Total Investors
+            </Text>
+          </Box>
+          <Box
+            width={"400px"}
+            border={"solid"}
+            borderColor={"#12004E1F"}
+            borderWidth={"1px"}
+            borderBottomWidth={"8px"}
+            borderBottomColor={mainPurple}
+            borderRadius={10}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            py={10}
+          >
+            <Text fontSize={{ base : '30' , md : '50' }} fontWeight={"semibold"}>
+              1,521
+            </Text>
+            <Text fontSize={{ base : '20' , md : '30' }} color={mainPurple}>
+              Total Investors
+            </Text>
+          </Box>
+        </Flex>
       </Stack>
     </>
   );
