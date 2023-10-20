@@ -18,6 +18,7 @@ import UserProfile from "./containers/UserProfile";
 import Investments from "./containers/Investments";
 import AnalyticsPage from "./containers/AnalyticsPage";
 import SettingsPage from "./containers/SettingsPage";
+import TeaserPage from "./containers/TeaserPage";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
       <Route path="/signup-modal" element={<SignUpModal />} />
       <Route path="/analytics" element={<AnalyticsPage />} />
       <Route path="/settings" element={<SettingsPage />} />
+      <Route path="/teaser" element={<TeaserPage />} />
       <Route path="/" element={<HomePage />} />
       <Route path="*" element={<Route404 />} />
     </Routes>

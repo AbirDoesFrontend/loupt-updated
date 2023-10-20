@@ -1,5 +1,60 @@
 import { Box, Flex, Image, Stack, Text, useTheme } from "@chakra-ui/react";
+import {
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import Chart from 'chart.js/auto'
+import { Line } from "react-chartjs-2";
+import {faker} from '@faker-js/faker';
 import styles from "./styles/ProfileStyles";
+
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+ const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top' as const,
+    },
+    title: {
+      display: true,
+      text: 'Chart.js Line Chart',
+    },
+  },
+};
+
+const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+const data = {
+  labels,
+  datasets: [
+    {
+      label: 'Dataset 1',
+      data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
+      borderColor: 'rgb(255, 99, 132)',
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+    },
+    {
+      label: 'Dataset 2',
+      data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
+      borderColor: 'rgb(53, 162, 235)',
+      backgroundColor: 'rgba(53, 162, 235, 0.5)',
+    },
+  ],
+};
 
 const AnalyticsPage = () => {
   const theme = useTheme();
@@ -71,9 +126,9 @@ const AnalyticsPage = () => {
           my={10}
           gap={10}
           justifyContent={{ base: "center" }}
-          flexDirection={{ base: "column" , sm : 'column' , md : 'row' }}
-          alignItems={{ base : 'center' }}
-          flexWrap={'wrap'}
+          flexDirection={{ base: "column", sm: "column", md: "row" }}
+          alignItems={{ base: "center" }}
+          flexWrap={"wrap"}
         >
           <Box
             width={"400px"}
@@ -89,10 +144,10 @@ const AnalyticsPage = () => {
             alignItems={"center"}
             py={10}
           >
-            <Text fontSize={{ base : '30' , md : '50' }} fontWeight={"semibold"}>
+            <Text fontSize={{ base: "30", md: "50" }} fontWeight={"semibold"}>
               1,521
             </Text>
-            <Text fontSize={{ base : '20' , md : '30' }} color={mainPurple}>
+            <Text fontSize={{ base: "20", md: "30" }} color={mainPurple}>
               Total Investors
             </Text>
           </Box>
@@ -110,10 +165,10 @@ const AnalyticsPage = () => {
             alignItems={"center"}
             py={10}
           >
-            <Text fontSize={{ base : '30' , md : '50' }} fontWeight={"semibold"}>
+            <Text fontSize={{ base: "30", md: "50" }} fontWeight={"semibold"}>
               1,521
             </Text>
-            <Text fontSize={{ base : '20' , md : '30' }} color={mainPurple}>
+            <Text fontSize={{ base: "20", md: "30" }} color={mainPurple}>
               Total Investors
             </Text>
           </Box>
@@ -131,15 +186,60 @@ const AnalyticsPage = () => {
             alignItems={"center"}
             py={10}
           >
-            <Text fontSize={{ base : '30' , md : '50' }} fontWeight={"semibold"}>
+            <Text fontSize={{ base: "30", md: "50" }} fontWeight={"semibold"}>
               1,521
             </Text>
-            <Text fontSize={{ base : '20' , md : '30' }} color={mainPurple}>
+            <Text fontSize={{ base: "20", md: "30" }} color={mainPurple}>
               Total Investors
             </Text>
           </Box>
         </Flex>
       </Stack>
+
+      {/* Stats */}
+      <Box
+        maxW="7xl"
+        mx={"auto"}
+        pt={5}
+        px={{ base: 2, sm: 12, md: 17 }}
+        my={10}
+      >
+        <Flex gap={10}>
+          <Box
+            width={"50%"}
+            border={"solid"}
+            borderColor={"#12004E1F"}
+            borderWidth={"1px"}
+            borderRadius={10}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            py={10}
+          >
+            <Line options={options} data={data} />
+          </Box>
+          <Box
+            width={"50%"}
+            border={"solid"}
+            borderColor={"#12004E1F"}
+            borderWidth={"1px"}
+            borderRadius={10}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            py={10}
+          >
+            <Text fontSize={{ base: "30", md: "50" }} fontWeight={"semibold"}>
+              1,521
+            </Text>
+            <Text fontSize={{ base: "20", md: "30" }} color={mainPurple}>
+              Total Investors
+            </Text>
+          </Box>
+        </Flex>
+      </Box>
     </>
   );
 };
