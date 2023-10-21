@@ -16,8 +16,8 @@ import ResultsPage from "./components/Results";
 import Checkout from "./containers/Checkout";
 import UserProfile from "./containers/UserProfile";
 import Investments from "./containers/Investments";
-import AnalyticsPage from "./containers/AnalyticsPage";
-import SettingsPage from "./containers/SettingsPage";
+import AnalyticsPage from "./containers/Dashboard/AnalyticsPage";
+import SettingsPage from "./containers/Dashboard/SettingsPage";
 import TeaserPage from "./containers/TeaserPage";
 
 function App() {
@@ -37,9 +37,8 @@ function App() {
       <Route path="/edit-profile" element={<EditProfilePage />} />
       <Route path="/edit-company/:id" element={<EditCompanyPage />} />
       <Route path="/company/:id" element={<CompanyDetailPage />} />
-      <Route path="/signup-modal" element={<SignUpModal />} />
       <Route path="/analytics" element={<AnalyticsPage />} />
-      <Route path="/settings" element={<SettingsPage />} />
+      <Route path="/settings" element={<SettingsPage></SettingsPage>} />
       <Route path="/teaser" element={<TeaserPage />} />
       <Route path="/" element={<HomePage />} />
       <Route path="*" element={<Route404 />} />

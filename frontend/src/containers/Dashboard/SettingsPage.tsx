@@ -12,8 +12,6 @@ import {
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 
 const SettingsPage = () => {
-  const theme = useTheme();
-  const mainPurple = theme.colors.mainPurple ?? "#8764FF";
   return (
     <>
       <Stack>
@@ -111,7 +109,7 @@ const SettingsPage = () => {
                     </Text>
                     <Button
                       type="submit"
-                      bgColor={mainPurple}
+                      bgColor={"brand.100"}
                       color={"white"}
                       my={5}
                     >
@@ -135,7 +133,7 @@ const SettingsPage = () => {
                       aliqua. Ut.{" "}
                     </Text>
 
-                    <Button bgColor={mainPurple} color={"white"} my={5}>
+                    <Button bgColor={"brand.100"} color={"white"} my={5}>
                       Verify Identity
                     </Button>
                   </Box>
@@ -181,7 +179,7 @@ const SettingsPage = () => {
                     </Text>
                     <Button
                       type="submit"
-                      bgColor={mainPurple}
+                      bgColor={"brand.100"}
                       color={"white"}
                       my={5}
                     >
@@ -205,7 +203,7 @@ const SettingsPage = () => {
                       aliqua. Ut.{" "}
                     </Text>
 
-                    <Button bgColor={mainPurple} color={"white"} my={5}>
+                    <Button bgColor={"brand.100"} color={"white"} my={5}>
                       Verify Identity
                     </Button>
                   </Box>
@@ -251,7 +249,7 @@ const SettingsPage = () => {
                     </Text>
                     <Button
                       type="submit"
-                      bgColor={mainPurple}
+                      bgColor={"brand.100"}
                       color={"white"}
                       my={5}
                     >
@@ -275,7 +273,7 @@ const SettingsPage = () => {
                       aliqua. Ut.{" "}
                     </Text>
 
-                    <Button bgColor={mainPurple} color={"white"} my={5}>
+                    <Button bgColor={"brand.100"} color={"white"} my={5}>
                       Verify Identity
                     </Button>
                   </Box>
@@ -321,7 +319,7 @@ const SettingsPage = () => {
                     </Text>
                     <Button
                       type="submit"
-                      bgColor={mainPurple}
+                      bgColor={"brand.100"}
                       color={"white"}
                       my={5}
                     >
@@ -345,7 +343,7 @@ const SettingsPage = () => {
                       aliqua. Ut.{" "}
                     </Text>
 
-                    <Button bgColor={mainPurple} color={"white"} my={5}>
+                    <Button bgColor={"brand.100"} color={"white"} my={5}>
                       Verify Identity
                     </Button>
                   </Box>
@@ -391,7 +389,7 @@ const SettingsPage = () => {
                     </Text>
                     <Button
                       type="submit"
-                      bgColor={mainPurple}
+                      bgColor={"brand.100"}
                       color={"white"}
                       my={5}
                     >
@@ -415,7 +413,7 @@ const SettingsPage = () => {
                       aliqua. Ut.{" "}
                     </Text>
 
-                    <Button bgColor={mainPurple} color={"white"} my={5}>
+                    <Button bgColor={"brand.100"} color={"white"} my={5}>
                       Verify Identity
                     </Button>
                   </Box>
@@ -461,7 +459,7 @@ const SettingsPage = () => {
                     </Text>
                     <Button
                       type="submit"
-                      bgColor={mainPurple}
+                      bgColor={"brand.100"}
                       color={"white"}
                       my={5}
                     >
@@ -485,7 +483,7 @@ const SettingsPage = () => {
                       aliqua. Ut.{" "}
                     </Text>
 
-                    <Button bgColor={mainPurple} color={"white"} my={5}>
+                    <Button bgColor={"brand.100"} color={"white"} my={5}>
                       Verify Identity
                     </Button>
                   </Box>
@@ -531,7 +529,7 @@ const SettingsPage = () => {
                     </Text>
                     <Button
                       type="submit"
-                      bgColor={mainPurple}
+                      bgColor={"brand.100"}
                       color={"white"}
                       my={5}
                     >
@@ -555,7 +553,7 @@ const SettingsPage = () => {
                       aliqua. Ut.{" "}
                     </Text>
 
-                    <Button bgColor={mainPurple} color={"white"} my={5}>
+                    <Button bgColor={"brand.100"} color={"white"} my={5}>
                       Verify Identity
                     </Button>
                   </Box>
@@ -601,7 +599,7 @@ const SettingsPage = () => {
                     </Text>
                     <Button
                       type="submit"
-                      bgColor={mainPurple}
+                      bgColor={"brand.100"}
                       color={"white"}
                       my={5}
                     >
@@ -625,7 +623,7 @@ const SettingsPage = () => {
                       aliqua. Ut.{" "}
                     </Text>
 
-                    <Button bgColor={mainPurple} color={"white"} my={5}>
+                    <Button bgColor={"brand.100"} color={"white"} my={5}>
                       Verify Identity
                     </Button>
                   </Box>

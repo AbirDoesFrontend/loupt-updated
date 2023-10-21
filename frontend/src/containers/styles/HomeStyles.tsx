@@ -6,7 +6,7 @@ const styles = {
     flexDirection: ["column", "column", "row"],
     border: "1px solid",
     borderColor: "brand.100",
-    margin: "40px 0px",
+    margin: "40px",
     borderRadius: "10px",
   },
   firstColumn: {

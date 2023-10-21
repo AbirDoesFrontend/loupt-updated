@@ -34,6 +34,7 @@ import image from "../assets/image 2.png";
 import heroBg from "../assets/bg-hero.png";
 import heroMan from "../assets/hero-man-img.png";
 import styles from "./styles/HomeStyles";
+import TestimonialSection from "../components/TestimonialSection";
 const AboutUsPage = () => {
   const theme = useTheme();
   const mainPurple = theme.colors.mainPurple ?? "#8764FF";
@@ -84,7 +85,7 @@ const AboutUsPage = () => {
 
   return (
     <>
-      <VStack spacing={10} maxW={"1280px"} margin={"auto"}>
+      <VStack spacing={10} maxW={"1280px"} margin={["10px", "10px", "auto"]}>
         {/* {Hero Section} */}
         <Flex sx={styles.container}>
           <Box sx={styles.firstColumn}>
@@ -115,7 +116,6 @@ const AboutUsPage = () => {
         </Flex>
 
         <Box
-          // h={300}
           w={"100%"}
           border={"solid"}
           borderRadius={10}
@@ -124,29 +124,29 @@ const AboutUsPage = () => {
           }
           borderColor={mainPurple}
         >
-          <VStack align="center" justify="center" height="100%">
+          <VStack align="center" justifyContent={"center"} height="100%">
             <HStack spacing={20} wrap={"wrap"} py={10}>
               <VStack>
-                <Text color={mainPurple} fontSize={80} fontWeight={800}>
+                <Text color={mainPurple} fontSize={50} fontWeight={700}>
                   2.5M+
                 </Text>
-                <Text fontSize={30} fontWeight={700} mt={-7}>
+                <Text fontSize={30} fontWeight={700} mt={-4}>
                   Community Members
                 </Text>
               </VStack>
               <VStack>
-                <Text color={mainPurple} fontSize={80} fontWeight={800}>
+                <Text color={mainPurple} fontSize={50} fontWeight={700}>
                   $2.5B
                 </Text>
-                <Text fontSize={30} fontWeight={700} mt={-7}>
+                <Text fontSize={30} fontWeight={700} mt={-4}>
                   Funds Deployed
                 </Text>
               </VStack>
               <VStack>
-                <Text color={mainPurple} fontSize={80} fontWeight={800}>
+                <Text color={mainPurple} fontSize={50} fontWeight={700}>
                   3000+
                 </Text>
-                <Text fontSize={30} fontWeight={700} mt={-7}>
+                <Text fontSize={30} fontWeight={700} mt={-4}>
                   Funded Ventures
                 </Text>
               </VStack>
@@ -155,22 +155,21 @@ const AboutUsPage = () => {
         </Box>
 
         <Box
-          // h={1180}
           w={"100%"}
           border={"solid"}
           borderRadius={5}
           borderColor={mainPurple}
           py={10}
         >
-          <Heading pl={10} pt={8} textAlign="center" fontSize={"48px"}>
+          <Heading textAlign="center" fontSize={"48px"}>
             Our Mission
           </Heading>
-          <HStack pl={"20"} pt={5} pr={10} spacing={10} align={"start"}>
+          <HStack p={10} spacing={10} align={"start"}>
             <Text color={mainPurple} fontSize={60} fontWeight={700} pt={-5}>
               1
             </Text>
             <VStack align={"start"}>
-              <Text fontWeight={700} fontSize={28}>
+              <Text fontWeight={700} fontSize={24}>
                 Democratizing Finance:
               </Text>
               <Text fontSize={20}>
@@ -183,12 +182,12 @@ const AboutUsPage = () => {
               </Text>
             </VStack>
           </HStack>
-          <HStack pl={"20"} pt={5} pr={10} spacing={8} align={"start"}>
+          <HStack p={10} spacing={8} align={"start"}>
             <Text color={mainPurple} fontSize={60} fontWeight={700} pt={-5}>
               2
             </Text>
             <VStack align={"start"}>
-              <Text fontWeight={700} fontSize={28}>
+              <Text fontWeight={700} fontSize={24}>
                 Supporting Innovation and Creativity:
               </Text>
               <Text fontSize={20}>
@@ -200,12 +199,12 @@ const AboutUsPage = () => {
               </Text>
             </VStack>
           </HStack>
-          <HStack pl={"20"} pt={5} pr={10} spacing={8} align={"start"}>
+          <HStack p={10} spacing={8} align={"start"}>
             <Text color={mainPurple} fontSize={60} fontWeight={700} pt={-5}>
               3
             </Text>
             <VStack align={"start"}>
-              <Text fontWeight={700} fontSize={28}>
+              <Text fontWeight={700} fontSize={24}>
                 Community Building:
               </Text>
               <Text fontSize={20}>
@@ -216,12 +215,12 @@ const AboutUsPage = () => {
               </Text>
             </VStack>
           </HStack>
-          <HStack pl={"20"} pt={5} pr={10} spacing={8} align={"start"}>
+          <HStack p={10} spacing={8} align={"start"}>
             <Text color={mainPurple} fontSize={60} fontWeight={700} pt={-5}>
               4
             </Text>
             <VStack align={"start"}>
-              <Text fontWeight={700} fontSize={28}>
+              <Text fontWeight={700} fontSize={24}>
                 Showcasing Diverse Projects:
               </Text>
               <Text fontSize={20}>
@@ -233,12 +232,12 @@ const AboutUsPage = () => {
               </Text>
             </VStack>
           </HStack>
-          <HStack pl={"20"} pt={5} pr={10} spacing={10} align={"start"}>
+          <HStack p={10} spacing={10} align={"start"}>
             <Text color={mainPurple} fontSize={60} fontWeight={700} pt={-5}>
               5
             </Text>
             <VStack align={"start"}>
-              <Text fontWeight={700} fontSize={28}>
+              <Text fontWeight={700} fontSize={24}>
                 Encouraging Risk-taking:
               </Text>
               <Text fontSize={20}>
@@ -250,12 +249,12 @@ const AboutUsPage = () => {
               </Text>
             </VStack>
           </HStack>
-          <HStack pl={"20"} pt={5} pr={10} spacing={10} align={"start"}>
+          <HStack p={10} spacing={10} align={"start"}>
             <Text color={mainPurple} fontSize={60} fontWeight={700} pt={-5}>
               6
             </Text>
             <VStack align={"start"}>
-              <Text fontWeight={700} fontSize={28}>
+              <Text fontWeight={700} fontSize={24}>
                 Transparent and Accountable Funding:
               </Text>
               <Text fontSize={20}>
@@ -266,12 +265,12 @@ const AboutUsPage = () => {
               </Text>
             </VStack>
           </HStack>
-          <HStack pl={"20"} pt={5} pr={10} spacing={10} align={"start"}>
+          <HStack p={10} spacing={10} align={"start"}>
             <Text color={mainPurple} fontSize={60} fontWeight={700} pt={-5}>
               7
             </Text>
             <VStack align={"start"}>
-              <Text fontWeight={700} fontSize={28}>
+              <Text fontWeight={700} fontSize={24}>
                 Engaging Marketing Tool:
               </Text>
               <Text fontSize={20}>
@@ -297,7 +296,7 @@ const AboutUsPage = () => {
           </Heading>
           <VStack>
             <HStack p={10} spacing={10}>
-              <Flex gap={10} flexWrap={'wrap'} justifyContent={'center'}>
+              <Flex gap={10} flexWrap={"wrap"} justifyContent={"center"}>
                 <Box
                   border={"solid"}
                   borderRadius={5}
@@ -518,10 +517,8 @@ const AboutUsPage = () => {
           </HStack>
         </Box>
 
-        <Box w={"100%"}>
-          <Heading>Testimonials</Heading>
-        </Box>
-        <Box
+        <TestimonialSection></TestimonialSection>
+        {/* <Box
           // h={440}
           w={"100%"}
           mb={10}
@@ -581,7 +578,7 @@ const AboutUsPage = () => {
               Tom
             </Text>
           </VStack>
-        </Box>
+        </Box> */}
       </VStack>
     </>
   );
